@@ -105,7 +105,7 @@ class Notarize extends Component {
         this.state.web3.eth.getAccounts((error, accounts) => {
     
           simpleStorage.deployed().then((instance) => {
-            simpleStorageInstance = instance
+            simpleStorageInstance = instance;
     
             // Stores a given value, 5 by default.
             //return simpleStorageInstance.set(5, { from: accounts[0] })

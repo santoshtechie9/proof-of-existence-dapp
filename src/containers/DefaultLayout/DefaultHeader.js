@@ -28,10 +28,10 @@ class DefaultHeader extends Component {
             <NavLink href="/">Notarize</NavLink>
           </NavItem>
           <NavItem className="px-3">
-            <NavLink href="#/users">Verify Document</NavLink>
+            <NavLink href="verify">Verify Document</NavLink>
           </NavItem>
           <NavItem className="px-3">
-            <NavLink href="#">Settings</NavLink>
+            <NavLink href="settings">Settings</NavLink>
           </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>

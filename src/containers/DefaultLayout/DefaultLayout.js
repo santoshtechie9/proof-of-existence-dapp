@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import {
   AppAside,
   AppFooter,
@@ -10,6 +10,8 @@ import DefaultAside from './DefaultAside';
 import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
 import Notarize from '../Notarize/Notarize';
+import Verify from '../Verify/Verify';
+
 
 class DefaultLayout extends Component {
 
@@ -22,7 +24,12 @@ class DefaultLayout extends Component {
         </AppHeader>
         <div className="app-body">
           <main className="main">
-            <Notarize />
+            <Router>
+              <div>
+                <Route exact path="/" component={Notarize} />
+                <Route path="/verify" component={Verify} />
+              </div>
+            </Router>
           </main>
           <AppAside fixed hidden>
             <DefaultAside />

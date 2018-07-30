@@ -49,13 +49,14 @@
     "whatwg-fetch": "1.0.0"
   },
   "dependencies": {
-    "dotenv": "^2.0.0",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
-    "react-scripts": "1.1.4",
     "@coreui/coreui": "^2.0.4",
     "@coreui/react": "^2.0.5",
+    "dotenv": "^2.0.0",
     "node-forge": "^0.7.5",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "1.1.4",
     "reactstrap": "^6.3.1"
   },
   "scripts": {
