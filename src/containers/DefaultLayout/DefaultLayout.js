@@ -11,6 +11,7 @@ import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
 import Notarize from '../Notarize/Notarize';
 import Verify from '../Verify/Verify';
+import Modals from '../../components/Modals/Modals';
 
 
 class DefaultLayout extends Component {
@@ -28,6 +29,7 @@ class DefaultLayout extends Component {
               <div>
                 <Route exact path="/" component={Notarize} />
                 <Route path="/verify" component={Verify} />
+                <Route path="/settings" component={Modals} />
               </div>
             </Router>
           </main>
