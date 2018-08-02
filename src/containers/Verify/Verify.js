@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'reactstrap';
 import DocumentDetailsCard from '../../components/Cards/DocumentDetailsCard/DocumentDetailsCard';
 import DocumentPreviewCard from '../../components/Cards/DocumentPreviewCard/DocumentPreviewCard';
 import VerificationForm from '../../components/Forms/VerificationForm/VerificationForm';
-import InfoModal from '../../components/Modals/InfoModal';
+import WarningModal from '../../components/Modals/WarningModal';
 import SimpleStorageContract from '../../../build/contracts/SimpleStorage.json';
 import getWeb3 from '../../utils/getWeb3';
 import forge from 'node-forge';
@@ -22,9 +22,22 @@ class Verify extends Component {
         digest: '',
         blockchainDigest: '',
         success: false,
-        danger: false,
+        warning: false,
         info: false,
+        contractResponse: {
+            name:"",
+            email:"",
+            timestamp:"",
+            isPresent:null
+        }
     }
+
+
+    toggle = () =>{
+        this.setState({
+            info: !this.state.info,
+        });
+      }
 
     toggleSuccess = () => {
         this.setState({
@@ -141,7 +154,12 @@ class Verify extends Component {
                 console.log(result[0]);
                 console.log(result[1]);
                 console.log(result[2]);
-                return this.setState({ name: result[0], email: result[1], blockchainDigest: result[2] })
+                if(result[2] !== ""){
+                    return this.setState({ contractResponse: {name: result[0], email: result[1], hash: result[2], isPresent:true}});
+                }else{
+                    console.log("result2 = empty")
+                    return this.setState({ contractResponse: {name: result[0], email: result[1], hash: result[2], isPresent:false},warning:true})
+                }
             })
         })
     }
@@ -154,9 +172,9 @@ class Verify extends Component {
         console.log("at line 154")
         console.log(this.state);
        
-        if (imagePreviewUrl!==null && blockchainDigest !== '') {
+        if (imagePreviewUrl!==null && this.state.contractResponse.isPresent ===true) {
             console.log("Document exists in blockchain")
-            console.log(this.state.fileInput)
+            console.log(this.state.fileInput)    
             $imagePreview = (
                 <div>
                     <DocumentPreviewCard imagePreviewUrl={this.state.imagePreviewUrl} />
@@ -168,17 +186,21 @@ class Verify extends Component {
                         digest={this.state.digest} />
                 </div>
             );
-        } else if (this.state.info === true && blockchainDigest === '' && imagePreviewUrl !==null) {
-            console.log("Document does not exist in blockchain")
-            console.log("blockchainDigest=" +this.state.blockchainDigest);
-            console.log("imagePreviewUrl=" +this.state.imagePreviewUrl);
-            $imagePreview = (
-                <InfoModal
-                    info={!this.state.info}
-                    toggleInfo={this.toggleInfo}
-                />);
-        }
-
+        } else{
+            if (this.state.contractResponse.isPresent === false) {
+                console.log("Document does not exist in blockchain")
+                console.log(this.state);
+                console.log("blockchainDigest=" +this.state.blockchainDigest);
+                console.log("imagePreviewUrl=" +this.state.imagePreviewUrl);
+                $imagePreview = (
+                    <WarningModal
+                    warning={this.state.warning}
+                    toggleWarning={this.toggleWarning}
+                    message="The document doesnot exist in blockchain"
+                    />);
+                }
+            } 
+                
         return (
             <div>
                 <Container fluid>

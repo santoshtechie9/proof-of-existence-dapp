@@ -4,6 +4,7 @@ import forge from 'node-forge';
 import BasicForm from '../../components/Forms/BasicForm/BasicForm';
 import DocumentDetailsCard from '../../components/Cards/DocumentDetailsCard/DocumentDetailsCard';
 import DocumentPreviewCard from '../../components/Cards/DocumentPreviewCard/DocumentPreviewCard';
+import WarningModal from '../../components/Modals/WarningModal';
 import SimpleStorageContract from '../../../build/contracts/SimpleStorage.json';
 import getWeb3 from '../../utils/getWeb3';
 
@@ -18,26 +19,33 @@ class Notarize extends Component {
         textAreaInput: '',
         fileInput: '',
         imagePreviewUrl: '',
-        digest:''
+        digest: '',
+        isUploaded: false
     }
 
     componentWillMount() {
         // Get network provider and web3 instance.
         // See utils/getWeb3 for more info.
-    
+
         getWeb3
-          .then(results => {
-            this.setState({
-              web3: results.web3
+            .then(results => {
+                this.setState({
+                    web3: results.web3
+                })
+
+                // Instantiate contract once web3 provided.
+                //this.instantiateContract()
             })
-    
-            // Instantiate contract once web3 provided.
-            //this.instantiateContract()
-          })
-          .catch(() => {
-            console.log('Error finding web3.')
-          })
-      }
+            .catch(() => {
+                console.log('Error finding web3.')
+            })
+    }
+
+    toggleWarning = () => {
+        this.setState({
+            warning: !this.state.warning,
+        });
+    }
 
     handleSubmit = (event) => {
         console.log("Clicked on Submit button ");
@@ -69,15 +77,15 @@ class Notarize extends Component {
         console.log(file);
         console.log("name=" + e.target.name);
         console.log("value=" + e.target.value);
-        
+
         if (file) {
             reader.onloadend = () => {
                 var md = forge.md.sha256.create();
                 md.update(reader.result);
-                let digest = md.digest().toHex();       
+                let digest = md.digest().toHex();
                 console.log(digest);
                 console.log(reader.result);
-                this.setState({ fileInput: file.name, imagePreviewUrl: reader.result,digest:digest});
+                this.setState({ fileInput: file.name, imagePreviewUrl: reader.result, digest: digest });
             }
             reader.readAsDataURL(file)
         } else {
@@ -86,44 +94,49 @@ class Notarize extends Component {
         }
     }
 
-    instantiateContract =() => {
+    instantiateContract = () => {
         /*
          * SMART CONTRACT EXAMPLE
          *
          * Normally these functions would be called in the context of a
          * state management library, but for convenience I've placed them here.
          */
-    
+
         const contract = require('truffle-contract')
         const simpleStorage = contract(SimpleStorageContract)
         simpleStorage.setProvider(this.state.web3.currentProvider)
-    
+
         // Declaring this for later so we can chain functions on SimpleStorage.
         var simpleStorageInstance
-    
+
         // Get accounts.
         this.state.web3.eth.getAccounts((error, accounts) => {
-    
-          simpleStorage.deployed().then((instance) => {
-            simpleStorageInstance = instance;
-    
-            // Stores a given value, 5 by default.
-            //return simpleStorageInstance.set(5, { from: accounts[0] })
-            return simpleStorageInstance.addDocument(this.state.name,this.state.email,this.state.digest,{from:accounts[0]})
-    
-          }).then((result) => {
-            // Get the value from the contract to prove it worked.
-            console.log(result);
-            return simpleStorageInstance.getDocument.call(this.state.digest,{from:accounts[0]})
-          }).then((result) => {
-            // Update state with the result.
-            console.log("final result");
-            console.log(result);
-            return this.setState({ storageValue: result.c[0] })
-          })
+
+            simpleStorage.deployed().then((instance) => {
+                simpleStorageInstance = instance;
+
+                // Stores a given value, 5 by default.
+                //return simpleStorageInstance.set(5, { from: accounts[0] })
+                return simpleStorageInstance.addDocument(this.state.name, this.state.email, this.state.digest, { from: accounts[0] })
+
+            }).then((result) => {
+                // Get the value from the contract to prove it worked.
+                console.log(result);
+                return simpleStorageInstance.getDocument.call(this.state.digest, { from: accounts[0] })
+            }).then((result) => {
+                // Update state with the result.
+                console.log("final result");
+                console.log(result);
+                if (result[2] !== "") {
+                    return this.setState({ isUploaded: true });
+                } else {
+                    console.log("result2 = empty")
+                    return this.setState({ isUploaded: false })
+                }
+            })
         })
-      }
-    
+    }
+
 
     render() {
 
@@ -137,6 +150,7 @@ class Notarize extends Component {
 
         let { imagePreviewUrl } = this.state;
         let $imagePreview = null;
+        let $modal = null;
 
         if (imagePreviewUrl) {
             console.log("Document has been selected")
@@ -154,6 +168,18 @@ class Notarize extends Component {
             );
         }
 
+        if (this.state.isUploaded) {
+            $modal = (
+                <div>
+                    <WarningModal
+                        warning={this.state.warning}
+                        toggleWarning={this.toggleWarning}
+                        message="The document doesnot exist in blockchain"
+                    />);
+            </div>
+            );
+        }
+
         return (
             <div>
                 <Container fluid>
@@ -167,6 +193,7 @@ class Notarize extends Component {
                         </Col >
                         <Col xs="12" md="6" xl="6">
                             {$imagePreview}
+                            {$modal}
                         </Col>
                     </Row>
                 </Container>
