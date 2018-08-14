@@ -5,7 +5,7 @@ import BasicForm from '../../components/Forms/BasicForm/BasicForm';
 import DocumentDetailsCard from '../../components/Cards/DocumentDetailsCard/DocumentDetailsCard';
 import DocumentPreviewCard from '../../components/Cards/DocumentPreviewCard/DocumentPreviewCard';
 import WarningModal from '../../components/Modals/WarningModal';
-import SimpleStorageContract from '../../../build/contracts/SimpleStorage.json';
+import ProofOfOwnershipContract from '../../../build/contracts/ProofOfOwnership.json';
 import getWeb3 from '../../utils/getWeb3';
 
 class Notarize extends Component {
@@ -57,8 +57,8 @@ class Notarize extends Component {
     handleChange = (event) => {
         let name = event.target.name;
         let value = event.target.value;
-        console.log("name=" + name);
-        console.log("value=" + value);
+       //console.log("name=" + name);
+        //console.log("value=" + value);
 
         if (name !== "fileInput" && value.length !== 0) {
             this.setState({ [name]: value });
@@ -84,7 +84,7 @@ class Notarize extends Component {
                 md.update(reader.result);
                 let digest = md.digest().toHex();
                 console.log(digest);
-                console.log(reader.result);
+                //console.log(reader.result);
                 this.setState({ fileInput: file.name, imagePreviewUrl: reader.result, digest: digest });
             }
             reader.readAsDataURL(file)
@@ -103,36 +103,40 @@ class Notarize extends Component {
          */
 
         const contract = require('truffle-contract')
-        const simpleStorage = contract(SimpleStorageContract)
-        simpleStorage.setProvider(this.state.web3.currentProvider)
+        const pow = contract(ProofOfOwnershipContract)
+        pow.setProvider(this.state.web3.currentProvider)
 
-        // Declaring this for later so we can chain functions on SimpleStorage.
-        var simpleStorageInstance
+        // Declaring this for later so we can chain functions on powInstance.
+        var powInstance
 
         // Get accounts.
         this.state.web3.eth.getAccounts((error, accounts) => {
 
-            simpleStorage.deployed().then((instance) => {
-                simpleStorageInstance = instance;
+            pow.deployed().then((instance) => {
+                powInstance = instance;
 
                 // Stores a given value, 5 by default.
-                //return simpleStorageInstance.set(5, { from: accounts[0] })
-                return simpleStorageInstance.addDocument(this.state.name, this.state.email, this.state.digest, { from: accounts[0] })
+                //return powInstance.set(5, { from: accounts[0] })
+                return powInstance.addDocument(this.state.digest,this.state.email, this.state.name,  { from: accounts[0] })
 
             }).then((result) => {
                 // Get the value from the contract to prove it worked.
+                console.log("-------------result--------------")
                 console.log(result);
-                return simpleStorageInstance.getDocument.call(this.state.digest, { from: accounts[0] })
+                return powInstance.fetchDocumentDetails.call(this.state.digest, { from: accounts[0] })
             }).then((result) => {
                 // Update state with the result.
-                console.log("final result");
+                console.log("-------------final result--------------");
                 console.log(result);
-                if (result[2] !== "") {
+                if (result[0] !== "") {
                     return this.setState({ isUploaded: true });
                 } else {
                     console.log("result2 = empty")
                     return this.setState({ isUploaded: false })
                 }
+            }).catch( (error) => {
+                console.log("----------------error---------------")
+                console.log(error)
             })
         })
     }

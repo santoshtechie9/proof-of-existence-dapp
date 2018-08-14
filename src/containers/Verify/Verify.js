@@ -4,7 +4,7 @@ import DocumentDetailsCard from '../../components/Cards/DocumentDetailsCard/Docu
 import DocumentPreviewCard from '../../components/Cards/DocumentPreviewCard/DocumentPreviewCard';
 import VerificationForm from '../../components/Forms/VerificationForm/VerificationForm';
 import WarningModal from '../../components/Modals/WarningModal';
-import SimpleStorageContract from '../../../build/contracts/SimpleStorage.json';
+import ProofOfOwnershipContract from '../../../build/contracts/ProofOfOwnership.json';
 import getWeb3 from '../../utils/getWeb3';
 import forge from 'node-forge';
 
@@ -129,23 +129,23 @@ class Verify extends Component {
          */
         console.log("inside instantiateContract")
         const contract = require('truffle-contract')
-        const simpleStorage = contract(SimpleStorageContract)
-        simpleStorage.setProvider(this.state.web3.currentProvider)
+        const pow = contract(ProofOfOwnershipContract)
+        pow.setProvider(this.state.web3.currentProvider)
 
-        // Declaring this for later so we can chain functions on SimpleStorage.
-        var simpleStorageInstance
+        // Declaring this for later so we can chain functions on pow.
+        var powInstance
 
         // Get accounts.
         this.state.web3.eth.getAccounts((error, accounts) => {
 
-            simpleStorage.deployed().then((instance) => {
+            pow.deployed().then((instance) => {
 
-                simpleStorageInstance = instance;
-                console.log(simpleStorageInstance);
+                powInstance = instance;
+                console.log(powInstance);
                 // Stores a given value, 5 by default.
-                //return simpleStorageInstance.set(5, { from: accounts[0] })
-                // return simpleStorageInstance.addDocument(this.state.name, this.state.email, this.state.digest, { from: accounts[0] })
-                return simpleStorageInstance.getDocument.call(this.state.digest, { from: accounts[0] })
+                //return powInstance.set(5, { from: accounts[0] })
+                // return powInstance.addDocument(this.state.name, this.state.email, this.state.digest, { from: accounts[0] })
+                return powInstance.fetchDocumentDetails.call(this.state.digest, { from: accounts[0] })
 
             }).then((result) => {
                 // Get the value from the contract to prove it worked.
@@ -154,12 +154,15 @@ class Verify extends Component {
                 console.log(result[0]);
                 console.log(result[1]);
                 console.log(result[2]);
-                if(result[2] !== ""){
-                    return this.setState({ contractResponse: {name: result[0], email: result[1], hash: result[2], isPresent:true}});
+                if(result[0] !== ""){
+                    return this.setState({ contractResponse: {hash: result[0], email: result[1], name: result[2], isPresent:true}});
                 }else{
                     console.log("result2 = empty")
-                    return this.setState({ contractResponse: {name: result[0], email: result[1], hash: result[2], isPresent:false},warning:true})
+                    return this.setState({ contractResponse: {hash: result[0], email: result[1], name: result[2], isPresent:false},warning:true})
                 }
+            }).catch( error => {
+                console.log("----------error---------")
+                console.log(error)
             })
         })
     }

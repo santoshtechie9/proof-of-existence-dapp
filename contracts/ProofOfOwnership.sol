@@ -83,23 +83,7 @@ contract ProofOfOwnership is Mortal {
        
        //Input paramenters validation
        //Document hash should not be empty and length should 256 bytes
-        require( 
-            bytes(_docHash).length > 0 && bytes(_docHash).length <= 32, 
-            "Hash length should be 32 bytes"
-            );
-           
-        require( 
-            bytes(_docTimestamp).length > 0 && bytes(_docTimestamp).length <= 32, 
-            "Hash length should be 32 bytes"
-            );
-
-        require( 
-            bytes(_currentOwnerName).length > 0 && bytes(_currentOwnerName).length <= 32, 
-            "Hash length should be 32 bytes"
-            );
-
-
-        
+       
         UserUsageCount storage userUploadStats = usersUsage[msg.sender];
         
         if(now >= userUploadStats.time + documentUploadPeriod){
@@ -125,11 +109,6 @@ contract ProofOfOwnership is Mortal {
     }
     
     function fetchDocumentDetails(string _docHash) public view returns(string,string,string){
-        
-        require( 
-            bytes(_docHash).length > 0 && bytes(_docHash).length <= 32, 
-            "Hash length should be 32 bytes"
-            );
            
         Document storage document = documents[_docHash];
         //require(document);
@@ -138,6 +117,8 @@ contract ProofOfOwnership is Mortal {
     
     
     //this method will let he owner withdraw funds sent to the contract account.
+   /*
+   
     function withdrawFunds() public 
     onlyOwner 
     onlyInEmergency
@@ -152,10 +133,10 @@ contract ProofOfOwnership is Mortal {
     function checkBalance() public view returns(uint) {
         return address(this).balance;
     }
-
+*/
     //fallback function logs the 
-    function () public payable {
-        emit LogFallback("value received from", msg.sender,msg.value);
-    }
+   // function () public payable {
+   //     emit LogFallback("value received from", msg.sender,msg.value);
+  //  }
 
 }

@@ -98,7 +98,7 @@ const BasicForm = (props) => {
             </Form>
           </CardBody>
           <CardFooter>
-            <Button type="submit" size="sm" color="primary" onClick={props.handleSubmit}><i className="fa fa-dot-circle-o"></i> Submit</Button>
+            <Button type="submit" size="sm" color="primary" onClick={props.handleSubmit}><i className="fa fa-dot-circle-o"></i> Submit</Button>&nbsp; &nbsp;
             <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
           </CardFooter>
         </Card>
