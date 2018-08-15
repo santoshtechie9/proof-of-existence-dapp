@@ -1,6 +1,6 @@
 pragma solidity ^0.4.22;
 
-import './Mortal.sol';
+import "./Mortal.sol";
 
 contract ProofOfOwnership is Mortal {
     
@@ -9,8 +9,6 @@ contract ProofOfOwnership is Mortal {
     mapping(address => UserUsageCount) usersUsage;
     uint documentUploadPeriod = 120 seconds;
     uint documentLimit = 3;
-    //uint circuitBreakerThreshold = 10;
-    //uint circuitBreakercounter = 0;
     bool private stopped = false;
     
     struct UserUsageCount {
@@ -29,20 +27,19 @@ contract ProofOfOwnership is Mortal {
     event LogFallback(string _message, address _sender,uint _value);
     event LogAssignAdmin(address _sender, string _message);
     
-    modifier onlyOwner(){ require(msg.sender == owner, "msg sender is not owner"); _; }
-    modifier onlyAdmin(){require(admins[msg.sender] == true,"sender is not Admin"); _; }
-    modifier stopInEmergency { if (!stopped) _; }
-    modifier onlyInEmergency { if (stopped) _; }
-    
+    modifier onlyOwner(){require(msg.sender == owner, "msg sender is not owner"); _;}
+    modifier onlyAdmin(){require(admins[msg.sender] == true,"sender is not Admin"); _;}
+    modifier stopInEmergency {if (!stopped) _;}
+    modifier onlyInEmergency {if (stopped) _;}
     
     constructor() public {
         admins[msg.sender] = true;
     }
     
-    function toggleContractActive() onlyAdmin public {
-            stopped = !stopped;
+    function toggleContractActive() public 
+    onlyAdmin {
+        stopped = !stopped;
     }
-
 
     function assignAdminAccess(address _address) public 
     onlyOwner 
@@ -61,12 +58,11 @@ contract ProofOfOwnership is Mortal {
     onlyOwner 
     returns(bool){
         if(admins[_address] == true){
-            // admins[_address];
             delete admins[_address];
             emit LogAssignAdmin(_address,"revoked admin previlige");
             return true;
         }else{
-            emit LogAssignAdmin(_address,"This address do not have admin previlige");
+            emit LogAssignAdmin(_address,"This address do not have admin previliges");
             return false;
         }
     }
@@ -83,16 +79,14 @@ contract ProofOfOwnership is Mortal {
        
        //Input paramenters validation
        //Document hash should not be empty and length should 256 bytes
-       
         UserUsageCount storage userUploadStats = usersUsage[msg.sender];
         
-        if(now >= userUploadStats.time + documentUploadPeriod){
+        if(block.timestamp >= userUploadStats.time + documentUploadPeriod){
             documents[_docHash] = Document(_docHash, _docTimestamp, _currentOwnerName, msg.sender);
             usersUsage[msg.sender].time = now;
             usersUsage[msg.sender].count = 1;
             emit LogDocumentUpload(_docHash,msg.sender,usersUsage[msg.sender].count,"document uploaded succesfully");
         } else {
-            
             if(userUploadStats.count >= documentLimit){
                 emit LogDocumentUpload(_docHash,msg.sender,usersUsage[msg.sender].count,"document upload failed");
                 //circuitBreakercounter += 2;
@@ -102,23 +96,17 @@ contract ProofOfOwnership is Mortal {
                 usersUsage[msg.sender].count += 1;
                 emit LogDocumentUpload(_docHash,msg.sender,usersUsage[msg.sender].count,"document uploaded succesfully");
             }
-        
         }
-
-        return(true);
+        return true;
     }
     
     function fetchDocumentDetails(string _docHash) public view returns(string,string,string){
-           
         Document storage document = documents[_docHash];
-        //require(document);
         return(document.docHash,document.docTimestamp,document.currentOwnerName);
     }
     
-    
     //this method will let he owner withdraw funds sent to the contract account.
    /*
-   
     function withdrawFunds() public 
     onlyOwner 
     onlyInEmergency
@@ -133,10 +121,10 @@ contract ProofOfOwnership is Mortal {
     function checkBalance() public view returns(uint) {
         return address(this).balance;
     }
-*/
-    //fallback function logs the 
-   // function () public payable {
-   //     emit LogFallback("value received from", msg.sender,msg.value);
-  //  }
 
+    fallback function logs the 
+    function () public payable {
+        emit LogFallback("value received from", msg.sender,msg.value);
+     }
+*/
 }
