@@ -89,7 +89,6 @@ contract ProofOfOwnership is Mortal {
         } else {
             if(userUploadStats.count >= documentLimit){
                 emit LogDocumentUpload(_docHash,msg.sender,usersUsage[msg.sender].count,"document upload failed");
-                //circuitBreakercounter += 2;
                 return false;
             }else{
                 documents[_docHash] = Document(_docHash, _docTimestamp, _currentOwnerName, msg.sender);
