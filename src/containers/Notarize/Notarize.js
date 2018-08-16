@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col, Card, CardBody, CardHeader } from 'reactstrap';
 import forge from 'node-forge';
 import BasicForm from '../../components/Forms/BasicForm/BasicForm';
 import DocumentDetailsCard from '../../components/Cards/DocumentDetailsCard/DocumentDetailsCard';
 import DocumentPreviewCard from '../../components/Cards/DocumentPreviewCard/DocumentPreviewCard';
 import WarningModal from '../../components/Modals/WarningModal';
-import ProofOfOwnershipContract from '../../../build/contracts/ProofOfOwnership.json';
+//import ProofOfOwnershipContract from '../../../build/contracts/ProofOfOwnership.json';
+import ProofOfOwnershipContract from '../../../build/contracts/ProofOfExistance.json';
 import getWeb3 from '../../utils/getWeb3';
+import ipfs from '../../ipfs/ipfs';
 
 class Notarize extends Component {
 
@@ -18,7 +20,7 @@ class Notarize extends Component {
         dateInput: '',
         textAreaInput: '',
         fileInput: '',
-        imagePreviewUrl: '',
+        fileBuffer: '',
         digest: '',
         isUploaded: false
     }
@@ -35,10 +37,14 @@ class Notarize extends Component {
 
                 // Instantiate contract once web3 provided.
                 //this.instantiateContract()
+                console.log("ipfs =",ipfs);
+                this.instantiateContract();
             })
             .catch(() => {
                 console.log('Error finding web3.')
-            })
+            });
+
+
     }
 
     toggleWarning = () => {
@@ -48,16 +54,37 @@ class Notarize extends Component {
     }
 
     handleSubmit = (event) => {
+        event.preventDefault();
         console.log("Clicked on Submit button ");
         console.log(this.state);
-        this.instantiateContract();
+
+        ipfs.files.add(this.state.fileBuffer,(error,result) => {
+            if(error){
+                console.error(error);
+                return;
+            }
+
+            console.log('digest: ', this.state.digest);
+            console.log('name: :', this.state.name);
+            console.log('ipfsHash: ', result[0].hash);
+            console.log('account: ', this.state.account);
+            this.powInstance.uploadDocument(this.state.digest,this.state.name,result[0].hash,{from: this.state.account});
+            this.powInstance.fetchDocument.call(this.state.digest,{from: this.state.account}).then(result=>{
+                console.log(result);
+            })
+            this.setState({ipfsHash: result[0].hash});
+            console.log('ipfsHash: ', this.state.ipfsHash);
+        });
+
+        console.log("file has been uploaded to IPFS")
+        //this.instantiateContract();
     }
 
 
     handleChange = (event) => {
         let name = event.target.name;
         let value = event.target.value;
-       //console.log("name=" + name);
+        //console.log("name=" + name);
         //console.log("value=" + value);
 
         if (name !== "fileInput" && value.length !== 0) {
@@ -71,27 +98,33 @@ class Notarize extends Component {
         e.preventDefault();
         console.log("inside _handleImageChange ")
 
-        let reader = new FileReader();
         let file = e.target.files[0];
-
+        let reader = new window.FileReader();
+        
         console.log(file);
         console.log("name=" + e.target.name);
         console.log("value=" + e.target.value);
-
+        
         if (file) {
+            //reader.readAsDataURL(file)
+            reader.readAsArrayBuffer(file);
             reader.onloadend = () => {
                 var md = forge.md.sha256.create();
                 md.update(reader.result);
-                let digest = md.digest().toHex();
-                console.log(digest);
+                let digest = '0x'+md.digest().toHex();
+                console.log("digest: ",digest);
                 //console.log(reader.result);
-                this.setState({ fileInput: file.name, imagePreviewUrl: reader.result, digest: digest });
+                this.setState({ fileInput: file.name, fileBuffer: Buffer(reader.result), digest: digest });
+                console.log('buffer:',this.state.fileBuffer);
             }
-            reader.readAsDataURL(file)
+        
         } else {
             console.log('There is no image file selected')
-            this.setState({ fileInput: '', imagePreviewUrl: '' });
+            this.setState({ fileInput: '', fileBuffer: '' });
         }
+        
+        console.log(this.state.fileBuffer);
+    
     }
 
     instantiateContract = () => {
@@ -107,34 +140,42 @@ class Notarize extends Component {
         pow.setProvider(this.state.web3.currentProvider)
 
         // Declaring this for later so we can chain functions on powInstance.
-        var powInstance
+        //var powInstance
+
+
+        const publicAddress = this.state.web3.eth.coinbase.toLowerCase();
+        console.log("--------public address----------")
+        console.log(publicAddress);
+        console.log('state: ',this.state)
 
         // Get accounts.
         this.state.web3.eth.getAccounts((error, accounts) => {
 
             pow.deployed().then((instance) => {
-                powInstance = instance;
+                this.powInstance = instance;
+                this.setState({account: accounts[0]});
 
                 // Stores a given value, 5 by default.
                 //return powInstance.set(5, { from: accounts[0] })
-                return powInstance.addDocument(this.state.digest,this.state.email, this.state.name,  { from: accounts[0] })
-
-            }).then((result) => {
+               // return powInstance.addDocument(this.state.digest, this.state.email, this.state.name, { from: accounts[0] })
+            //}).then((result) => {
                 // Get the value from the contract to prove it worked.
-                console.log("-------------result--------------")
-                console.log(result);
-                return powInstance.fetchDocumentDetails.call(this.state.digest, { from: accounts[0] })
+            //    console.log("-------------result--------------")
+            //    console.log(result);
+               // console.log();
+               let digest = 0xac4e5792804146db61f6831d97392f6cc25bffbd70493f6e95296e8c76a6db69;
+                return instance.fetchDocument.call(digest, { from: accounts[0] })
             }).then((result) => {
                 // Update state with the result.
                 console.log("-------------final result--------------");
                 console.log(result);
                 if (result[0] !== "") {
-                    return this.setState({ isUploaded: true });
+                    return this.setState({ isUploaded: true , ipfsHash: result[2]});
                 } else {
                     console.log("result2 = empty")
-                    return this.setState({ isUploaded: false })
+                    return this.setState({ isUploaded: false, ipfsHash: '' })
                 }
-            }).catch( (error) => {
+            }).catch((error) => {
                 console.log("----------------error---------------")
                 console.log(error)
             })
@@ -152,16 +193,22 @@ class Notarize extends Component {
             textArea: "Enter text here"
         }
 
-        let { imagePreviewUrl } = this.state;
+        let { fileBuffer } = this.state;
         let $imagePreview = null;
         let $modal = null;
+        let ipfsUrl = null
+        if(this.state.ipfsHash){
+            ipfsUrl = 'https://ipfs.infura.io/ipfs/'+this.state.ipfsHash;
+        }
 
-        if (imagePreviewUrl) {
+        console.log('ipfsUrl: '+ ipfsUrl);
+
+        if (fileBuffer) {
             console.log("Document has been selected")
             console.log(this.state.fileInput)
             $imagePreview = (
                 <div>
-                    <DocumentPreviewCard imagePreviewUrl={this.state.imagePreviewUrl} />
+                    <DocumentPreviewCard fileBuffer={ipfsUrl} />
                     <DocumentDetailsCard
                         fileInput={this.state.fileInput}
                         name={this.state.name}
@@ -200,6 +247,53 @@ class Notarize extends Component {
                             {$modal}
                         </Col>
                     </Row>
+                    <Row>
+                        <Col xs="12" sm="6" lg="3">
+                            <Card className="text-white bg-info">
+                                <CardHeader>
+                                    Card title
+                                 </CardHeader>
+                                <CardBody className="pb-0">
+                                    <div className="text-value">9.823</div>
+                                    <div>Members online</div>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                        <Col xs="12" sm="6" lg="3">
+                            <Card className="text-white bg-primary">
+                                <CardHeader>
+                                    Card title
+                                 </CardHeader>
+                                <CardBody className="pb-0">
+                                    <div className="text-value">9.823</div>
+                                    <div>Members online</div>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                        <Col xs="12" sm="6" lg="3">
+                            <Card className="text-white bg-warning">
+                                <CardHeader>
+                                    Card title
+                                 </CardHeader>
+                                <CardBody className="pb-0">
+                                    <div className="text-value">9.823</div>
+                                    <div>Members online</div>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                        <Col xs="12" sm="6" lg="3">
+                            <Card className="text-white bg-danger">
+                                <CardHeader>
+                                    <div >Card Title</div>    
+                                 </CardHeader>
+                                <CardBody className="pb-0">
+                                    <div className="text-value">9.823</div>
+                                    <div >Members online</div>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                    </Row>
+
                 </Container>
             </div>
         )

@@ -4,7 +4,7 @@ import DocumentDetailsCard from '../../components/Cards/DocumentDetailsCard/Docu
 import DocumentPreviewCard from '../../components/Cards/DocumentPreviewCard/DocumentPreviewCard';
 import VerificationForm from '../../components/Forms/VerificationForm/VerificationForm';
 import WarningModal from '../../components/Modals/WarningModal';
-import ProofOfOwnershipContract from '../../../build/contracts/ProofOfOwnership.json';
+import ProofOfOwnershipContract from '../../../build/contracts/ProofOfExistance.json';
 import getWeb3 from '../../utils/getWeb3';
 import forge from 'node-forge';
 
@@ -95,24 +95,25 @@ class Verify extends Component {
         e.preventDefault();
         console.log("inside handleImageChange funtion")
 
-        let reader = new FileReader();
         let file = e.target.files[0];
+        let reader = new window.FileReader();
 
         console.log(file);
         console.log("FieldName=" + e.target.name);
         console.log("FieldValue=" + e.target.value);
 
         if (file) {
+            reader.readAsArrayBuffer(file);
+            // reader.readAsDataURL(file)
             reader.onloadend = () => {
                 var md = forge.md.sha256.create();
                 md.update(reader.result);
-                let digest = md.digest().toHex();
+                let digest = '0x'+md.digest().toHex();
                 console.log("digest = " + digest);
                 //console.log("reader result = " + reader.result);
                 //Set the state variable here selected file name, imagePreviewURL and digest
                 this.setState({ fileInput: file.name, imagePreviewUrl: reader.result, digest: digest });
             }
-            reader.readAsDataURL(file)
         } else {
             console.log('There is no image file selected')
             //when the image is unselected reset the state variables
@@ -145,7 +146,7 @@ class Verify extends Component {
                 // Stores a given value, 5 by default.
                 //return powInstance.set(5, { from: accounts[0] })
                 // return powInstance.addDocument(this.state.name, this.state.email, this.state.digest, { from: accounts[0] })
-                return powInstance.fetchDocumentDetails.call(this.state.digest, { from: accounts[0] })
+                return powInstance.fetchDocument.call(this.state.digest, { from: accounts[0] })
 
             }).then((result) => {
                 // Get the value from the contract to prove it worked.
@@ -154,8 +155,9 @@ class Verify extends Component {
                 console.log(result[0]);
                 console.log(result[1]);
                 console.log(result[2]);
-                if(result[0] !== ""){
-                    return this.setState({ contractResponse: {hash: result[0], email: result[1], name: result[2], isPresent:true}});
+                if(result[0] !== 0){
+                    console.log("result state set")
+                    return this.setState({ contractResponse: {hash: result[0], timestamp: result[1], ipfsHash: result[2], isPresent:true}});
                 }else{
                     console.log("result2 = empty")
                     return this.setState({ contractResponse: {hash: result[0], email: result[1], name: result[2], isPresent:false},warning:true})
@@ -174,13 +176,21 @@ class Verify extends Component {
         let $imagePreview = null;
         console.log("at line 154")
         console.log(this.state);
+        let ipfsUrl = null;
+
        
         if (imagePreviewUrl!==null && this.state.contractResponse.isPresent ===true) {
             console.log("Document exists in blockchain")
+            console.log("ipfsHash : " , this.state.contractResponse.ipfsHash);
+            if(this.state.contractResponse.ipfsHash){
+                console.log("setting ipfs URL")
+                ipfsUrl = 'https://ipfs.infura.io/ipfs/'+this.state.contractResponse.ipfsHash;
+            }
+            console.log('ipfsUrl : '+ipfsUrl);
             console.log(this.state.fileInput)    
             $imagePreview = (
                 <div>
-                    <DocumentPreviewCard imagePreviewUrl={this.state.imagePreviewUrl} />
+                    <DocumentPreviewCard fileBuffer={ipfsUrl} />
                     <DocumentDetailsCard
                         fileInput={this.state.fileInput}
                         name={this.state.name}

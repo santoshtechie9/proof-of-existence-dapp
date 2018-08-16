@@ -13,11 +13,11 @@ const propTypes = {
 const defaultProps = {};
 
 class DefaultHeader extends Component {
+ 
   render() {
 
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
-
     return (
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile />
@@ -43,7 +43,8 @@ class DefaultHeader extends Component {
           </NavItem>
           <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
-              <img src={logo} className="img-avatar" alt="santoshtechie9@gmail.com" />
+              {/* <img src={logo} className="img-avatar" alt="santoshtechie9@gmail.com" /> */}
+              <p > Address : {this.props.address}</p>
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
               <DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem>

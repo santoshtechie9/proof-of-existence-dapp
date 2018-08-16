@@ -52,6 +52,7 @@
     "@coreui/coreui": "^2.0.4",
     "@coreui/react": "^2.0.5",
     "dotenv": "^2.0.0",
+    "ipfs-api": "^24.0.0",
     "node-forge": "^0.7.5",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
