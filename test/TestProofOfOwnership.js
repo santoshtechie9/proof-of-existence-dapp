@@ -1,5 +1,6 @@
 var ProofOfOwnership = artifacts.require('ProofOfOwnership.sol')
 
+
 contract('Test ProofOfOwnership functionality', function(accounts){
 
     it('test fetch document function on empty contract',function(){
