@@ -5,7 +5,7 @@ import {
   AppFooter,
   AppHeader,
 } from '@coreui/react';
-
+/* eslint-disable */
 import DefaultAside from './DefaultAside';
 import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
@@ -13,7 +13,7 @@ import Notarize from '../Notarize/Notarize';
 import Verify from '../Verify/Verify';
 import Modals from '../../components/Modals/Modals';
 import getWeb3 from '../../utils/getWeb3';
-
+import Dashboard from '../Dashboard/Dashboard';
 class DefaultLayout extends Component {
 
   state = { }
@@ -24,13 +24,12 @@ class DefaultLayout extends Component {
 
     getWeb3
         .then(results => {
-          let value = results.web3.eth.coinbase.toLowerCase();
-          console.log(value);
+          let personalAddress = results.web3.eth.coinbase.toLowerCase();
+          console.log("Default Layout: personalAddress: ",personalAddress);
             this.setState({
                 web3: results.web3,
-                address: value
+                address: personalAddress
             })
-
             // Instantiate contract once web3 provided.
             //this.instantiateContract()
         })
@@ -52,9 +51,9 @@ class DefaultLayout extends Component {
           <main className="main">
             <Router>
               <div>
-                <Route exact path="/" component={Notarize} />
+                <Route exact path="/" component={Dashboard} />
+                <Route path="/notarize" component={Notarize} />
                 <Route path="/verify" component={Verify} />
-                <Route path="/settings" component={Modals} />
               </div>
             </Router>
           </main>

@@ -16,22 +16,19 @@ class DefaultHeader extends Component {
  
   render() {
 
-    // eslint-disable-next-line
+
     const { children, ...attributes } = this.props;
     return (
       <React.Fragment>
-        <AppSidebarToggler className="d-lg-none" display="md" mobile />
-        <AppSidebarToggler className="d-md-down-none" display="lg" />
-
         <Nav className="d-md-down-none" navbar>
           <NavItem className="px-3">
-            <NavLink href="/">Notarize</NavLink>
+            <NavLink href="/">Dashboard</NavLink>
+          </NavItem>
+          <NavItem className="px-3">
+            <NavLink href="notarize">Notarize</NavLink>
           </NavItem>
           <NavItem className="px-3">
             <NavLink href="verify">Verify Document</NavLink>
-          </NavItem>
-          <NavItem className="px-3">
-            <NavLink href="settings">Settings</NavLink>
           </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>
@@ -44,17 +41,11 @@ class DefaultHeader extends Component {
           <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
               {/* <img src={logo} className="img-avatar" alt="santoshtechie9@gmail.com" /> */}
-              <p > Address : {this.props.address}</p>
+            {<p > {this.props.address}</p>}
+            
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
-              <DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem>
-              <DropdownItem><i className="fa fa-bell-o"></i> Updates<Badge color="info">42</Badge></DropdownItem>
-              <DropdownItem><i className="fa fa-envelope-o"></i> Messages<Badge color="success">42</Badge></DropdownItem>
-              <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem>
               <DropdownItem><i className="fa fa-user"></i> Profile</DropdownItem>
-              <DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem>
               <DropdownItem><i className="fa fa-lock"></i> Logout</DropdownItem>
             </DropdownMenu>
           </AppHeaderDropdown>

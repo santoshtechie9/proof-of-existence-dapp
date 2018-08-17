@@ -7,6 +7,7 @@ import WarningModal from '../../components/Modals/WarningModal';
 import ProofOfOwnershipContract from '../../../build/contracts/ProofOfExistance.json';
 import getWeb3 from '../../utils/getWeb3';
 import forge from 'node-forge';
+/* eslint-disable */
 
 class Verify extends Component {
 
@@ -107,12 +108,12 @@ class Verify extends Component {
             // reader.readAsDataURL(file)
             reader.onloadend = () => {
                 var md = forge.md.sha256.create();
-                md.update(reader.result);
+                md.update(Buffer(reader.result));
                 let digest = '0x'+md.digest().toHex();
                 console.log("digest = " + digest);
                 //console.log("reader result = " + reader.result);
                 //Set the state variable here selected file name, imagePreviewURL and digest
-                this.setState({ fileInput: file.name, imagePreviewUrl: reader.result, digest: digest });
+                this.setState({ fileInput: file.name, imagePreviewUrl: Buffer(reader.result), digest: digest });
             }
         } else {
             console.log('There is no image file selected')
@@ -155,9 +156,9 @@ class Verify extends Component {
                 console.log(result[0]);
                 console.log(result[1]);
                 console.log(result[2]);
-                if(result[0] !== 0){
+                if(result[0] != 0){
                     console.log("result state set")
-                    return this.setState({ contractResponse: {hash: result[0], timestamp: result[1], ipfsHash: result[2], isPresent:true}});
+                    return this.setState({ contractResponse: {hash: result[0], timestamp: result[1], ipfsHash: result[2], isPresent:true},warning:true});
                 }else{
                     console.log("result2 = empty")
                     return this.setState({ contractResponse: {hash: result[0], email: result[1], name: result[2], isPresent:false},warning:true})
@@ -172,7 +173,6 @@ class Verify extends Component {
     render() {
 
         let imagePreviewUrl = this.state.imagePreviewUrl;
-        let blockchainDigest = this.state.blockchainDigest;
         let $imagePreview = null;
         console.log("at line 154")
         console.log(this.state);

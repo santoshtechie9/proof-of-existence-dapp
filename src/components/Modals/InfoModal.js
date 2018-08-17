@@ -6,7 +6,7 @@ const  infoModal = (props) => {
 console.log("inside infoModal");
 
     return (
-      <div className="animated fadeIn">
+      <div className="animated fadeIn align-middle">
         <Row>
           <Col>
             <Modal isOpen={props.info} toggle={props.toggleInfo}
