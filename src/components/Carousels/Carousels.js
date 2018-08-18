@@ -10,19 +10,19 @@ const items = [
     src: image3,
     altText: 'You are Logged in as :',
     caption: 'Welcome to Proof Of Existence Dapp',
-    text: 'You are logged in as Address: ',
+    text: 'Visit Dashboard to view documents you uploaded',
   },
   {
     src: image2,
     altText: 'You are Logged in as :',
     caption: 'Welcome to Proof Of Existence Dapp',
-    text: 'You are logged in as Address: ',
+    text: 'Visit Dashboard to view documents you uploaded',
   },
   {
     src: image1,
     altText: 'You are Logged in as :',
     caption: 'Welcome to Proof Of Existence Dapp',
-    text: 'You are logged in as Address: ',
+    text: 'Visit Dashboard to view documents you uploaded',
   },
 ];
 

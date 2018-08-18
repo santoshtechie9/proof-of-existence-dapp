@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { Badge, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem, NavLink } from 'reactstrap';
+import { Nav, NavItem, NavLink } from 'reactstrap';
 import PropTypes from 'prop-types';
-
-import { AppHeaderDropdown, AppSidebarToggler } from '@coreui/react';
-
-import logo from '../../assets/img/brand/Dapp-3.svg';
+import { AppHeaderDropdown } from '@coreui/react';
 
 const propTypes = {
   children: PropTypes.node,
@@ -13,11 +10,15 @@ const propTypes = {
 const defaultProps = {};
 
 class DefaultHeader extends Component {
- 
+
   render() {
+    
+    let $address = null;
+    if(this.props.address){
+      $address = (
+     <p> {this.props.address}</p>    
+      )}
 
-
-    const { children, ...attributes } = this.props;
     return (
       <React.Fragment>
         <Nav className="d-md-down-none" navbar>
@@ -39,16 +40,17 @@ class DefaultHeader extends Component {
             <NavLink href="#"><i className="icon-location-pin"></i></NavLink>
           </NavItem>
           <AppHeaderDropdown direction="down">
-            <DropdownToggle nav>
-              {/* <img src={logo} className="img-avatar" alt="santoshtechie9@gmail.com" /> */}
-            {<p > {this.props.address}</p>}
-            
+          { $address}
+          </AppHeaderDropdown>
+          {/*<AppHeaderDropdown direction="down">
+             <DropdownToggle nav>
+              { $address}
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
               <DropdownItem><i className="fa fa-user"></i> Profile</DropdownItem>
               <DropdownItem><i className="fa fa-lock"></i> Logout</DropdownItem>
-            </DropdownMenu>
-          </AppHeaderDropdown>
+            </DropdownMenu> 
+          </AppHeaderDropdown>*/}
         </Nav>
       </React.Fragment>
     );

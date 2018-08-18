@@ -58,7 +58,7 @@ const BasicForm = (props) => {
                   <Input type="date" id="dateInput" name="dateInput" placeholder="date" onChange={(event) => props.handleChange(event)} />
                 </Col>
               </FormGroup>
-              <FormGroup row>
+              {/* <FormGroup row>
                 <Col md="3">
                   <Label htmlFor="textAreaInput">Textarea</Label>
                 </Col>
@@ -67,7 +67,7 @@ const BasicForm = (props) => {
                     placeholder="Enter text here" onChange={(event) => props.handleChange(event)} />
                   <FormText color="muted">This is a help text</FormText>
                 </Col>
-              </FormGroup>
+              </FormGroup> */}
               <FormGroup row>
                 <Col md="3">
                   <Label htmlFor="fileInput">File input</Label>

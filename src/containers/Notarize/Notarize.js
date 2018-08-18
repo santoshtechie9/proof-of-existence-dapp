@@ -163,7 +163,7 @@ class Notarize extends Component {
                 this.setState({ account: accounts[0] });
 
                 // Stores a given value, 5 by default.
-               // return this.powInstance.set(5, { from: accounts[0] })
+                // return this.powInstance.set(5, { from: accounts[0] })
                 // return this.powInstance.addDocument(this.state.digest, this.state.name, this.state.ipfsHash, { from: accounts[0] })
                 //}).then((result) => {
                 // Get the value from the contract to prove it worked.
@@ -173,7 +173,7 @@ class Notarize extends Component {
                 //let digest = 0xac4e5792804146db61f6831d97392f6cc25bffbd70493f6e95296e8c76a6db69;
                 //return this.powInstance.fetchDocument.call(this.state.digest, { from: accounts[0] })
             })
-            
+
             // .then((result) => {
             //     // Update state with the result.
             //     console.log("-------------final result--------------");
@@ -256,42 +256,6 @@ class Notarize extends Component {
                             {$modal}
                         </Col>
                     </Row>
-                    <Row>
-                        <Col xs="12" sm="6" lg="4">
-                            <Card className="text-dark bg-light">
-                                <CardHeader>
-                                    Card title
-                                 </CardHeader>
-                                <CardBody className="pb-0">
-                                    <div className="text-value">9.823</div>
-                                    <div>Members online</div>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                        <Col xs="12" sm="6" lg="4">
-                            <Card className="text-dark bg-light">
-                                <CardHeader>
-                                    Card title
-                                 </CardHeader>
-                                <CardBody className="pb-0">
-                                    <div className="text-value">9.823</div>
-                                    <div>Members online</div>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                        <Col xs="12" sm="6" lg="4">
-                            <Card className="text-dark bg-light">
-                                <CardHeader>
-                                    Card title
-                                 </CardHeader>
-                                <CardBody className="pb-0">
-                                    <div className="text-value">9.823</div>
-                                    <div>Members online</div>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-
                 </Container>
             </div>
         )

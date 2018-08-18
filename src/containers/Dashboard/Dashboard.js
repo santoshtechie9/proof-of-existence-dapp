@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Card, CardBody, CardHeader, Table, Progress } from 'reactstrap';
+import { Container, Row, Col, Card, CardBody, FormGroup, Label } from 'reactstrap';
 import getWeb3 from '../../utils/getWeb3';
 import ProofOfExistanceContract from '../../../build/contracts/ProofOfExistance.json';
 
@@ -32,21 +32,12 @@ class Dashboard extends Component {
     }
 
     instantiateContract = () => {
-        /*
-         * SMART CONTRACT EXAMPLE
-         *
-         * Normally these functions would be called in the context of a
-         * state management library, but for convenience I've placed them here.
-         */
-
         const contract = require('truffle-contract')
         const pow = contract(ProofOfExistanceContract)
         pow.setProvider(this.state.web3.currentProvider)
 
         // Declaring this for later so we can chain functions on powInstance.
         //var powInstance
-
-
         const publicAddress = this.state.web3.eth.coinbase.toLowerCase();
         console.log("--------public address----------")
         console.log("publicAddress", publicAddress);
@@ -58,7 +49,6 @@ class Dashboard extends Component {
                 console.log("inside deployed method");
                 this.powInstance = instance;
                 this.setState({ account: accounts[0] });
-                //let digest = 0xac4e5792804146db61f6831d97392f6cc25bffbd70493f6e95296e8c76a6db69;
                 return instance.fetchAllDocuments.call(accounts[0], { from: accounts[0] })
             }).then((results) => {
                 // Update state with the result.
@@ -83,130 +73,120 @@ class Dashboard extends Component {
             }).catch((error) => {
                 console.log("----------------error---------------")
                 console.log(error)
+                this.setState({ items: null })
+                //window.alert("Unable to fetch documents. Deploy Smart Contracts and Activate Metmask")
             })
         })
     }
 
-
-
     render() {
-
+        const stylr = { maxHeight: "440px", overflowY: "scroll" }
         let items = [
             {
-                userName: "santu",
-                docHash: "image1",
-                docTimestamp: 'You are Logged in as :',
-                ipfsHash: 'Welcome to Proof Of Existence Dapp',
+                userName: "user1",
+                docHash: "0x8194327041372418237410324871320847132",
+                docTimestamp: '2018-08-18 20:30:23',
+                ipfsHash: 'fdaskljfpiowejfadslkjavdlksjafopiweurqqpweorijafsdfkljasd;fiqoweurpqewoi',
             },
             {
-                userName: "santu",
-                docHash: "image2",
-                docTimestamp: 'You are Logged in as :',
-                ipfsHash: 'Welcome to Proof Of Existence Dapp',
+                userName: "user1",
+                docHash: "0x8194327041372418237410324871320847132",
+                docTimestamp: '2018-08-18 20:30:23',
+                ipfsHash: 'fdaskljfpiowejfadslkjavdlksjafopiweurqqpweorijafsdfkljasd;fiqoweurpqewoi',
             }, {
-                userName: "santu",
-                docHash: "image3",
-                docTimestamp: 'You are Logged in as :',
-                ipfsHash: 'Welcome to Proof Of Existence Dapp',
+                userName: "user1",
+                docHash: "0x8194327041372418237410324871320847132",
+                docTimestamp: '2018-08-18 20:30:23',
+                ipfsHash: 'fdaskljfpiowejfadslkjavdlksjafopiweurqqpweorijafsdfkljasd;fiqoweurpqewoi',
             }, {
-                userName: "santu",
-                docHash: "image4",
-                docTimestamp: 'You are Logged in as :',
-                ipfsHash: 'Welcome to Proof Of Existence Dapp',
+                userName: "user1",
+                docHash: "0x8194327041372418237410324871320847132",
+                docTimestamp: '2018-08-18 20:30:23',
+                ipfsHash: 'fdaskljfpiowejfadslkjavdlksjafopiweurqqpweorijafsdfkljasd;fiqoweurpqewoi',
+            }, {
+                userName: "user1",
+                docHash: "0x8194327041372418237410324871320847132",
+                docTimestamp: '2018-08-18 20:30:23',
+                ipfsHash: 'fdaskljfpiowejfadslkjavdlksjafopiweurqqpweorijafsdfkljasd;fiqoweurpqewoi',
+            }, {
+                userName: "user1",
+                docHash: "0x8194327041372418237410324871320847132",
+                docTimestamp: '2018-08-18 20:30:23',
+                ipfsHash: 'fdaskljfpiowejfadslkjavdlksjafopiweurqqpweorijafsdfkljasd;fiqoweurpqewoi',
             },
         ];
 
         items = this.state.items;
-        let slides2 = null;
+        let $dicplayCards = null;
 
-        if (items.length !== 0) {
-            slides2 = items.map((item) => {
-
+        if (items !== null && items.length !== 0) {
+            $dicplayCards = items.map((item) => {
                 console.log("item.docHash", item.docHash)
                 return (
-
                     <Row>
-                    <Col xs="12" sm="12" lg="12">
-                        <Card className="text-dark bg-light">
-                            <CardHeader>
-                                Card Title
-                             </CardHeader>
-                            <CardBody className="pb-0">
-                                <div ><strong>docHash:</strong> {item.docHash}</div>
-                                <br/>
-                                <div ><strong>ipfsHash: </strong>{item.ipfsHash}</div>
-                                <br/>
-                                <div><strong>docTimestamp: </strong>item.docTimestamp</div>
-                            </CardBody>
-                        </Card>
-                    </Col>
+                        <Col xs="12" sm="12" lg="12">
+                            <Card className="text-dark bg-light">
+                                <CardBody className="pb-0">
+                                    {/* <FormGroup row>
+                                        <Col md="3">
+                                            <Label><strong>docHash:</strong> </Label>
+                                        </Col>
+                                        <Col xs="12" md="9">
+                                            <p className="form-control-static">{item.docHash}</p>
+                                        </Col>
+                                    </FormGroup> */}
+                                    <Col xs="12" md="12">
+                                        <div class="tag token"><strong>docHash:</strong> {item.docHash}</div>
+                                    </Col>
+                                    <Col xs="12" md="12">
+                                        <div class="tag token"><strong>ipfsHash:</strong> {item.ipfsHash}</div>
+                                    </Col>
+                                    <Col xs="12" md="12">
+                                        <div class="tag token"><strong>docTimestamp:</strong> {item.docTimestamp}</div>
+                                    </Col>
+                                </CardBody>
+                            </Card>
+                        </Col>
                     </Row>
-                 )
+                )
             });
 
         } else {
-            slides2 = () => {
+            $dicplayCards = () => {
+                console.log("items array is empty")
                 return (
-                    <tr>
-                        <td>
-                            <strong>You did not upload any documents yet</strong>
-                        </td>
-                    </tr>
+                    <Row>
+                        <Col xs="12" sm="12" lg="12">
+                            <Card className="text-dark bg-light">
+                                <CardBody className="pb-0">
+                                    <div className="tag">
+                                        You have not uploaded any documents yet.
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                    </Row>
                 );
             }
         }
         return (
             <div>
                 <Container fluid>
-                    {/* <Row>
-                        <Col xs="12" md="6" xl="6">
-                            <p>Welcom to Proof Of Existance App</p>
-                        </Col >
-                    </Row>
-                    <Row>
-                        <Col xs="12" sm="6" lg="4">
-                            <Card className="text-dark bg-light">
-                                <CardHeader>
-                                    Card title
-                                 </CardHeader>
-                                <CardBody className="pb-0">
-                                    <div className="text-value">9.823</div>
-                                    <div>Members online</div>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                        <Col xs="12" sm="6" lg="4">
-                            <Card className="text-dark bg-light">
-                                <CardHeader>
-                                    Card title
-                                 </CardHeader>
-                                <CardBody className="pb-0">
-                                    <div className="text-value">9.823</div>
-                                    <div>Members online</div>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                        <Col xs="12" sm="6" lg="4">
-                            <Card className="text-dark bg-light">
-                                <CardHeader>
-                                    Card title
-                                 </CardHeader>
-                                <CardBody className="pb-0">
-                                    <div className="text-value">9.823</div>
-                                    <div>Members online</div>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row> */}
                     <br />
                     <Row>
                         <Col>
                             <Card>
-                                <CardHeader>
-                                    User Documents List
-              </CardHeader>
                                 <CardBody>
-                                    {slides2}
+                                    <div className="container-fluid p-5 activity">
+                                        <div className="col text-center mb-2">
+                                            <h2 className="mb-4">Recent  Activity on Proof Of Existance Dapp</h2>
+                                        </div>
+                                        <div id="activity_stream" style={stylr}>
+                                            <div className="mb-4 col offset-lg-1 col-lg-10">
+                                                {$dicplayCards}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </CardBody>
                             </Card>
                         </Col>
