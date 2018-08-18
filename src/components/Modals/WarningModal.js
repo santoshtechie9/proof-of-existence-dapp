@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Col, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
 
-const  infoModal = (props) => {
+const  warningModal = (props) => {
 
 console.log("inside infoModal");
 
@@ -9,14 +9,14 @@ console.log("inside infoModal");
       <div className="animated fadeIn align-middle">
         <Row>
           <Col>
-            <Modal isOpen={props.info} toggle={props.toggleInfo}
-              className={'modal-info ' + props.className}>
-              <ModalHeader toggle={props.toggleInfo}>Modal title</ModalHeader>
+            <Modal isOpen={props.warning} toggle={props.toggleWarning}
+              className={'modal-warning '+ props.className}>
+              <ModalHeader toggle={props.toggleWarning}>Modal title</ModalHeader>
               <ModalBody>
                 {props.message}
                   </ModalBody>
               <ModalFooter>
-                <Button color="primary" onClick={ (e) => props.toggleInfo(e)}>Ok</Button>{' '}
+                <Button color="warning" onClick={ (e) => props.toggleWarning(e)}>Ok</Button>{' '}
               </ModalFooter>
             </Modal>
           </Col>
@@ -25,4 +25,4 @@ console.log("inside infoModal");
     );
   }
 
-export default infoModal;
+export default warningModal;

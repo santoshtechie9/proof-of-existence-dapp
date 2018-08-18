@@ -13,14 +13,6 @@ const documentDetailsCard = (props) => {
                     <CardBody>
                         <Row>
                             <Col xs="12" md="3" xl="3">
-                                <Label htmlFor="textarea-input">Document Name</Label>
-                            </Col>
-                            <Col xs="12" md="6" xl="6">
-                                <Label>{props.fileInput}</Label>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs="12" md="3" xl="3">
                                 <Label htmlFor="textarea-input">Owner</Label>
                             </Col>
                             <Col xs="12" md="6" xl="6">
@@ -45,10 +37,18 @@ const documentDetailsCard = (props) => {
                         </Row>
                         <Row>
                             <Col xs="12" md="3" xl="3">
-                                <Label htmlFor="textarea-input">Digest</Label>
+                                <Label htmlFor="textarea-input">Doc Hash</Label>
                             </Col>
                             <Col xs="12" md="6" xl="6">
-                                <Label>{props.digest}</Label>
+                                <Label>{props.docHash}</Label>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs="12" md="3" xl="3">
+                                <Label htmlFor="textarea-input">ipfs Hash</Label>
+                            </Col>
+                            <Col xs="12" md="6" xl="6">
+                                <Label>{props.ipfsHash}</Label>
                             </Col>
                         </Row>
                     </CardBody>

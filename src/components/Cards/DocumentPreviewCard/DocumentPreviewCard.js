@@ -19,7 +19,7 @@ const documentPreviewCard = (props) => {
                     </CardHeader>
                     <CardBody>
                         <div>
-                            <img style={style} className="mh-50 card-img" src={props.imagePreviewUrl} alt="Default Card" />
+                            <img style={style} className="mh-50 card-img" src={`${props.fileBuffer}`} alt="Default Card" />
                         </div>
                     </CardBody>
                 </Card>

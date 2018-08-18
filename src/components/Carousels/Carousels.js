@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Carousel, CarouselCaption, CarouselControl, CarouselIndicators, CarouselItem, Col, Row } from 'reactstrap';
+import { Card, CardBody, Carousel, CarouselCaption, CarouselControl, CarouselIndicators, CarouselItem, Col, Row } from 'reactstrap';
 
 import image1 from '../../assets/image-1.jpg';
 import image2 from '../../assets/image-2.jpg';
@@ -8,18 +8,21 @@ import image3 from '../../assets/image-3.jpg';
 const items = [
   {
     src: image3,
-    altText: 'Proof Of Ownership ',
-    caption: 'Verification',
+    altText: 'You are Logged in as :',
+    caption: 'Welcome to Proof Of Existence Dapp',
+    text: 'Visit Dashboard to view documents you uploaded',
   },
   {
     src: image2,
-    altText: 'Market Place',
-    caption: 'e-commerce',
+    altText: 'You are Logged in as :',
+    caption: 'Welcome to Proof Of Existence Dapp',
+    text: 'Visit Dashboard to view documents you uploaded',
   },
   {
     src: image1,
-    altText: 'Monopoly',
-    caption: 'Game',
+    altText: 'You are Logged in as :',
+    caption: 'Welcome to Proof Of Existence Dapp',
+    text: 'Visit Dashboard to view documents you uploaded',
   },
 ];
 
@@ -62,6 +65,10 @@ class Carousels extends Component {
 
   render() {
     const { activeIndex } = this.state;
+    const style = {
+     width:"400px",
+     height:"610px"
+    }
 
     const slides2 = items.map((item) => {
       return (
@@ -70,8 +77,8 @@ class Carousels extends Component {
           onExited={this.onExited}
           key={item.src}
         >
-          <img className="d-block w-100" src={item.src} alt={item.altText} />
-          <CarouselCaption captionText={item.caption} captionHeader={item.caption} />
+          <img className="d-block w-100" src={item.src} alt={item.altText} style={style} />
+          <CarouselCaption captionText={item.text} captionHeader={item.caption} />
         </CarouselItem>
       );
     });
@@ -79,11 +86,8 @@ class Carousels extends Component {
     return (
       <div className="animated fadeIn">
         <Row>
-          <Col xs="12" md="6" xl="12">
+          <Col xs="12" md="12" xl="12">
             <Card>
-            <CardHeader>
-                <i className="fa fa-align-justify"></i><strong>Selected Document(s)</strong>
-              </CardHeader>
               <CardBody>
                 <Carousel activeIndex={activeIndex} next={this.next} previous={this.previous}>
                   <CarouselIndicators items={items} activeIndex={activeIndex} onClickHandler={this.goToIndex} />
