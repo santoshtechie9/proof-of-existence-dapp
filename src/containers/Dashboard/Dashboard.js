@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Card, CardBody, FormGroup, Label } from 'reactstrap';
+import { Container, Row, Col, Card, CardBody } from 'reactstrap';
 import getWeb3 from '../../utils/getWeb3';
 import ProofOfExistanceContract from '../../../build/contracts/ProofOfExistance.json';
 
@@ -56,25 +56,27 @@ class Dashboard extends Component {
                 console.log(results);
                 this.setState({ docHashList: results })
                 results.map((x, index) => {
-                    console.log(x)
                     this.powInstance.fetchDocument.call(x, { from: accounts[0] })
                         .then((result) => {
                             let item = {
                                 docHash: result[0],
                                 docTimestamp: result[1],
-                                ipfsHash: result[2]
+                                ipfsHash: result[2],
+                                userName: "userName"
                             }
                             let itemsList = this.state.items;
                             itemsList.push(item);
                             this.setState({ items: itemsList })
+                            return '';
                         })
+                        return '';
                 })
                 console.log("state = ", this.state)
             }).catch((error) => {
                 console.log("----------------error---------------")
                 console.log(error)
                 this.setState({ items: null })
-                //window.alert("Unable to fetch documents. Deploy Smart Contracts and Activate Metmask")
+                window.alert("Unable to fetch documents. Deploy Smart Contracts and Activate Metmask")
             })
         })
     }
@@ -120,29 +122,23 @@ class Dashboard extends Component {
         let $dicplayCards = null;
 
         if (items !== null && items.length !== 0) {
-            $dicplayCards = items.map((item) => {
-                console.log("item.docHash", item.docHash)
+            $dicplayCards = items.map((item,index) => {
                 return (
-                    <Row>
+                    <Row key={index}>
                         <Col xs="12" sm="12" lg="12">
                             <Card className="text-dark bg-light">
                                 <CardBody className="pb-0">
-                                    {/* <FormGroup row>
-                                        <Col md="3">
-                                            <Label><strong>docHash:</strong> </Label>
-                                        </Col>
-                                        <Col xs="12" md="9">
-                                            <p className="form-control-static">{item.docHash}</p>
-                                        </Col>
-                                    </FormGroup> */}
                                     <Col xs="12" md="12">
-                                        <div class="tag token"><strong>docHash:</strong> {item.docHash}</div>
+                                        <div className="tag token"><strong>User Name:</strong> {item.userName}</div>
                                     </Col>
                                     <Col xs="12" md="12">
-                                        <div class="tag token"><strong>ipfsHash:</strong> {item.ipfsHash}</div>
+                                        <div className="tag token"><strong>Doc Timestamp:</strong> {"docTimestamp"}</div>
                                     </Col>
                                     <Col xs="12" md="12">
-                                        <div class="tag token"><strong>docTimestamp:</strong> {item.docTimestamp}</div>
+                                        <div className="tag token"><strong>Doc Hash:</strong> {item.docHash}</div>
+                                    </Col>
+                                    <Col xs="12" md="12">
+                                        <div className="tag token"><strong>ipfs Hash:</strong> {item.ipfsHash}</div>
                                     </Col>
                                 </CardBody>
                             </Card>
@@ -153,7 +149,6 @@ class Dashboard extends Component {
 
         } else {
             $dicplayCards = () => {
-                console.log("items array is empty")
                 return (
                     <Row>
                         <Col xs="12" sm="12" lg="12">

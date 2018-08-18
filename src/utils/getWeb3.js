@@ -8,11 +8,11 @@ let getWeb3 = new Promise(function (resolve, reject) {
     var web3 = window.web3
 
     // Checking if MetaMask has been installed/Enaables in the browser  
-    // if (!window.web3) {
-    //   window.alert('Please install MetaMask to start using the Dapp.');
-    //   //console.log(" getWeb3 this: ", this)
-    //   return;
-    // }
+     if (!window.web3) {
+       window.alert('Please install MetaMask to start using the Dapp.');
+       //console.log(" getWeb3 this: ", this)
+       return;
+     }
 
     // Checking if Web3 has been injected by the browser (Mist/MetaMask)
     if (typeof web3 !== 'undefined') {
@@ -37,10 +37,10 @@ let getWeb3 = new Promise(function (resolve, reject) {
       resolve(results)
     }
 
-    // if (!web3.eth.coinbase) {
-    //   window.alert('Please activate MetaMask to start entering the Dapp.');
-    //   return;
-    // }
+     if (!web3.eth.coinbase) {
+       window.alert('Please activate MetaMask to start entering the Dapp.');
+       return;
+     }
     //console.log("getWeb3: this : ", this)
   })
 })

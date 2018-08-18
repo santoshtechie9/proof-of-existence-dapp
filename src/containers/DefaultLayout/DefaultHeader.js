@@ -12,12 +12,13 @@ const defaultProps = {};
 class DefaultHeader extends Component {
 
   render() {
-    
+
     let $address = null;
-    if(this.props.address){
+    if (this.props.address) {
       $address = (
-     <p> {this.props.address}</p>    
-      )}
+        <p> {this.props.address}</p>
+      )
+    }
 
     return (
       <React.Fragment>
@@ -40,17 +41,8 @@ class DefaultHeader extends Component {
             <NavLink href="#"><i className="icon-location-pin"></i></NavLink>
           </NavItem>
           <AppHeaderDropdown direction="down">
-          { $address}
+            {$address}
           </AppHeaderDropdown>
-          {/*<AppHeaderDropdown direction="down">
-             <DropdownToggle nav>
-              { $address}
-            </DropdownToggle>
-            <DropdownMenu right style={{ right: 'auto' }}>
-              <DropdownItem><i className="fa fa-user"></i> Profile</DropdownItem>
-              <DropdownItem><i className="fa fa-lock"></i> Logout</DropdownItem>
-            </DropdownMenu> 
-          </AppHeaderDropdown>*/}
         </Nav>
       </React.Fragment>
     );

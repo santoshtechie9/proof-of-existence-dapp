@@ -7,7 +7,6 @@ import WarningModal from '../../components/Modals/WarningModal';
 import ProofOfOwnershipContract from '../../../build/contracts/ProofOfExistance.json';
 import getWeb3 from '../../utils/getWeb3';
 import forge from 'node-forge';
-/* eslint-disable */
 
 class Verify extends Component {
 
@@ -26,19 +25,19 @@ class Verify extends Component {
         warning: false,
         info: false,
         contractResponse: {
-            name:"",
-            email:"",
-            timestamp:"",
-            isPresent:null
+            name: "",
+            email: "",
+            timestamp: "",
+            isPresent: null
         }
     }
 
 
-    toggle = () =>{
+    toggle = () => {
         this.setState({
             info: !this.state.info,
         });
-      }
+    }
 
     toggleSuccess = () => {
         this.setState({
@@ -54,7 +53,7 @@ class Verify extends Component {
 
     toggleInfo = (e) => {
         e.preventDefault();
-        console.log("Inside toggleInfo; info="  + !this.state.info)
+        console.log("Inside toggleInfo; info=" + !this.state.info)
         this.setState({
             info: !this.state.info,
         });
@@ -109,7 +108,7 @@ class Verify extends Component {
             reader.onloadend = () => {
                 var md = forge.md.sha256.create();
                 md.update(Buffer(reader.result));
-                let digest = '0x'+md.digest().toHex();
+                let digest = '0x' + md.digest().toHex();
                 console.log("digest = " + digest);
                 //console.log("reader result = " + reader.result);
                 //Set the state variable here selected file name, imagePreviewURL and digest
@@ -123,12 +122,6 @@ class Verify extends Component {
     }
 
     instantiateContract = () => {
-        /*
-         * SMART CONTRACT EXAMPLE
-         *
-         * Normally these functions would be called in the context of a
-         * state management library, but for convenience I've placed them here.
-         */
         console.log("inside instantiateContract")
         const contract = require('truffle-contract')
         const pow = contract(ProofOfOwnershipContract)
@@ -144,28 +137,24 @@ class Verify extends Component {
 
                 powInstance = instance;
                 console.log(powInstance);
-                // Stores a given value, 5 by default.
-                //return powInstance.set(5, { from: accounts[0] })
-                // return powInstance.addDocument(this.state.name, this.state.email, this.state.digest, { from: accounts[0] })
                 return powInstance.fetchDocument.call(this.state.digest, { from: accounts[0] })
 
             }).then((result) => {
                 // Get the value from the contract to prove it worked.
                 console.log("final result");
-                console.log(result);
-                console.log(result[0]);
-                console.log(result[1]);
-                console.log(result[2]);
-                if(result[0] != 0){
+                console.log("Verify: Instatiate Contract: result", result);
+
+                if (result[0] != 0x0) {
                     console.log("result state set")
-                    return this.setState({ contractResponse: {hash: result[0], timestamp: result[1], ipfsHash: result[2], isPresent:true},warning:true});
-                }else{
+                    return this.setState({ contractResponse: { hash: result[0], timestamp: result[1].valueOf(), ipfsHash: result[2], name: "userName",email:"abc@abc.com", isPresent: true }, warning: true });
+                } else {
                     console.log("result2 = empty")
-                    return this.setState({ contractResponse: {hash: result[0], email: result[1], name: result[2], isPresent:false},warning:true})
+                    return this.setState({ contractResponse: { hash: result[0], timestamp: result[1], ipfsHash: result[2], name: "userName",email:"abc@abc.com", isPresent: false }, warning: true })
                 }
-            }).catch( error => {
+            }).catch(error => {
                 console.log("----------error---------")
                 console.log(error)
+                window.alert(error)
             })
         })
     }
@@ -178,42 +167,42 @@ class Verify extends Component {
         console.log(this.state);
         let ipfsUrl = null;
 
-       
-        if (imagePreviewUrl!==null && this.state.contractResponse.isPresent ===true) {
+        if (imagePreviewUrl !== null && this.state.contractResponse.isPresent === true) {
             console.log("Document exists in blockchain")
-            console.log("ipfsHash : " , this.state.contractResponse.ipfsHash);
-            if(this.state.contractResponse.ipfsHash){
+            console.log("ipfsHash : ", this.state.contractResponse.ipfsHash);
+            if (this.state.contractResponse.ipfsHash) {
                 console.log("setting ipfs URL")
-                ipfsUrl = 'https://ipfs.infura.io/ipfs/'+this.state.contractResponse.ipfsHash;
+                ipfsUrl = 'https://ipfs.infura.io/ipfs/' + this.state.contractResponse.ipfsHash;
             }
-            console.log('ipfsUrl : '+ipfsUrl);
-            console.log(this.state.fileInput)    
+            console.log('ipfsUrl : ' + ipfsUrl);
+            console.log(this.state.fileInput)
             $imagePreview = (
                 <div>
                     <DocumentPreviewCard fileBuffer={ipfsUrl} />
                     <DocumentDetailsCard
-                        fileInput={this.state.fileInput}
-                        name={this.state.name}
-                        email={this.state.email}
-                        timestamp={this.state.dateInput}
-                        digest={this.state.digest} />
+                        fileInput={this.state.contractResponse.fileInput}
+                        name={this.state.contractResponse.name}
+                        email={this.state.contractResponse.email}
+                        timestamp={this.state.contractResponse.timestamp}
+                        docHash={this.state.contractResponse.hash}
+                        ipfsHash={this.state.contractResponse.ipfsHash} />
                 </div>
             );
-        } else{
+        } else {
             if (this.state.contractResponse.isPresent === false) {
                 console.log("Document does not exist in blockchain")
                 console.log(this.state);
-                console.log("blockchainDigest=" +this.state.blockchainDigest);
-                console.log("imagePreviewUrl=" +this.state.imagePreviewUrl);
+                console.log("blockchainDigest=" + this.state.blockchainDigest);
+                console.log("imagePreviewUrl=" + this.state.imagePreviewUrl);
                 $imagePreview = (
                     <WarningModal
-                    warning={this.state.warning}
-                    toggleWarning={this.toggleWarning}
-                    message="The document doesnot exist in blockchain"
+                        warning={this.state.warning}
+                        toggleWarning={this.toggleWarning}
+                        message="The document doesnot exist in blockchain"
                     />);
-                }
-            } 
-                
+            }
+        }
+
         return (
             <div>
                 <Container fluid>

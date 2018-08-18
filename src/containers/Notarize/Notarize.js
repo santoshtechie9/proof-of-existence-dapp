@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Card, CardBody, CardHeader } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 import forge from 'node-forge';
 import BasicForm from '../../components/Forms/BasicForm/BasicForm';
 import DocumentDetailsCard from '../../components/Cards/DocumentDetailsCard/DocumentDetailsCard';
 import DocumentPreviewCard from '../../components/Cards/DocumentPreviewCard/DocumentPreviewCard';
 import WarningModal from '../../components/Modals/WarningModal';
-//import ProofOfOwnershipContract from '../../../build/contracts/ProofOfOwnership.json';
 import ProofOfOwnershipContract from '../../../build/contracts/ProofOfExistance.json';
 import getWeb3 from '../../utils/getWeb3';
 import ipfs from '../../ipfs/ipfs';
@@ -40,8 +39,6 @@ class Notarize extends Component {
                     loading: true,
                     publicAddress: publicAddress
                 })
-                // Instantiate contract once web3 provided.
-                //this.instantiateContract()
                 console.log("ipfs =", ipfs);
                 this.instantiateContract();
             })
@@ -82,7 +79,6 @@ class Notarize extends Component {
         });
 
         console.log("file has been uploaded to IPFS")
-        //this.instantiateContract();
     }
 
 
@@ -161,33 +157,7 @@ class Notarize extends Component {
             pow.deployed().then((instance) => {
                 this.powInstance = instance;
                 this.setState({ account: accounts[0] });
-
-                // Stores a given value, 5 by default.
-                // return this.powInstance.set(5, { from: accounts[0] })
-                // return this.powInstance.addDocument(this.state.digest, this.state.name, this.state.ipfsHash, { from: accounts[0] })
-                //}).then((result) => {
-                // Get the value from the contract to prove it worked.
-                //    console.log("-------------result--------------")
-                //    console.log(result);
-                // console.log();
-                //let digest = 0xac4e5792804146db61f6831d97392f6cc25bffbd70493f6e95296e8c76a6db69;
-                //return this.powInstance.fetchDocument.call(this.state.digest, { from: accounts[0] })
             })
-
-            // .then((result) => {
-            //     // Update state with the result.
-            //     console.log("-------------final result--------------");
-            //     console.log(result);
-            //     if (result[0] !== "") {
-            //         return this.setState({ isUploaded: true, ipfsHash: result[2] });
-            //     } else {
-            //         console.log("result2 = empty")
-            //         return this.setState({ isUploaded: false, ipfsHash: '' })
-            //     }
-            // }).catch((error) => {
-            //     console.log("----------------error---------------")
-            //     console.log(error)
-            // })
         })
     }
 
