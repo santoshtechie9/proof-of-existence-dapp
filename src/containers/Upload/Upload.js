@@ -9,7 +9,7 @@ import ProofOfOwnershipContract from '../../../build/contracts/ProofOfExistance.
 import getWeb3 from '../../utils/getWeb3';
 import ipfs from '../../ipfs/ipfs';
 
-class Notarize extends Component {
+class Upload extends Component {
 
     state = {
         storageValue: 0,
@@ -28,12 +28,12 @@ class Notarize extends Component {
         // Get network provider and web3 instance.
         // See utils/getWeb3 for more info.
 
-        console.log("componentWillMount Notarize")
+        console.log("componentWillMount Upload")
 
         getWeb3
             .then(results => {
                 const publicAddress = results.web3.eth.coinbase.toLowerCase()
-                console.log(" componentWillMount Notarize this: ", this)
+                console.log(" componentWillMount Upload this: ", this)
                 this.setState({
                     web3: results.web3,
                     loading: true,
@@ -235,4 +235,4 @@ class Notarize extends Component {
     }
 }
 
-export default Notarize;
+export default Upload;

@@ -24,10 +24,10 @@ class DefaultHeader extends Component {
       <React.Fragment>
         <Nav className="d-md-down-none" navbar>
           <NavItem className="px-3">
-            <NavLink href="/">Dashboard</NavLink>
+            <NavLink href="/">Home</NavLink>
           </NavItem>
           <NavItem className="px-3">
-            <NavLink href="notarize">Notarize</NavLink>
+            <NavLink href="upload">Upload</NavLink>
           </NavItem>
           <NavItem className="px-3">
             <NavLink href="verify">Verify Document</NavLink>

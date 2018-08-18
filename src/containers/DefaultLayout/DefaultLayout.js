@@ -8,10 +8,10 @@ import {
 import DefaultAside from './DefaultAside';
 import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
-import Notarize from '../Notarize/Notarize';
+import Upload from '../Upload/Upload';
 import Verify from '../Verify/Verify';
 import getWeb3 from '../../utils/getWeb3';
-import Dashboard from '../Dashboard/Dashboard';
+import Home from '../Home/Home';
 
 class DefaultLayout extends Component {
 
@@ -45,8 +45,8 @@ class DefaultLayout extends Component {
           <main className="main">
             <Router>
               <div>
-                <Route exact path="/" component={Dashboard} />
-                <Route path="/notarize" component={Notarize} />
+                <Route exact path="/" component={Home} />
+                <Route path="/upload" component={Upload} />
                 <Route path="/verify" component={Verify} />
               </div>
             </Router>

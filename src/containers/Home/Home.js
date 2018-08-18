@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, CardBody } from 'reactstrap';
 import getWeb3 from '../../utils/getWeb3';
 import ProofOfExistanceContract from '../../../build/contracts/ProofOfExistance.json';
 
-class Dashboard extends Component {
+class Home extends Component {
 
     state = {
         docHashList: [],
@@ -17,7 +17,7 @@ class Dashboard extends Component {
         getWeb3
             .then(results => {
                 let personalAddress = results.web3.eth.coinbase.toLowerCase();
-                console.log("Dashboard: personalAddress: ", personalAddress);
+                console.log("Home: personalAddress: ", personalAddress);
                 this.setState({
                     web3: results.web3,
                     address: personalAddress
@@ -41,7 +41,7 @@ class Dashboard extends Component {
         const publicAddress = this.state.web3.eth.coinbase.toLowerCase();
         console.log("--------public address----------")
         console.log("publicAddress", publicAddress);
-        console.log('Dashboard : state: ', this.state)
+        console.log('Home : state: ', this.state)
 
         // Get accounts.
         this.state.web3.eth.getAccounts((error, accounts) => {
@@ -192,4 +192,4 @@ class Dashboard extends Component {
     };
 }
 
-export default Dashboard;
+export default Home;
