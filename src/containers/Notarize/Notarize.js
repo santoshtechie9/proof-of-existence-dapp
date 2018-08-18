@@ -65,16 +65,18 @@ class Notarize extends Component {
                 console.error(error);
                 return;
             }
-
+            this.setState({ipfsHash: result[0].hash})
             console.log('digest: ', this.state.digest);
             console.log('name: :', this.state.name);
             console.log('ipfsHash: ', result[0].hash);
             console.log('account: ', this.state.account);
             this.powInstance.uploadDocument(this.state.digest, this.state.name, result[0].hash, { from: this.state.account });
             this.powInstance.fetchDocument.call(this.state.digest, { from: this.state.account }).then(result => {
+                
+                this.setState({digest:result[0],timestamp:result[1].valueOf(),ipfsHash:result[2]})
                 console.log(result);
             })
-            this.setState({ ipfsHash: result[0].hash });
+            //this.setState({ ipfsHash: result[0].hash });
             console.log('ipfsHash: ', this.state.ipfsHash);
         });
 
@@ -193,7 +195,8 @@ class Notarize extends Component {
                         name={this.state.name}
                         email={this.state.email}
                         timestamp={this.state.dateInput}
-                        digest={this.state.digest} />
+                        docHash={this.state.digest}
+                        ipfsHash={this.state.ipfsHash} />
                 </div>
             );
         }
