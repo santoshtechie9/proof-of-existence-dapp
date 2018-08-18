@@ -63,9 +63,12 @@ Add additional notes about how to deploy this on a live system
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [Solidity](https://reactjs.org/docs/getting-started.html) - Smart Contract Language
+* [ReactJs](https://reactjs.org/docs/getting-started.html) - Forntend web framework 
+* [IPFS](https://reactjs.org/docs/getting-started.html) - Decentralised storage
+* [Metamask](https://reactjs.org/docs/getting-started.html) - wallet service
+* [npm](https://www.npmjs.com/) - Package Management
+* [coreui](https://coreui.io/v1/docs/getting-started/introduction/#reactjs) - Used to create components
 
 ## Contributing
 
