@@ -16,7 +16,7 @@ class DefaultHeader extends Component {
     let $address = null;
     if (this.props.address) {
       $address = (
-        <p> {this.props.address}</p>
+        <p> You are logged in as : {this.props.address}</p>
       )
     }
 
