@@ -59,25 +59,32 @@ class Notarize extends Component {
         event.preventDefault();
         console.log("Clicked on Submit button ");
         console.log(this.state);
-
+        this.setState({uploadedInIpfs: false})
         ipfs.files.add(this.state.fileBuffer, (error, result) => {
+          
             if (error) {
                 console.error(error);
+                window.alert(error)
                 return;
             }
+
             this.setState({ipfsHash: result[0].hash})
             console.log('digest: ', this.state.digest);
             console.log('name: :', this.state.name);
-            console.log('ipfsHash: ', result[0].hash);
             console.log('account: ', this.state.account);
-            this.powInstance.uploadDocument(this.state.digest, this.state.name, result[0].hash, { from: this.state.account });
-            this.powInstance.fetchDocument.call(this.state.digest, { from: this.state.account }).then(result => {
-                
+            console.log('ipfsHash: ', this.state.ipfsHash);
+            console.log("submit button this:",this);
+            this.state.powInstance.uploadDocument(this.state.digest, this.state.name, result[0].hash, { from: this.state.account }).then((result)=>{
+                console.log("upload document result: " , result)
+               return  this.state.powInstance.fetchDocument.call(this.state.digest, { from: this.state.account })
+            }).then(result => {
                 this.setState({digest:result[0],timestamp:result[1].valueOf(),ipfsHash:result[2]})
-                console.log(result);
+                console.log("fetch document: ", result);
+            }).error((error)=>{
+                console.log("error: ", error);
+                window.alert(error);
             })
             //this.setState({ ipfsHash: result[0].hash });
-            console.log('ipfsHash: ', this.state.ipfsHash);
         });
 
         console.log("file has been uploaded to IPFS")
@@ -103,8 +110,9 @@ class Notarize extends Component {
 
         let file = e.target.files[0];
         let reader = new window.FileReader();
+        let readerPreview = new window.FileReader();
 
-        console.log(file);
+        console.log("Notarize: handle image change: file",file);
         console.log("name=" + e.target.name);
         console.log("value=" + e.target.value);
 
@@ -116,18 +124,21 @@ class Notarize extends Component {
                 md.update(Buffer(reader.result));
                 let digest = '0x' + md.digest().toHex();
                 console.log("digest: ", digest);
-                //console.log(reader.result);
                 this.setState({ fileInput: file.name, fileBuffer: Buffer(reader.result), digest: digest });
                 console.log('buffer:', this.state.fileBuffer);
                 var docHash = digest;
-                console.log("docHash: " + docHash);
+                console.log("docHash: " , docHash);
             }
-
+            readerPreview.readAsDataURL(file);
+            readerPreview.onloadend = () => {
+                this.setState({imagePreviewData: readerPreview.result})
+                console.log("Notarize: image change: state: " , this.state)
+            }
         } else {
             console.log('There is no image file selected')
             this.setState({ fileInput: '', fileBuffer: '' });
         }
-
+        
         console.log(this.state.fileBuffer);
 
     }
@@ -158,7 +169,7 @@ class Notarize extends Component {
 
             pow.deployed().then((instance) => {
                 this.powInstance = instance;
-                this.setState({ account: accounts[0] });
+                this.setState({ powInstance:instance , account: accounts[0] });
             })
         })
     }
@@ -189,7 +200,8 @@ class Notarize extends Component {
             console.log(this.state.fileInput)
             $imagePreview = (
                 <div>
-                    <DocumentPreviewCard fileBuffer={ipfsUrl} />
+                    {/* <DocumentPreviewCard fileBuffer={ipfsUrl} /> */}
+                    <DocumentPreviewCard fileBuffer={this.state.imagePreviewData} />
                     <DocumentDetailsCard
                         fileInput={this.state.fileInput}
                         name={this.state.name}
