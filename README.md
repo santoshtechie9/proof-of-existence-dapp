@@ -1,4 +1,4 @@
-# Proof-Of-Existance Daap
+# Proof-Of-Existance Dapp
 
 Ethereum proof of existance dapp. Users can privide a proof of a document by storing its has in the blockchain. Application frontend is developed in React framework, Smart Contracts are developed in Solidity. 
 
