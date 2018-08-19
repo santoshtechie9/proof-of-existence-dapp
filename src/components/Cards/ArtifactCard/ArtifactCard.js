@@ -1,15 +1,12 @@
 import React from 'react';
 import {Card,CardHeader,CardBody,Row,Col,Label} from 'reactstrap';
 
-const documentDetailsCard = (props) => {
+const artifactCard = (props) => {
 
     return (
         <div className="animated fadeIn flex-row align-items-center">
             <div className="animated fadeIn">
                 <Card>
-                    <CardHeader>
-                        <strong>Document</strong> Details
-                    </CardHeader>
                     <CardBody>
                         <Row>
                             <Col xs="12" md="3" xl="3">
@@ -58,4 +55,4 @@ const documentDetailsCard = (props) => {
     );
 }
 
-export default documentDetailsCard;
+export default artifactCard;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
-import DocumentDetailsCard from '../../components/Cards/DocumentDetailsCard/DocumentDetailsCard';
-import DocumentPreviewCard from '../../components/Cards/DocumentPreviewCard/DocumentPreviewCard';
+import ArtifactCard from '../../components/Cards/ArtifactCard/ArtifactCard';
+import ImagePreviewCard from '../../components/Cards/ImagePreviewCard/ImagePreviewCard';
 import VerificationForm from '../../components/Forms/VerificationForm/VerificationForm';
 import WarningModal from '../../components/Modals/WarningModal';
 import ProofOfOwnershipContract from '../../../build/contracts/ProofOfExistance.json';
@@ -68,11 +68,9 @@ class Verify extends Component {
                 this.setState({
                     web3: results.web3
                 })
-
-                // Instantiate contract once web3 provided.
-                //this.instantiateContract()
             })
-            .catch(() => {
+            .catch((error) => {
+                window.error(error);
                 console.log('Error finding web3.')
             })
     }
@@ -178,8 +176,8 @@ class Verify extends Component {
             console.log(this.state.fileInput)
             $imagePreview = (
                 <div>
-                    <DocumentPreviewCard fileBuffer={ipfsUrl} />
-                    <DocumentDetailsCard
+                    <ImagePreviewCard fileBuffer={ipfsUrl} />
+                    <ArtifactCard
                         fileInput={this.state.contractResponse.fileInput}
                         name={this.state.contractResponse.name}
                         email={this.state.contractResponse.email}

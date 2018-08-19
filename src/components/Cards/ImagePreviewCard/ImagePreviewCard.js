@@ -1,11 +1,10 @@
 import React from 'react';
-import { Card, CardHeader, CardBody } from 'reactstrap';
+import { Card, CardBody } from 'reactstrap';
 
-const documentPreviewCard = (props) => {
+const ImagePreviewCard = (props) => {
 
     const style = {
-        //backgroundColor: 'rgba(255,0,0,0.1)',
-        backgroundColor: 'green',
+        backgroundColor: 'rgba(255,0,0,0.1)',
         padding: '8px',
         height: '350px',
     };
@@ -14,9 +13,9 @@ const documentPreviewCard = (props) => {
         <div className="animated fadeIn flex-row align-items-center">
             <div className="animated fadeIn">
                 <Card>
-                    <CardHeader>
-                        <i className="fa fa-align-justify"></i><strong>Selected Document(s)</strong>
-                    </CardHeader>
+                    {/* <CardHeader>
+                        <i className="fa fa-align-justify"></i><strong>Document Preview</strong>
+                    </CardHeader> */}
                     <CardBody>
                         <div>
                             <img style={style} className="mh-50 card-img" src={`${props.fileBuffer}`} alt="Default Card" />
@@ -28,4 +27,4 @@ const documentPreviewCard = (props) => {
     );
 }
 
-export default documentPreviewCard;
+export default ImagePreviewCard;

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import forge from 'node-forge';
 import BasicForm from '../../components/Forms/BasicForm/BasicForm';
-import DocumentDetailsCard from '../../components/Cards/DocumentDetailsCard/DocumentDetailsCard';
-import DocumentPreviewCard from '../../components/Cards/DocumentPreviewCard/DocumentPreviewCard';
+import ArtifactCard from '../../components/Cards/ArtifactCard/ArtifactCard';
+import ImagePreviewCard from '../../components/Cards/ImagePreviewCard/ImagePreviewCard';
 import WarningModal from '../../components/Modals/WarningModal';
 import ProofOfOwnershipContract from '../../../build/contracts/ProofOfExistance.json';
 import getWeb3 from '../../utils/getWeb3';
@@ -65,15 +65,15 @@ class Upload extends Component {
                 console.error(error);
                 return;
             }
-            this.setState({ipfsHash: result[0].hash})
+            this.setState({ ipfsHash: result[0].hash })
             console.log('digest: ', this.state.digest);
-            console.log('name: :', this.state.name);
+            console.log('name: :', this.state.firstname);
             console.log('ipfsHash: ', result[0].hash);
             console.log('account: ', this.state.account);
-            this.powInstance.uploadDocument(this.state.digest, this.state.name, result[0].hash, { from: this.state.account });
+            this.powInstance.uploadDocument(this.state.digest, this.state.firstname, result[0].hash, { from: this.state.account });
             this.powInstance.fetchDocument.call(this.state.digest, { from: this.state.account }).then(result => {
-                
-                this.setState({digest:result[0],timestamp:result[1].valueOf(),ipfsHash:result[2]})
+
+                this.setState({ digest: result[0], timestamp: result[1].valueOf(), ipfsHash: result[2] })
                 console.log(result);
             })
             //this.setState({ ipfsHash: result[0].hash });
@@ -103,13 +103,13 @@ class Upload extends Component {
 
         let file = e.target.files[0];
         let reader = new window.FileReader();
+        let readerPreview = new FileReader();
 
         console.log(file);
         console.log("name=" + e.target.name);
         console.log("value=" + e.target.value);
 
         if (file) {
-            //reader.readAsDataURL(file)
             reader.readAsArrayBuffer(file);
             reader.onloadend = () => {
                 var md = forge.md.sha256.create();
@@ -123,6 +123,10 @@ class Upload extends Component {
                 console.log("docHash: " + docHash);
             }
 
+            readerPreview.readAsDataURL(file);
+            readerPreview.onloadend = () => {
+                    this.setState({ imagePreview: readerPreview.result });
+                }
         } else {
             console.log('There is no image file selected')
             this.setState({ fileInput: '', fileBuffer: '' });
@@ -189,10 +193,10 @@ class Upload extends Component {
             console.log(this.state.fileInput)
             $imagePreview = (
                 <div>
-                    <DocumentPreviewCard fileBuffer={ipfsUrl} />
-                    <DocumentDetailsCard
+                    <ImagePreviewCard fileBuffer={this.state.imagePreview} />
+                    <ArtifactCard
                         fileInput={this.state.fileInput}
-                        name={this.state.name}
+                        name={this.state.firstname}
                         email={this.state.email}
                         timestamp={this.state.dateInput}
                         docHash={this.state.digest}

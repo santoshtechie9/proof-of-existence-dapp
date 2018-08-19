@@ -83,46 +83,12 @@ class Home extends Component {
 
     render() {
         const stylr = { maxHeight: "440px", overflowY: "scroll" }
-        let items = [
-            {
-                userName: "user1",
-                docHash: "0x8194327041372418237410324871320847132",
-                docTimestamp: '2018-08-18 20:30:23',
-                ipfsHash: 'fdaskljfpiowejfadslkjavdlksjafopiweurqqpweorijafsdfkljasd;fiqoweurpqewoi',
-            },
-            {
-                userName: "user1",
-                docHash: "0x8194327041372418237410324871320847132",
-                docTimestamp: '2018-08-18 20:30:23',
-                ipfsHash: 'fdaskljfpiowejfadslkjavdlksjafopiweurqqpweorijafsdfkljasd;fiqoweurpqewoi',
-            }, {
-                userName: "user1",
-                docHash: "0x8194327041372418237410324871320847132",
-                docTimestamp: '2018-08-18 20:30:23',
-                ipfsHash: 'fdaskljfpiowejfadslkjavdlksjafopiweurqqpweorijafsdfkljasd;fiqoweurpqewoi',
-            }, {
-                userName: "user1",
-                docHash: "0x8194327041372418237410324871320847132",
-                docTimestamp: '2018-08-18 20:30:23',
-                ipfsHash: 'fdaskljfpiowejfadslkjavdlksjafopiweurqqpweorijafsdfkljasd;fiqoweurpqewoi',
-            }, {
-                userName: "user1",
-                docHash: "0x8194327041372418237410324871320847132",
-                docTimestamp: '2018-08-18 20:30:23',
-                ipfsHash: 'fdaskljfpiowejfadslkjavdlksjafopiweurqqpweorijafsdfkljasd;fiqoweurpqewoi',
-            }, {
-                userName: "user1",
-                docHash: "0x8194327041372418237410324871320847132",
-                docTimestamp: '2018-08-18 20:30:23',
-                ipfsHash: 'fdaskljfpiowejfadslkjavdlksjafopiweurqqpweorijafsdfkljasd;fiqoweurpqewoi',
-            },
-        ];
 
-        items = this.state.items;
-        let $dicplayCards = null;
+        let items = this.state.items;
+        let $displayCards = null;
 
         if (items !== null && items.length !== 0) {
-            $dicplayCards = items.map((item,index) => {
+            $displayCards = items.map((item,index) => {
                 return (
                     <Row key={index}>
                         <Col xs="12" sm="12" lg="12">
@@ -148,7 +114,7 @@ class Home extends Component {
             });
 
         } else {
-            $dicplayCards = () => {
+            $displayCards = () => {
                 return (
                     <Row>
                         <Col xs="12" sm="12" lg="12">
@@ -170,6 +136,14 @@ class Home extends Component {
                     <br />
                     <Row>
                         <Col>
+
+                        <p>Add another component here</p>
+
+                        </Col>
+                        </Row>
+
+                    <Row>
+                        <Col>
                             <Card>
                                 <CardBody>
                                     <div className="container-fluid p-5 activity">
@@ -178,7 +152,7 @@ class Home extends Component {
                                         </div>
                                         <div id="activity_stream" style={stylr}>
                                             <div className="mb-4 col offset-lg-1 col-lg-10">
-                                                {$dicplayCards}
+                                                {$displayCards}
                                             </div>
                                         </div>
                                     </div>

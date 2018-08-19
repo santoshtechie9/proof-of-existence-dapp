@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   CardBody,
-  CardFooter,
   Col,
   Form,
   FormGroup,
@@ -33,16 +32,17 @@ const BasicForm = (props) => {
                 <Label htmlFor="exampleInputName2" >First Name</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" id="exampleInputName2" placeholder="John Doe" name="name" onChange={(event) => props.handleChange(event)} required />
+                <Input type="text" id="exampleInputName2" placeholder="John" name="firstname" onChange={(event) => props.handleChange(event)} required />
                 <FormText className="help-block">Please enter your name</FormText>
               </Col>
             </FormGroup>
-            <FormGroup>
+
+            <FormGroup row>
               <Col md="3">
-                <Label htmlFor="exampleInputName2" >Last Name</Label>
+                <Label htmlFor="exampleInputName3" >Last Name</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" id="exampleInputName2" placeholder="John Doe" name="name" onChange={(event) => props.handleChange(event)} required />
+                <Input type="text" id="exampleInputName3" placeholder="Doe" name="lastname" onChange={(event) => props.handleChange(event)} required />
                 <FormText className="help-block">Please enter your name</FormText>
               </Col>
             </FormGroup>
@@ -72,11 +72,9 @@ const BasicForm = (props) => {
               </Col>
             </FormGroup>
           </Form>
+            <Button type="reset" size="sm" color="warning"><i className="fa fa-ban"></i> Reset</Button>&nbsp; &nbsp;
+          <Button type="submit" size="sm" color="info" onClick={props.handleSubmit}><i className="fa fa-dot-circle-o"></i> Submit</Button>
         </CardBody>
-        <CardFooter>
-          <Button type="submit" size="sm" color="primary" onClick={props.handleSubmit}><i className="fa fa-dot-circle-o"></i> Submit</Button>&nbsp; &nbsp;
-            <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
-        </CardFooter>
       </Card>
     </div>
   );

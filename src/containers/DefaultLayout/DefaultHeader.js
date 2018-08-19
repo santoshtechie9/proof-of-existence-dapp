@@ -9,6 +9,10 @@ const propTypes = {
 
 const defaultProps = {};
 
+const style = {
+  backgroundColor: "blue"
+}
+
 class DefaultHeader extends Component {
 
   render() {
@@ -22,7 +26,7 @@ class DefaultHeader extends Component {
 
     return (
       <React.Fragment>
-        <Nav className="d-md-down-none" navbar>
+        <Nav stype={style} className="d-md-down-none" navbar>
           <NavItem className="px-3">
             <NavLink href="/">Home</NavLink>
           </NavItem>
