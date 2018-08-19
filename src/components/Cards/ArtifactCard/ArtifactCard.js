@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card,CardHeader,CardBody,Row,Col,Label} from 'reactstrap';
+import {Card,CardBody,Row,Col,Label} from 'reactstrap';
 
 const artifactCard = (props) => {
 
