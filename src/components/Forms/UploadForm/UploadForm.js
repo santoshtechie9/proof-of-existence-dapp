@@ -14,13 +14,13 @@ import {
   Label,
 } from 'reactstrap';
 
-const BasicForm = (props) => {
+const UploadForm = (props) => {
 
     return (
       <div className="animated fadeIn flex-row align-items-center">
         <Card >
           <CardHeader>
-            <strong>Notarize</strong> Form
+            <strong>Upload</strong> Form
               </CardHeader>
           <CardBody>
             <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -52,22 +52,12 @@ const BasicForm = (props) => {
               </FormGroup>
               <FormGroup row>
                 <Col md="3">
-                  <Label htmlFor="dateInput">Date Input <Badge>NEW</Badge></Label>
+                  <Label htmlFor="dateInput">Date Input</Label>
                 </Col>
                 <Col xs="12" md="9">
                   <Input type="date" id="dateInput" name="dateInput" placeholder="date" onChange={(event) => props.handleChange(event)} />
                 </Col>
               </FormGroup>
-              {/* <FormGroup row>
-                <Col md="3">
-                  <Label htmlFor="textAreaInput">Textarea</Label>
-                </Col>
-                <Col xs="12" md="9">
-                  <Input type="textarea" name="textAreaInput" id="textAreaInput" rows="8"
-                    placeholder="Enter text here" onChange={(event) => props.handleChange(event)} />
-                  <FormText color="muted">This is a help text</FormText>
-                </Col>
-              </FormGroup> */}
               <FormGroup row>
                 <Col md="3">
                   <Label htmlFor="fileInput">File input</Label>
@@ -76,29 +66,10 @@ const BasicForm = (props) => {
                   <Input type="file" id="fileInput" name="fileInput" onChange={(e)=>props.handleImageChange(e)} />
                 </Col>
               </FormGroup>
-              <FormGroup row>
-                <Col md="3">
-                  <Label htmlFor="file-multiple-input">Multiple File input<Badge>Comming Soon</Badge></Label>
-                </Col>
-                <Col xs="12" md="9">
-                  {/* <Input type="file" id="file-multiple-input" name="file-multiple-input" multiple /> */}
-                </Col>
-              </FormGroup>
-              <FormGroup row hidden>
-                <Col md="3">
-                  <Label className="custom-file" htmlFor="custom-fileInput">Custom file input</Label>
-                </Col>
-                <Col xs="12" md="9">
-                  <Label className="custom-file">
-                    <Input className="custom-file" type="file" id="custom-fileInput" name="fileInput" />
-                    <span className="custom-file-control"></span>
-                  </Label>
-                </Col>
-              </FormGroup>
             </Form>
           </CardBody>
           <CardFooter>
-            <Button type="submit" size="sm" color="primary" onClick={props.handleSubmit}><i className="fa fa-dot-circle-o"></i> Submit</Button>&nbsp; &nbsp;
+            <Button type="submit" size="sm" color="primary" onClick={props.handleSubmit}><i className="fa fa-dot-circle-o"></i> Upload</Button>&nbsp; &nbsp;
             <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
           </CardFooter>
         </Card>
@@ -106,4 +77,4 @@ const BasicForm = (props) => {
     );
   }
 
-export default BasicForm;
+export default UploadForm;

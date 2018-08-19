@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import forge from 'node-forge';
-import BasicForm from '../../components/Forms/BasicForm/BasicForm';
-import DocumentDetailsCard from '../../components/Cards/DocumentDetailsCard/DocumentDetailsCard';
-import DocumentPreviewCard from '../../components/Cards/DocumentPreviewCard/DocumentPreviewCard';
+import UploadForm from '../../components/Forms/UploadForm/UploadForm';
+import DetailCard from '../../components/Cards/DetailCard/DetailCard';
+import PreviewCard from '../../components/Cards/PreviewCard/PreviewCard';
 import WarningModal from '../../components/Modals/WarningModal';
 import ProofOfOwnershipContract from '../../../build/contracts/ProofOfExistance.json';
 import getWeb3 from '../../utils/getWeb3';
 import ipfs from '../../ipfs/ipfs';
 
-class Notarize extends Component {
+class Upload extends Component {
 
     state = {
         storageValue: 0,
@@ -27,13 +27,12 @@ class Notarize extends Component {
     componentWillMount() {
         // Get network provider and web3 instance.
         // See utils/getWeb3 for more info.
-
-        console.log("componentWillMount Notarize")
+        console.log("componentWillMount Upload")
 
         getWeb3
             .then(results => {
                 const publicAddress = results.web3.eth.coinbase.toLowerCase()
-                console.log(" componentWillMount Notarize this: ", this)
+                console.log(" componentWillMount Upload this: ", this)
                 this.setState({
                     web3: results.web3,
                     loading: true,
@@ -45,8 +44,6 @@ class Notarize extends Component {
             .catch(() => {
                 console.log('Error finding web3.')
             });
-
-
     }
 
     toggleWarning = () => {
@@ -57,34 +54,25 @@ class Notarize extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
+        const powInstance = this.powInstance;
         console.log("Clicked on Submit button ");
         console.log(this.state);
-        this.setState({uploadedInIpfs: false})
+        this.setState({ uploadedInIpfs: false })
         ipfs.files.add(this.state.fileBuffer, (error, result) => {
-          
+
             if (error) {
                 console.error(error);
                 window.alert(error)
                 return;
             }
 
-            this.setState({ipfsHash: result[0].hash})
+            this.setState({ ipfsHash: result[0].hash })
             console.log('digest: ', this.state.digest);
             console.log('name: :', this.state.name);
             console.log('account: ', this.state.account);
             console.log('ipfsHash: ', this.state.ipfsHash);
-            console.log("submit button this:",this);
-            this.state.powInstance.uploadDocument(this.state.digest, this.state.name, result[0].hash, { from: this.state.account }).then((result)=>{
-                console.log("upload document result: " , result)
-               return  this.state.powInstance.fetchDocument.call(this.state.digest, { from: this.state.account })
-            }).then(result => {
-                this.setState({digest:result[0],timestamp:result[1].valueOf(),ipfsHash:result[2]})
-                console.log("fetch document: ", result);
-            }).error((error)=>{
-                console.log("error: ", error);
-                window.alert(error);
-            })
-            //this.setState({ ipfsHash: result[0].hash });
+            console.log("submit button this:", this);
+            powInstance.uploadDocument(this.state.digest, this.state.name, result[0].hash, { from: this.state.account });
         });
 
         console.log("file has been uploaded to IPFS")
@@ -94,9 +82,6 @@ class Notarize extends Component {
     handleChange = (event) => {
         let name = event.target.name;
         let value = event.target.value;
-        //console.log("name=" + name);
-        //console.log("value=" + value);
-
         if (name !== "fileInput" && value.length !== 0) {
             this.setState({ [name]: value });
         } else {
@@ -112,12 +97,12 @@ class Notarize extends Component {
         let reader = new window.FileReader();
         let readerPreview = new window.FileReader();
 
-        console.log("Notarize: handle image change: file",file);
+        console.log("Upload: handle image change: file", file);
         console.log("name=" + e.target.name);
         console.log("value=" + e.target.value);
 
         if (file) {
-            //reader.readAsDataURL(file)
+            // Create file buffer array to upload in IPFS
             reader.readAsArrayBuffer(file);
             reader.onloadend = () => {
                 var md = forge.md.sha256.create();
@@ -127,29 +112,24 @@ class Notarize extends Component {
                 this.setState({ fileInput: file.name, fileBuffer: Buffer(reader.result), digest: digest });
                 console.log('buffer:', this.state.fileBuffer);
                 var docHash = digest;
-                console.log("docHash: " , docHash);
+                console.log("docHash: ", docHash);
             }
+            // Create file data stream to display in the preview component
             readerPreview.readAsDataURL(file);
             readerPreview.onloadend = () => {
-                this.setState({imagePreviewData: readerPreview.result})
-                console.log("Notarize: image change: state: " , this.state)
+                this.setState({ imagePreviewData: readerPreview.result })
+                console.log("Upload: image change: state: ", this.state)
             }
         } else {
             console.log('There is no image file selected')
             this.setState({ fileInput: '', fileBuffer: '' });
         }
-        
+
         console.log(this.state.fileBuffer);
 
     }
 
     instantiateContract = () => {
-        /*
-         * SMART CONTRACT EXAMPLE
-         *
-         * Normally these functions would be called in the context of a
-         * state management library, but for convenience I've placed them here.
-         */
 
         const contract = require('truffle-contract')
         const pow = contract(ProofOfOwnershipContract)
@@ -157,7 +137,6 @@ class Notarize extends Component {
 
         // Declaring this for later so we can chain functions on powInstance.
         //var powInstance
-
 
         const publicAddress = this.state.web3.eth.coinbase.toLowerCase();
         console.log("--------public address----------")
@@ -169,7 +148,7 @@ class Notarize extends Component {
 
             pow.deployed().then((instance) => {
                 this.powInstance = instance;
-                this.setState({ powInstance:instance , account: accounts[0] });
+                this.setState({ powInstance: instance, account: accounts[0] });
             })
         })
     }
@@ -200,9 +179,9 @@ class Notarize extends Component {
             console.log(this.state.fileInput)
             $imagePreview = (
                 <div>
-                    {/* <DocumentPreviewCard fileBuffer={ipfsUrl} /> */}
-                    <DocumentPreviewCard fileBuffer={this.state.imagePreviewData} />
-                    <DocumentDetailsCard
+                    {/* <PreviewCard fileBuffer={ipfsUrl} /> */}
+                    <PreviewCard fileBuffer={this.state.imagePreviewData} />
+                    <DetailCard
                         fileInput={this.state.fileInput}
                         name={this.state.name}
                         email={this.state.email}
@@ -230,7 +209,7 @@ class Notarize extends Component {
                 <Container fluid>
                     <Row>
                         <Col xs="12" md="6" xl="6">
-                            <BasicForm
+                            <UploadForm
                                 name={prefill.name}
                                 handleSubmit={this.handleSubmit}
                                 handleChange={this.handleChange}
@@ -247,4 +226,4 @@ class Notarize extends Component {
     }
 }
 
-export default Notarize;
+export default Upload;

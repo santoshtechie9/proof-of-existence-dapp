@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardHeader, CardBody } from 'reactstrap';
 
-const documentPreviewCard = (props) => {
+const previewCard = (props) => {
 
     const style = {
         //backgroundColor: 'rgba(255,0,0,0.1)',
@@ -28,4 +28,4 @@ const documentPreviewCard = (props) => {
     );
 }
 
-export default documentPreviewCard;
+export default previewCard;

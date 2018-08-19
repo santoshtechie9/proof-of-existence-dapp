@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Forms from './Forms';
+import UploadForm from './UploadForm';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<Forms />, div);
+  ReactDOM.render(<UploadForm />, div);
   ReactDOM.unmountComponentAtNode(div);
 });

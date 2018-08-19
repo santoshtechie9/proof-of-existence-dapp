@@ -27,10 +27,10 @@ class DefaultHeader extends Component {
             <NavLink href="/">Main</NavLink>
           </NavItem>
           <NavItem className="px-3">
-            <NavLink href="/dashboard">Dashboard</NavLink>
+            <NavLink href="dashboard">Dashboard</NavLink>
           </NavItem>
           <NavItem className="px-3">
-            <NavLink href="notarize">Notarize</NavLink>
+            <NavLink href="upload">Upload Document</NavLink>
           </NavItem>
           <NavItem className="px-3">
             <NavLink href="verify">Verify Document</NavLink>

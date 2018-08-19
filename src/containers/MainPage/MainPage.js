@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Carousels from '../../components/Carousels/Carousels';
 
-class HomePage extends Component {
+class MainPage extends Component {
 
     state = {}
 
@@ -15,4 +15,4 @@ class HomePage extends Component {
 
 }
 
-export default HomePage;
+export default MainPage;

@@ -4,11 +4,11 @@ import { AppAside, AppFooter, AppHeader } from '@coreui/react';
 import DefaultAside from './DefaultAside';
 import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
-import Notarize from '../Notarize/Notarize';
+import Upload from '../Upload/Upload';
 import Verify from '../Verify/Verify';
 import getWeb3 from '../../utils/getWeb3';
 import Dashboard from '../Dashboard/Dashboard';
-import HomePage from '../HomePage/HomePage';
+import MainPage from '../MainPage/MainPage';
 
 class DefaultLayout extends Component {
 
@@ -42,9 +42,9 @@ class DefaultLayout extends Component {
           <main className="main">
             <Router>
               <div>
-                <Route exact path="/" component={HomePage} />
+                <Route exact path="/" component={MainPage} />
                 <Route path="/dashboard" component={Dashboard} />
-                <Route path="/notarize" component={Notarize} />
+                <Route path="/upload" component={Upload} />
                 <Route path="/verify" component={Verify} />
               </div>
             </Router>
