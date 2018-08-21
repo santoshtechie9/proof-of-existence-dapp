@@ -5,9 +5,12 @@ import UploadForm from '../../components/Forms/UploadForm/UploadForm';
 import DetailCard from '../../components/Cards/DetailCard/DetailCard';
 import PreviewCard from '../../components/Cards/PreviewCard/PreviewCard';
 import WarningModal from '../../components/Modals/WarningModal';
-import ProofOfOwnershipContract from '../../../build/contracts/ProofOfExistance.json';
+import ProofOfExistenceContract from '../../../build/contracts/ProofOfExistance.json';
+import ProofLogic from '../../../build/contracts/ProofLogic.json';
+import Relay from '../../../build/contracts/Relay.json';
 import getWeb3 from '../../utils/getWeb3';
-import ipfs from '../../ipfs/ipfs';
+import getContract from '../../utils/getContract';
+import ipfs from '../../utils/ipfs';
 
 class Upload extends Component {
 
@@ -27,23 +30,30 @@ class Upload extends Component {
     componentWillMount() {
         // Get network provider and web3 instance.
         // See utils/getWeb3 for more info.
-        console.log("componentWillMount Upload")
+        console.log("componentWillMount Upload");
 
-        getWeb3
-            .then(results => {
-                const publicAddress = results.web3.eth.coinbase.toLowerCase()
-                console.log(" componentWillMount Upload this: ", this)
-                this.setState({
-                    web3: results.web3,
-                    loading: true,
-                    publicAddress: publicAddress
-                })
-                console.log("ipfs =", ipfs);
-                this.instantiateContract();
+
+
+        getWeb3.then(results => {
+            //add comments here
+            const publicAddress = results.web3.eth.coinbase.toLowerCase();
+            const proofOfExistenceInstance = getContract(ProofOfExistenceContract);
+            const proofLogicInstance = getContract(ProofLogic);
+            const relayInstance = getContract(Relay);
+            console.log(" Upload componentWillMount  this: ", this);
+
+            this.setState({
+                web3: results.web3,
+                loading: true,
+                publicAddress: publicAddress,
+                proofOfExistenceInstance: proofOfExistenceInstance,
+                proofLogicInstance: proofLogicInstance,
+                relayInstance: relayInstance
             })
-            .catch(() => {
-                console.log('Error finding web3.')
-            });
+
+        }).catch(() => {
+            console.log('Error finding web3.')
+        });
     }
 
     toggleWarning = () => {
@@ -52,30 +62,85 @@ class Upload extends Component {
         });
     }
 
+    handleReset = () => {
+        console.log("Inside handleReset ")
+        document.getElementById("document-uplaod-form").reset();
+        this.setState({ name: '', email: '', dateInput: '', fileInput: '', imagePreviewUrl: '', digest: '', blockchainDigest: '', fileBuffer:'' });
+        console.log(this.state)
+    }
+
     handleSubmit = (event) => {
         event.preventDefault();
-        const powInstance = this.powInstance;
+        // const powInstance = this.powInstance;
         console.log("Clicked on Submit button ");
         console.log(this.state);
         this.setState({ uploadedInIpfs: false })
-        ipfs.files.add(this.state.fileBuffer, (error, result) => {
+        // ipfs.files.add(this.state.fileBuffer, (error, result) => {
 
-            if (error) {
-                console.error(error);
-                window.alert(error)
-                return;
-            }
+        //     if (error) {
+        //         console.error(error);
+        //         window.alert(error)
+        //         return;
+        //     }
 
-            this.setState({ ipfsHash: result[0].hash })
-            console.log('digest: ', this.state.digest);
-            console.log('name: :', this.state.name);
-            console.log('account: ', this.state.account);
-            console.log('ipfsHash: ', this.state.ipfsHash);
-            console.log("submit button this:", this);
-            powInstance.uploadDocument(this.state.digest, this.state.name, result[0].hash, { from: this.state.account });
-        });
+           // console.log("file has been uploaded to ipfs =", result)
+        // this.setState({ ipfsHash: result[0].hash, uploadedInIpfs: false })
+             this.setState({ ipfsHash: this.state.digest, uploadedInIpfs: false })
+            console.log('digest :', this.state.digest);
+            console.log('name :', this.state.name);
+            console.log('account :', this.state.account);
+            console.log('ipfsHash :', this.state.ipfsHash);
+            console.log("submit button this :", this);
 
-        console.log("file has been uploaded to IPFS")
+            this.state.web3.eth.getAccounts((error, accounts) => {
+
+                if (error) {
+                    console.error(error);
+                    window.alert(error)
+                    return;
+                }
+                
+                // this.state.proofOfExistenceInstance.deployed().then((instance) => {
+                //     //return instance.uploadDocument(this.state.digest, this.state.name, result[0].hash, { from: this.state.publicAddress });
+                //     return instance.uploadDocument(this.state.digest, this.state.name, this.state.digest, { from: this.state.publicAddress });
+                // }).then((uploadResult)=>{
+                //     console.log("uploadResult =",uploadResult);
+                //     window.alert("document has been uploaded");
+                // }).catch((error => {
+                //     console.error(error);
+                //     window.alert(error)
+                // }))
+
+
+                //const proofOfLogicInst;
+
+                this.state.relayInstance.deployed().then((instance) => {
+                    return instance.getCurrentVersion.call({ from: this.state.publicAddress });
+                }).then((currentContractAddress) => {
+                    console.log("relayInstance  current address : ", currentContractAddress)
+                    return currentContractAddress;
+                }).then((proofLogicAddress) => {
+                    this.proofOfLogicInst = this.state.proofLogicInstance.at(proofLogicAddress);
+                    return this.proofOfLogicInst;
+                }).then((proofLogicInstance) => {
+                    console.log("Inside proofLogic1")
+                    //return proofLogicInstance.upDocument(this.state.digest, this.state.name, result[0].hash,{ from: this.state.publicAddress });
+                    return proofLogicInstance.uploadDocument(this.state.digest, this.state.name, this.state.digest,{ from: this.state.publicAddress });
+                }).then((result) => {
+                    console.log("proofLogic upload result: ", result);
+                    return this.proofOfLogicInst.fetchDocument.call(this.state.digest,{from:this.state.publicAddress});
+                }).then((downloadDocumentResult)=>{
+                    console.log("proofLogic download result: ", downloadDocumentResult);
+                }).catch((error) => {
+                    console.log("----------------error---------------")
+                    console.log(error)
+                    window.alert("Unable to fetch greet. Deploy Smart Contracts and Activate Metmask")
+                })
+
+
+            });
+        //});
+
     }
 
 
@@ -128,31 +193,6 @@ class Upload extends Component {
         console.log(this.state.fileBuffer);
 
     }
-
-    instantiateContract = () => {
-
-        const contract = require('truffle-contract')
-        const pow = contract(ProofOfOwnershipContract)
-        pow.setProvider(this.state.web3.currentProvider)
-
-        // Declaring this for later so we can chain functions on powInstance.
-        //var powInstance
-
-        const publicAddress = this.state.web3.eth.coinbase.toLowerCase();
-        console.log("--------public address----------")
-        console.log(publicAddress);
-        console.log('state: ', this.state)
-
-        // Get accounts.
-        this.state.web3.eth.getAccounts((error, accounts) => {
-
-            pow.deployed().then((instance) => {
-                this.powInstance = instance;
-                this.setState({ powInstance: instance, account: accounts[0] });
-            })
-        })
-    }
-
 
     render() {
 
@@ -212,6 +252,7 @@ class Upload extends Component {
                             <UploadForm
                                 name={prefill.name}
                                 handleSubmit={this.handleSubmit}
+                                handleReset={this.handleReset}
                                 handleChange={this.handleChange}
                                 handleImageChange={this.handleImageChange} />
                         </Col >

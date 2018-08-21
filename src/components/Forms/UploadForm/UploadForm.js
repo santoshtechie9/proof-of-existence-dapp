@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Badge,
   Button,
   Card,
   CardBody,
@@ -23,7 +22,7 @@ const UploadForm = (props) => {
             <strong>Upload</strong> Form
               </CardHeader>
           <CardBody>
-            <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+            <Form id="document-uplaod-form" action="" method="post" encType="multipart/form-data" className="form-horizontal">
               <FormGroup row>
                 <Col md="3">
                   <Label>Type</Label>
@@ -70,7 +69,7 @@ const UploadForm = (props) => {
           </CardBody>
           <CardFooter>
             <Button type="submit" size="sm" color="primary" onClick={props.handleSubmit}><i className="fa fa-dot-circle-o"></i> Upload</Button>&nbsp; &nbsp;
-            <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+            <Button type="reset" size="sm" color="danger" onClick={props.handleReset}><i className="fa fa-ban"></i> Reset</Button>
           </CardFooter>
         </Card>
       </div>
