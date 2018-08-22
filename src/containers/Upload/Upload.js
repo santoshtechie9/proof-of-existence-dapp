@@ -6,7 +6,7 @@ import DetailCard from '../../components/Cards/DetailCard/DetailCard';
 import PreviewCard from '../../components/Cards/PreviewCard/PreviewCard';
 import WarningModal from '../../components/Modals/WarningModal';
 import ProofOfExistenceContract from '../../../build/contracts/ProofOfExistance.json';
-import ProofLogic from '../../../build/contracts/ProofLogic.json';
+import Proof from '../../../build/contracts/Proof.json';
 import Relay from '../../../build/contracts/Relay.json';
 import getWeb3 from '../../utils/getWeb3';
 import getContract from '../../utils/getContract';
@@ -38,7 +38,7 @@ class Upload extends Component {
             //add comments here
             const publicAddress = results.web3.eth.coinbase.toLowerCase();
             const proofOfExistenceInstance = getContract(ProofOfExistenceContract);
-            const proofLogicInstance = getContract(ProofLogic);
+            const proofLogicInstance = getContract(Proof);
             const relayInstance = getContract(Relay);
             console.log(" Upload componentWillMount  this: ", this);
 

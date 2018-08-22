@@ -1,6 +1,8 @@
 pragma solidity ^0.4.22;
 
-contract ProofDB {
+import './Mortal.sol';
+
+contract ProofDB  is Mortal {
     
     //Document idenfiers alongwith ipfs has of the document
     struct Document {
@@ -15,7 +17,6 @@ contract ProofDB {
         string userName;
         bytes32[] documentList;
         mapping(bytes32 => Document) documentDetails;
-        //uint lastUploadTimestamp;
     }
 
     //Maintain user usage count to implement throtlling
@@ -24,28 +25,47 @@ contract ProofDB {
         uint count;
     }
     
-    address public owner;
     address[] public allowedContractsKeys;
-    mapping(address => bool) public allowedContracts;
+    mapping(address => bool) allowedContracts;
     mapping( address => User )  users;
     mapping( address => bool )  admins;
     mapping( string => Document )  documents;
-    bytes32 public documentHash;
     
     modifier onlyAllowedContractOrOwner {
         require (allowedContracts[msg.sender] != true && msg.sender != owner,"Should be a owner");
         _;
     }
+
+    function addAllowedContractOrOwner(address _addr)
+    public
+    onlyOwner 
+    returns(bool) {
+        if( allowedContracts[_addr] == false ) {
+            allowedContracts[_addr] = true;
+            allowedContractsKeys.push(_addr);
+            return true;
+        }
+        return false;
+    }
+
+    function isAllowedContractOrOwner(address _addr)
+    public
+    view 
+    returns(bool) {
+        return allowedContracts[_addr];
+    }
     
     function addDocument(address caller, bytes32 _docHash, string _userName, string _ipfsHash) 
     public
     returns(bool) {
-        users[caller].addr = msg.sender;
-        users[caller].userName = _userName;
-        users[caller].documentList.push(_docHash);
-        users[caller].documentDetails[_docHash] = Document(_docHash, block.timestamp,_ipfsHash);
-        documentHash = _docHash;
-        return true;
+        if(users[caller].documentDetails[_docHash].docHash == 0x0 ){
+            users[caller].addr = msg.sender;
+            users[caller].userName = _userName;
+            users[caller].documentList.push(_docHash);
+            users[caller].documentDetails[_docHash] = Document(_docHash, block.timestamp,_ipfsHash);
+            return true;
+        }
+        return false;
     }
     
     function getDocument(address caller,bytes32 _docHash) 
@@ -62,23 +82,6 @@ contract ProofDB {
     view 
     returns(bytes32[]){
         return users[caller].documentList;
-    }
-    
-    mapping( address => UserUsageCount ) userUsage;
-
-    function setUserUsage(address caller,uint _uploadTime,uint _count) 
-    public 
-    returns(bool){
-        userUsage[caller].uploadTime = _uploadTime;
-        userUsage[caller].count = _count;
-        return true;
-    }
-
-    function getUserUsage(address caller)
-    public
-    view 
-    returns(uint,uint){
-        return(userUsage[caller].uploadTime,userUsage[caller].count);
     }
 
 }   

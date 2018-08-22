@@ -3,7 +3,7 @@ var ProofOfOwnership = artifacts.require("./ProofOfOwnership.sol");
 var ProofOfExistance = artifacts.require("./ProofOfExistance.sol");
 var Mortal = artifacts.require("./Mortal.sol");
 var ProofDB = artifacts.require("./ProofDB.sol");
-var ProofLogic = artifacts.require("./ProofLogic.sol");
+var Proof = artifacts.require("./Proof.sol");
 var Relay = artifacts.require("./Relay.sol");
 
 module.exports = function(deployer) {
@@ -13,9 +13,9 @@ module.exports = function(deployer) {
   deployer.deploy(ProofOfExistance).then(()=>{
     return deployer.deploy(ProofDB)
   }).then(()=>{
-    return deployer.deploy(ProofLogic, ProofDB.address);
+    return deployer.deploy(Proof, ProofDB.address);
   }).then(()=>{
-    return deployer.deploy(Relay, ProofLogic.address);
+    return deployer.deploy(Relay, Proof.address);
   })
 
 };

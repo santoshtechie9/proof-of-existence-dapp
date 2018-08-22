@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, CardBody } from 'reactstrap';
 import getWeb3 from '../../utils/getWeb3';
 import getContract from '../../utils/getContract';
 import ProofOfExistanceContract from '../../../build/contracts/ProofOfExistance.json';
-import ProofLogic from '../../../build/contracts/ProofLogic.json';
+import Proof from '../../../build/contracts/Proof.json';
 import Relay from '../../../build/contracts/Relay.json';
 
 class Dashboard extends Component {
@@ -21,7 +21,7 @@ class Dashboard extends Component {
             console.log("Dashboard: publicAddress: ", publicAddress);
             console.log("Initializing the contract");
             const ProofOfExistanceInstance = getContract(ProofOfExistanceContract);
-            const proofLogicInstance = getContract(ProofLogic);
+            const proofLogicInstance = getContract(Proof);
             const relayInstance = getContract(Relay);
 
             this.setState({

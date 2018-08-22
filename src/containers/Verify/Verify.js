@@ -6,7 +6,7 @@ import VerificationForm from '../../components/Forms/VerificationForm/Verificati
 import WarningModal from '../../components/Modals/WarningModal';
 import getWeb3 from '../../utils/getWeb3';
 import forge from 'node-forge';
-import ProofLogic from '../../../build/contracts/ProofLogic.json';
+import Proof from '../../../build/contracts/Proof.json';
 import Relay from '../../../build/contracts/Relay.json';
 import getContract from '../../utils/getContract';
 
@@ -69,7 +69,7 @@ class Verify extends Component {
         getWeb3.then(results => {
 
             const publicAddress = results.web3.eth.coinbase.toLowerCase();
-            const proofLogicInstance = getContract(ProofLogic);
+            const proofLogicInstance = getContract(Proof);
             const relayInstance = getContract(Relay);
             console.log(" Verify componentWillMount  this: ", this);
 

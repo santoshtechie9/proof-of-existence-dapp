@@ -5,7 +5,6 @@ import './Mortal.sol';
 contract Relay is Mortal {
     
     address public currentVersion;
-    address public owner;
     
     event LogCurrentVersion(address _address);
     
@@ -14,13 +13,12 @@ contract Relay is Mortal {
         _;
     }
     
-    
     constructor(address initAddr) public {
         currentVersion = initAddr;
         owner = msg.sender;
     }
     
-    function changeContract(address newVersion) public
+    function changeContractVersion(address newVersion) public
     onlyOwner()
     {
         currentVersion = newVersion;
@@ -29,10 +27,6 @@ contract Relay is Mortal {
     function getCurrentVersion() public returns(address){
         emit LogCurrentVersion(currentVersion);
         return currentVersion;
-    }
-
-    function() public {
-        require(currentVersion.delegatecall(msg.data),"contract call failed");
     }
     
 }
