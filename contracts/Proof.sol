@@ -42,8 +42,9 @@ contract Proof is Mortal{
     }
 
     //Events for logging
-    event LogUploadDocument(address _addr,bytes32 _userName, bytes32 _dochash, uint _docTimestamp, bytes32 _ipfsHash, string _notes);
-    
+    event LogUploadDocument(address _addr,bytes32 _userName, bytes32 _dochash, uint _docTimestamp, bytes _ipfsHash, string _notes);
+    event LogFallback(address _senderaddr,uint _value);
+
     //Modifiers
     modifier stopInEmergency {if (!stopped) _;}
     modifier onlyInEmergency {if (stopped) _;}
@@ -55,7 +56,7 @@ contract Proof is Mortal{
     }
 
     // function to upload the document. It stores the data in storage contract.
-    function uploadDocument(bytes32 _docHash, bytes32 _userName, bytes32 _ipfsHash,bytes32 docTags) 
+    function uploadDocument(bytes32 _docHash, bytes32 _userName, bytes _ipfsHash,bytes _docTags) 
     public
     stopInEmergency 
     returns(bool) {
@@ -66,13 +67,13 @@ contract Proof is Mortal{
         UploadChoices choice = verifyRateLimit(msg.sender);
 
         if (choice == UploadChoices.UPLOAD_CNT_RESET) {
-            status = proofDB.addDocument(msg.sender,_docHash,_userName,_ipfsHash,docTags);
+            status = proofDB.addDocument(msg.sender,_docHash,_userName,_ipfsHash,_docTags);
             userUsage[msg.sender].uploadTime = now;
             userUsage[msg.sender].count = 1;
             //Log document upload event
             emit LogUploadDocument(msg.sender, _userName,_docHash, block.timestamp,_ipfsHash,"Upload Success - Throtling count reset");
         } else if (choice == UploadChoices.UPLOAD_CNT_INCR) {
-            status = proofDB.addDocument(msg.sender,_docHash,_userName,_ipfsHash,docTags);
+            status = proofDB.addDocument(msg.sender,_docHash,_userName,_ipfsHash,_docTags);
             userUsage[msg.sender].count += 1;
             //Log document upload event
             emit LogUploadDocument(msg.sender, _userName,_docHash,block.timestamp,_ipfsHash,"Upload Success");
@@ -107,18 +108,18 @@ contract Proof is Mortal{
 
     // function to retrieve the document details.
     function fetchDocument(bytes32 _docHash) 
-    public  
-    returns(bytes32,bytes32,uint,bytes32,bytes32) {
+    public 
+    view 
+    returns(bytes32,bytes32,uint,bytes,bytes) {
         
         require(_docHash != 0x0, "Document Hash is mandatory");
         ProofDB proofDB = ProofDB(storageDb);
         bytes32 docHash;
         bytes32 userName;
         uint docTimestamp;
-        bytes32 ipfsHash;
-        bytes32 docTags;
+        bytes memory ipfsHash;
+        bytes memory docTags;
         (docHash,userName,docTimestamp,ipfsHash,docTags) = proofDB.getDocument(msg.sender,_docHash);
-        emit LogUploadDocument(msg.sender,userName,docHash, docTimestamp,ipfsHash, "Doc Fetch Req");
         return(docHash,userName,docTimestamp,ipfsHash,docTags);
     }
 
@@ -131,7 +132,14 @@ contract Proof is Mortal{
         return docHashList;
     }
 
-    function greet() public pure returns(string){
+    // Fallback method to prevet calls to with data and unknown functions to the contract.
+    // This function is invoked when a call is made to the contrat with no matching function signature. 
+    function () public payable {
+        require(msg.data.length == 0,"Message Length is not zero");
+        emit LogFallback(msg.sender,msg.value);
+    }
+
+    function greet() external pure returns(string){
         return "Hello, greet message"; 
     }
 

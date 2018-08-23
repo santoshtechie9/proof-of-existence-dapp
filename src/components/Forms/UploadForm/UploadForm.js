@@ -50,10 +50,10 @@ const UploadForm = (props) => {
               </FormGroup>
               <FormGroup row>
                 <Col md="3">
-                  <Label htmlFor="exampleInputEmail2" >Document Tags</Label>
+                  <Label htmlFor="exampleInputName3" >Document Tags</Label>
                 </Col>
                 <Col xs="12" md="9">
-                  <Input type="text" id="exampleInputName2" maxLength="32" placeholder="Blockchain, Ethereum, Solidity" name="docTags" onChange={(event) => props.handleChange(event)} required />
+                  <Input type="text" id="exampleInputName3" maxLength="32" placeholder="Blockchain, Ethereum, Solidity" name="docTags" onChange={(event) => props.handleChange(event)} required />
                   <FormText className="help-block">Please enter document tags (max length is 32 chars)</FormText>
                 </Col>
               </FormGroup>

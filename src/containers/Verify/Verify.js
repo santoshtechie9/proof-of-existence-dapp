@@ -5,7 +5,6 @@ import PreviewCard from '../../components/Cards/PreviewCard/PreviewCard';
 import VerificationForm from '../../components/Forms/VerificationForm/VerificationForm';
 import WarningModal from '../../components/Modals/WarningModal';
 import getWeb3 from '../../utils/getWeb3';
-import forge from 'node-forge';
 import Proof from '../../../build/contracts/Proof.json';
 import Relay from '../../../build/contracts/Relay.json';
 import getContract from '../../utils/getContract';
@@ -27,6 +26,7 @@ class Verify extends Component {
         success: false,
         warning: false,
         info: false,
+        docHash: "0x0000000000000000000000000000000000000000000000000000000000000000",
         contractResponse: {
             name: "",
             email: "",
@@ -73,14 +73,14 @@ class Verify extends Component {
             const relayInstance = getContract(Relay);
             console.log(" Verify componentWillMount  this: ", this);
 
-                this.setState({
-                    web3: results.web3,
-                    publicAddress: publicAddress,
-                    proofLogicInstance: proofLogicInstance,
-                    relayInstance: relayInstance
-                })
-
+            this.setState({
+                web3: results.web3,
+                publicAddress: publicAddress,
+                proofLogicInstance: proofLogicInstance,
+                relayInstance: relayInstance
             })
+
+        })
             .catch(() => {
                 console.log('Error finding web3.')
             })
@@ -89,8 +89,9 @@ class Verify extends Component {
     handleReset = () => {
         console.log("Inside handleReset ")
         document.getElementById("document-verification-form").reset();
-        this.setState({ name: '', email: '', dateInput: '',  fileInput: '', imagePreviewUrl: '', digest: '', blockchainDigest: '' });
+        this.setState({ name: '', email: '', dateInput: '', fileInput: '', imagePreviewUrl: '', digest: '', blockchainDigest: '', docHash: '' });
         console.log(this.state)
+
     }
 
     handleSubmit = (event) => {
@@ -99,41 +100,56 @@ class Verify extends Component {
         this.instantiateContract();
     }
 
-    handleImageChange = (e) => {
+    handleImageChange = (event) => {
 
-        e.preventDefault();
+        event.preventDefault();
         console.log("inside handleImageChange funtion")
 
-        let file = e.target.files[0];
-        let reader = new window.FileReader();
-
-        console.log(file);
-        console.log("FieldName=" + e.target.name);
-        console.log("FieldValue=" + e.target.value);
-
-        if (file) {
-            reader.readAsArrayBuffer(file);
-            // reader.readAsDataURL(file)
-            reader.onloadend = () => {
-                var md = forge.md.sha256.create();
-                md.update(Buffer(reader.result));
-                let digest = '0x' + md.digest().toHex();
-                console.log("digest = " + digest);
-                //console.log("reader result = " + reader.result);
-                //Set the state variable here selected file name, imagePreviewURL and digest
-                this.setState({ fileInput: file.name, imagePreviewUrl: Buffer(reader.result), digest: digest });
-            }
+        let name = event.target.name;
+        let value = event.target.value;
+        if (name !== "fileInput" && value.length !== 0) {
+            // convet the text fields in to hex string so that they can be handled as byte arrays in solidity contracts
+            this.setState({ [name]: value });
+            // let hexString = this.state.web3.fromAscii(value);
+            // let stringHex = this.state.web3.toAscii(hexString);
+            //  console.log(" ascii to hex: ", hexString);
+            //  console.log(" hex to ascii: ", stringHex);
         } else {
-            console.log('There is no image file selected')
-            //when the image is unselected reset the state variables
-            this.setState({ fileInput: '', imagePreviewUrl: null });
+            console.log("empty data nothing to set")
         }
+
+        console.log(this.state)
+
+        //let file = event.target.files[0];
+        //let reader = new window.FileReader();
+
+        // console.log(file);
+        //console.log("FieldName=" + e.target.name);
+        // console.log("FieldValue=" + e.target.value);
+
+        // if (file) {
+        //     reader.readAsArrayBuffer(file);
+        //     // reader.readAsDataURL(file)
+        //     reader.onloadend = () => {
+        //         var md = forge.md.sha256.create();
+        //         md.update(Buffer(reader.result));
+        //         let digest = '0x' + md.digest().toHex();
+        //         console.log("digest = " + digest);
+        //         //console.log("reader result = " + reader.result);
+        //         //Set the state variable here selected file name, imagePreviewURL and digest
+        //         this.setState({ fileInput: file.name, imagePreviewUrl: Buffer(reader.result), digest: digest });
+        //     }
+        // } else {
+        //     console.log('There is no image file selected')
+        //     //when the image is unselected reset the state variables
+        //     this.setState({ fileInput: '', imagePreviewUrl: null });
+        // }
     }
 
     instantiateContract = () => {
 
         // Declaring this for later so we can chain functions on pow.
-       // var powInstance
+        // var powInstance
 
         // Get accounts.
         this.state.web3.eth.getAccounts((error, accounts) => {
@@ -154,22 +170,44 @@ class Verify extends Component {
                 return this.proofOfLogicInst;
             }).then((proofLogicInstance) => {
                 console.log("Inside proofLogic1")
-                return this.proofOfLogicInst.fetchDocument.call(this.state.digest,{from:this.state.publicAddress});
-            }).then((result)=>{
+                console.log("docHash", this.state.docHash)
+                return this.proofOfLogicInst.fetchDocument.call(this.state.docHash, { from: this.state.publicAddress });
+            }).then((result) => {
                 console.log("proofLogic download result: ", result);
-                if (result[0] !==  "0x0000000000000000000000000000000000000000000000000000000000000000") {
+                if (result[0] !== "0x0000000000000000000000000000000000000000000000000000000000000000") {
                     console.log("result state set")
-                    return this.setState({ contractResponse: { hash: result[0], name: this.state.web3.toAscii(result[1]), timestamp: result[2].valueOf(), ipfsHash: result[3],docTags:this.state.web3.toAscii(result[4]), isPresent: true }, warning: false });
+                    var utcSeconds = result[2].valueOf();
+                    var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+                    d.setUTCSeconds(utcSeconds);
+                    return this.setState({
+                        contractResponse: {
+                            hash: result[0],
+                            name: this.state.web3.toAscii(result[1]),
+                            timestamp: d.toLocaleString(),
+                            ipfsHash: this.state.web3.toAscii(result[3]),
+                            docTags: this.state.web3.toAscii(result[4]),
+                            isPresent: true
+                        },
+                        warning: false
+                    });
                 } else {
                     console.log("result2 = empty")
-                    return this.setState({ contractResponse: { hash: result[0], name: result[1], timestamp: result[2], ipfsHash: result[3],email:"", isPresent: false }, warning: true })
+                    return this.setState({
+                        contractResponse: {
+                            hash: result[0],
+                            name: result[1],
+                            timestamp: result[2],
+                            ipfsHash: result[3],
+                            isPresent: false
+                        }, warning: true
+                    })
                 }
             }).catch((error) => {
                 console.log("----------------error---------------")
                 console.log(error)
                 window.alert("Unable to fetch greet. Deploy Smart Contracts and Activate Metmask")
             })
-            
+
             // pow.deployed().then((instance) => {
             //     powInstance = instance;
             //     console.log(powInstance);
@@ -197,7 +235,7 @@ class Verify extends Component {
 
     render() {
 
-        let imagePreviewUrl = this.state.imagePreviewUrl;
+        let imagePreviewUrl = this.state.docHash;
         let $imagePreview = null;
         console.log("at line 154")
         console.log(this.state);
