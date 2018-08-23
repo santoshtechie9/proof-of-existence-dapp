@@ -16,7 +16,7 @@ class DefaultHeader extends Component {
     let $address = null;
     if (this.props.address) {
       $address = (
-        <p> {this.props.address}</p>
+        <p> You are logged in as : {this.props.address}</p>
       )
     }
 
@@ -24,10 +24,13 @@ class DefaultHeader extends Component {
       <React.Fragment>
         <Nav className="d-md-down-none" navbar>
           <NavItem className="px-3">
-            <NavLink href="/">Dashboard</NavLink>
+            <NavLink href="/">Main</NavLink>
           </NavItem>
           <NavItem className="px-3">
-            <NavLink href="notarize">Notarize</NavLink>
+            <NavLink href="dashboard">Dashboard</NavLink>
+          </NavItem>
+          <NavItem className="px-3">
+            <NavLink href="upload">Upload Document</NavLink>
           </NavItem>
           <NavItem className="px-3">
             <NavLink href="verify">Verify Document</NavLink>

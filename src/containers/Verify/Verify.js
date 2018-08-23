@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
-import DocumentDetailsCard from '../../components/Cards/DocumentDetailsCard/DocumentDetailsCard';
-import DocumentPreviewCard from '../../components/Cards/DocumentPreviewCard/DocumentPreviewCard';
+import DetailCard from '../../components/Cards/DetailCard/DetailCard';
+import PreviewCard from '../../components/Cards/PreviewCard/PreviewCard';
 import VerificationForm from '../../components/Forms/VerificationForm/VerificationForm';
 import WarningModal from '../../components/Modals/WarningModal';
-import ProofOfOwnershipContract from '../../../build/contracts/ProofOfExistance.json';
 import getWeb3 from '../../utils/getWeb3';
 import forge from 'node-forge';
+import Proof from '../../../build/contracts/Proof.json';
+import Relay from '../../../build/contracts/Relay.json';
+import getContract from '../../utils/getContract';
+
 
 class Verify extends Component {
 
@@ -63,14 +66,20 @@ class Verify extends Component {
         // Get network provider and web3 instance.
         // See utils/getWeb3 for more info.
 
-        getWeb3
-            .then(results => {
+        getWeb3.then(results => {
+
+            const publicAddress = results.web3.eth.coinbase.toLowerCase();
+            const proofLogicInstance = getContract(Proof);
+            const relayInstance = getContract(Relay);
+            console.log(" Verify componentWillMount  this: ", this);
+
                 this.setState({
-                    web3: results.web3
+                    web3: results.web3,
+                    publicAddress: publicAddress,
+                    proofLogicInstance: proofLogicInstance,
+                    relayInstance: relayInstance
                 })
 
-                // Instantiate contract once web3 provided.
-                //this.instantiateContract()
             })
             .catch(() => {
                 console.log('Error finding web3.')
@@ -80,7 +89,7 @@ class Verify extends Component {
     handleReset = () => {
         console.log("Inside handleReset ")
         document.getElementById("document-verification-form").reset();
-        this.setState({ name: '', email: '', dateInput: '', textAreaInput: '', fileInput: '', imagePreviewUrl: '', digest: '', blockchainDigest: '' });
+        this.setState({ name: '', email: '', dateInput: '',  fileInput: '', imagePreviewUrl: '', digest: '', blockchainDigest: '' });
         console.log(this.state)
     }
 
@@ -122,40 +131,67 @@ class Verify extends Component {
     }
 
     instantiateContract = () => {
-        console.log("inside instantiateContract")
-        const contract = require('truffle-contract')
-        const pow = contract(ProofOfOwnershipContract)
-        pow.setProvider(this.state.web3.currentProvider)
 
         // Declaring this for later so we can chain functions on pow.
-        var powInstance
+       // var powInstance
 
         // Get accounts.
         this.state.web3.eth.getAccounts((error, accounts) => {
 
-            pow.deployed().then((instance) => {
+            if (error) {
+                console.error(error);
+                window.alert(error)
+                return;
+            }
 
-                powInstance = instance;
-                console.log(powInstance);
-                return powInstance.fetchDocument.call(this.state.digest, { from: accounts[0] })
-
-            }).then((result) => {
-                // Get the value from the contract to prove it worked.
-                console.log("final result");
-                console.log("Verify: Instatiate Contract: result", result);
-
-                if (result[0] != 0x0) {
+            this.state.relayInstance.deployed().then((instance) => {
+                return instance.getCurrentVersion.call({ from: this.state.publicAddress });
+            }).then((currentContractAddress) => {
+                console.log("relayInstance  current address : ", currentContractAddress)
+                return currentContractAddress;
+            }).then((proofLogicAddress) => {
+                this.proofOfLogicInst = this.state.proofLogicInstance.at(proofLogicAddress);
+                return this.proofOfLogicInst;
+            }).then((proofLogicInstance) => {
+                console.log("Inside proofLogic1")
+                return this.proofOfLogicInst.fetchDocument.call(this.state.digest,{from:this.state.publicAddress});
+            }).then((result)=>{
+                console.log("proofLogic download result: ", result);
+                if (result[0] !==  "0x0000000000000000000000000000000000000000000000000000000000000000") {
                     console.log("result state set")
-                    return this.setState({ contractResponse: { hash: result[0], timestamp: result[1].valueOf(), ipfsHash: result[2], name: "userName",email:"abc@abc.com", isPresent: true }, warning: true });
+                    return this.setState({ contractResponse: { hash: result[0], name: this.state.web3.toAscii(result[1]), timestamp: result[2].valueOf(), ipfsHash: result[3],docTags:this.state.web3.toAscii(result[4]), isPresent: true }, warning: false });
                 } else {
                     console.log("result2 = empty")
-                    return this.setState({ contractResponse: { hash: result[0], timestamp: result[1], ipfsHash: result[2], name: "userName",email:"abc@abc.com", isPresent: false }, warning: true })
+                    return this.setState({ contractResponse: { hash: result[0], name: result[1], timestamp: result[2], ipfsHash: result[3],email:"", isPresent: false }, warning: true })
                 }
-            }).catch(error => {
-                console.log("----------error---------")
+            }).catch((error) => {
+                console.log("----------------error---------------")
                 console.log(error)
-                window.alert(error)
+                window.alert("Unable to fetch greet. Deploy Smart Contracts and Activate Metmask")
             })
+            
+            // pow.deployed().then((instance) => {
+            //     powInstance = instance;
+            //     console.log(powInstance);
+            //     return powInstance.fetchDocument.call(this.state.digest, { from: accounts[0] })
+            // }).then((result) => {
+            //     // Get the value from the contract to prove it worked.
+            //     console.log("final result");
+            //     console.log("Verify: Instatiate Contract: result", result);
+            //     if (result[0] !==  "0x0000000000000000000000000000000000000000000000000000000000000000") {
+            //         console.log("result state set")
+            //         return this.setState({ contractResponse: { hash: result[0], timestamp: result[1].valueOf(), ipfsHash: result[2], name: "userName",email:"abc@abc.com", isPresent: true }, warning: true });
+            //     } else {
+            //         console.log("result2 = empty")
+            //         return this.setState({ contractResponse: { hash: result[0], timestamp: result[1], ipfsHash: result[2], name: "",email:"", isPresent: false }, warning: true })
+            //     }
+            // }).catch(error => {
+            //     console.log("----------error---------")
+            //     console.log(error)
+            //     window.alert(error)
+            // })
+
+
         })
     }
 
@@ -178,11 +214,11 @@ class Verify extends Component {
             console.log(this.state.fileInput)
             $imagePreview = (
                 <div>
-                    <DocumentPreviewCard fileBuffer={ipfsUrl} />
-                    <DocumentDetailsCard
+                    <PreviewCard fileBuffer={ipfsUrl} />
+                    <DetailCard
                         fileInput={this.state.contractResponse.fileInput}
                         name={this.state.contractResponse.name}
-                        email={this.state.contractResponse.email}
+                        docTags={this.state.contractResponse.docTags}
                         timestamp={this.state.contractResponse.timestamp}
                         docHash={this.state.contractResponse.hash}
                         ipfsHash={this.state.contractResponse.ipfsHash} />

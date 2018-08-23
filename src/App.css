@@ -38,12 +38,12 @@ code {
 
 .navbar {
   position: fixed;
-  padding: 5px;
+  padding: 30px;
   font-family: 'Oswald', 'Arial Narrow', sans-serif;
 }
 
 .navbar a {
-  color: #fff;
+  color: #233e5e;
 }
 
 .navbar a:active,

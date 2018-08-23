@@ -1,7 +1,7 @@
 import React from 'react';
 import {Card,CardHeader,CardBody,Row,Col,Label} from 'reactstrap';
 
-const documentDetailsCard = (props) => {
+const detailCard = (props) => {
 
     return (
         <div className="animated fadeIn flex-row align-items-center">
@@ -21,18 +21,18 @@ const documentDetailsCard = (props) => {
                         </Row>
                         <Row>
                             <Col xs="12" md="3" xl="3">
-                                <Label htmlFor="textarea-input">E-mail</Label>
-                            </Col>
-                            <Col xs="12" md="6" xl="6">
-                                <Label>{props.email}</Label>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs="12" md="3" xl="3">
                                 <Label htmlFor="textarea-input">Timestamp</Label>
                             </Col>
                             <Col xs="12" md="6" xl="6">
                                 <Label>{props.timestamp}</Label>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs="12" md="3" xl="3">
+                                <Label htmlFor="textarea-input">Document Tags</Label>
+                            </Col>
+                            <Col xs="12" md="6" xl="6">
+                                <Label>{props.docTags}</Label>
                             </Col>
                         </Row>
                         <Row>
@@ -58,4 +58,4 @@ const documentDetailsCard = (props) => {
     );
 }
 
-export default documentDetailsCard;
+export default detailCard;

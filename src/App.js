@@ -5,6 +5,8 @@ import './css/oswald.css'
 import './css/open-sans.css'
 import './css/pure-min.css'
 import './App.css'
+import './css/style.css'
+
 import DefaultLayout from './containers/DefaultLayout/DefaultLayout';
 
 class App extends Component {
@@ -38,7 +40,7 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <div >
         <DefaultLayout />
       </div>
     );
