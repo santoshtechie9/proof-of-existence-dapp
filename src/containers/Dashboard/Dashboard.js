@@ -107,16 +107,21 @@ class Dashboard extends Component {
                 results.map((x, index) => {
                     this.proofLogicInst.fetchDocument.call(x, { from: accounts[0] })
                         .then((result) => {
-  
-                            console.log("user Name raw = " + result[1] )
-                            
+
+                            console.log("user Name raw = " + result[1])
+
+                            var utcSeconds = result[2].valueOf();
+                            var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+                            d.setUTCSeconds(utcSeconds);
+
                             let item = {
                                 docHash: result[0],
-  
                                 userName: this.state.web3.toAscii(result[1]),
-                                docTimestamp: result[2],
-                                ipfsHash: result[3],
+                                docTimestamp: d.toLocaleString(),
+                                ipfsHash:this.state.web3.toAscii( result[3]),
+                                docTags: this.state.web3.toAscii(result[4])
                             }
+
                             let itemsList = this.state.items;
                             itemsList.push(item);
                             this.setState({ items: itemsList })
@@ -144,20 +149,23 @@ class Dashboard extends Component {
             $displayCards = items.map((item, index) => {
                 return (
                     <Row key={index}>
-                        <Col xs="12" sm="12" lg="12">
+                        <Col xs="12" sm="12" lg="12" className="align-middle">
                             <Card className="text-dark bg-light">
                                 <CardBody className="pb-0">
                                     <Col xs="12" md="12">
-                                        <div className="tag token"><strong>User Name:</strong> {item.userName}</div>
+                                        <div className="tag token"><strong>User Name &emsp;&emsp;: </strong>{item.userName}</div>
                                     </Col>
                                     <Col xs="12" md="12">
-                                        <div className="tag token"><strong>Doc Timestamp:</strong> {"docTimestamp"}</div>
+                                        <div className="tag token"><strong>Doc Timestamp: </strong> {item.docTimestamp}</div>
                                     </Col>
                                     <Col xs="12" md="12">
-                                        <div className="tag token"><strong>Doc Hash:</strong> {item.docHash}</div>
+                                        <div className="tag token"><strong>Doc Hash &emsp;&emsp;&ensp;&nbsp;: </strong> {item.docHash}</div>
                                     </Col>
                                     <Col xs="12" md="12">
-                                        <div className="tag token"><strong>ipfs Hash:</strong> {item.ipfsHash}</div>
+                                        <div className="tag token"><strong>Doc Tags &emsp;&emsp;&ensp;&ensp;: </strong> {item.docTags}</div>
+                                    </Col>
+                                    <Col xs="12" md="12">
+                                        <div className="tag token"><strong>ipfs Hash &emsp;&emsp;&ensp;&ensp;: </strong> {item.ipfsHash}</div>
                                     </Col>
                                 </CardBody>
                             </Card>

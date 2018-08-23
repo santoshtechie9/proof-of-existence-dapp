@@ -9,8 +9,8 @@ contract ProofDB  is Mortal {
         bytes32 docHash;
         bytes32 userName;
         uint docTimestamp;
-        bytes32 ipfsHash;
-        bytes32 docTags;
+        bytes ipfsHash;
+        bytes docTags;
     }
 
     //To keep track of all the documents owned by a user
@@ -56,7 +56,7 @@ contract ProofDB  is Mortal {
         return allowedContracts[_addr];
     }
     
-    function addDocument(address caller, bytes32 _docHash, bytes32 _userName, bytes32 _ipfsHash,bytes32 _docTags) 
+    function addDocument(address caller, bytes32 _docHash, bytes32 _userName, bytes _ipfsHash,bytes _docTags) 
     public
     returns(bool) {
         if(users[caller].documentDetails[_docHash].docHash == 0x0 ){
@@ -71,7 +71,7 @@ contract ProofDB  is Mortal {
     function getDocument(address caller,bytes32 _docHash) 
     public 
     view 
-    returns(bytes32, bytes32, uint, bytes32,bytes32){
+    returns(bytes32, bytes32, uint, bytes,bytes){
         require(_docHash != 0x0, "Document Hash is mandatory");
         Document storage document = users[caller].documentDetails[_docHash];
         return(document.docHash,document.userName,document.docTimestamp,document.ipfsHash,document.docTags);

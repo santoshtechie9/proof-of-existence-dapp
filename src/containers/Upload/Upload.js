@@ -88,18 +88,16 @@ class Upload extends Component {
             }
 
             console.log("file has been uploaded to ipfs =", result)
-            //this.setState({ ipfsHash: result[0].hash, uploadedInIpfs: false })
             this.setState({
-                loading: false, ipfsHash: this.state.digest, uploadedInIpfs: true
+                loading: false, ipfsHash: result[0].hash, uploadedInIpfs: true
             })
             console.log('digest :', this.state.digest);
             console.log('name :', this.state.name);
-            console.log('account :', this.state.account);
             console.log('ipfsHash :', this.state.ipfsHash);
+            console.log('docHash :', this.state.docTags);
             console.log("submit button this :", this.state);
 
             this.state.web3.eth.getAccounts((error, accounts) => {
-
                 if (error) {
                     console.error(error);
                     window.alert(error)
@@ -128,11 +126,21 @@ class Upload extends Component {
                     return this.proofOfLogicInst;
                 }).then((proofInstance) => {
                     console.log("Inside proofLogic1")
-                    //return proofInstance.upDocument(this.state.digest, this.state.name, result[0].hash,{ from: this.state.publicAddress });
                     console.log("user name = ", this.state.name);
-                    return proofInstance.uploadDocument(this.state.digest, this.state.web3.fromAscii(this.state.name), this.state.digest, this.state.web3.fromAscii(this.state.docTags), { from: this.state.publicAddress });
+                    console.log("DocTags string = ", this.state.docTags);
+                    const docTagsTemp = this.state.docTags;
+                    const docTagsHex = this.state.web3.fromAscii(docTagsTemp);
+
+                    return proofInstance.uploadDocument(
+                        this.state.digest, 
+                        this.state.web3.fromAscii(this.state.name), 
+                        this.state.web3.fromAscii(this.state.ipfsHash), 
+                        docTagsTemp,
+                        { from: this.state.publicAddress });
+
                 }).then((result) => {
                     console.log("proof upload result: ", result);
+                    console.log("state = ", this.state);
                     return this.proofOfLogicInst.fetchDocument.call(this.state.digest, { from: this.state.publicAddress });
                 }).then((downloadDocumentResult) => {
                     console.log("proofLogic download result: ", downloadDocumentResult);
@@ -154,6 +162,8 @@ class Upload extends Component {
     handleChange = (event) => {
         let name = event.target.name;
         let value = event.target.value;
+        console.log("name",name);
+        console.log("value",value);
         if (name !== "fileInput" && value.length !== 0) {
             // convet the text fields in to hex string so that they can be handled as byte arrays in solidity contracts
             this.setState({ [name]: value });

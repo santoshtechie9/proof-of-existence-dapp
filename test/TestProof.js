@@ -107,4 +107,19 @@ contract('Proof contract test suit', function (accounts) {
         })
     });
 
+    // Test fall back function
+    it('Test fallback function', function () {
+
+        let account_one = accounts[6];
+        let contractInstance;
+        return Proof.deployed().then((instance) => {
+            contractInstance = instance;
+            return instance.sendTransaction({ from: account_one, value: web3.toWei(1, "ether") });
+        }).then((result) => {
+            console.log("result", result);
+            console.log("contract address:",contractInstance.address);
+        })
+
+    })
+
 })
