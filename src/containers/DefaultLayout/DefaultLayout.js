@@ -20,7 +20,7 @@ class DefaultLayout extends Component {
       getWeb3
         .then(results => {
           let personalAddress = results.web3.eth.coinbase.toLowerCase();
-          console.log("Default Layout: personalAddress: ", personalAddress);
+          console.log("Default Layout component personalAddress: ", personalAddress);
           this.setState({
             web3: results.web3,
             address: personalAddress

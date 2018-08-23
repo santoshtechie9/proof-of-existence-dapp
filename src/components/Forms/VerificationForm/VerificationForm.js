@@ -23,7 +23,6 @@ const VerificationForm = (props) => {
           <strong>Document Verification</strong> Form
               </CardHeader>
         <CardBody>
-
           <Form id="document-verification-form" action="" method="post" encType="multipart/form-data" className="form-horizontal">
             <FormGroup row>
               <Col md="3">
@@ -38,7 +37,7 @@ const VerificationForm = (props) => {
                 <Label htmlFor="exampleInputName2" >Document Hash</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" id="exampleInputName2" maxLength="100" name="docHash" onChange={(e) => props.handleImageChange(e)} check required />
+                <Input type="text" id="exampleInputName2" maxLength="100" name="docHash" onChange={(e) => props.handleImageChange(e)} required />
                 <FormText className="help-block">Please enter document details (max length is 100 chars)</FormText>
               </Col>
             </FormGroup>

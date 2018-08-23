@@ -15,65 +15,65 @@ import {
 
 const UploadForm = (props) => {
 
-    return (
-      <div className="animated fadeIn flex-row align-items-center">
-        <Card >
-          <CardHeader>
-            <strong>Upload</strong> Form
+  return (
+    <div className="animated fadeIn flex-row align-items-center">
+      <Card >
+        <CardHeader>
+          <strong>Upload</strong> Form
               </CardHeader>
-          <CardBody>
-            <Form id="document-uplaod-form" action="" method="post" encType="multipart/form-data" className="form-horizontal">
-              <FormGroup row>
-                <Col md="3">
-                  {/* <Label>Type</Label> */}
-                </Col>
-                <Col xs="12" md="9">
-                  <p className="form-control-static"><strong>Enter the detail in below section.</strong></p>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Col md="3">
-                  <Label htmlFor="exampleInputName2" > User Name</Label>
-                </Col>
-                <Col xs="12" md="9">
-                  <Input type="text" id="exampleInputName2" maxLength="32" placeholder="John Doe" name="name" onChange={ (event) => props.handleChange(event)} required />
-                  <FormText className="help-block">Please enter your name (max length is 32 chars)</FormText>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Col md="3">
-                  <Label htmlFor="dateInput">Date Input</Label>
-                </Col>
-                <Col xs="12" md="9">
-                  <Input type="date" id="dateInput" name="timestamp" placeholder="date" onChange={(event) => props.handleChange(event)} />
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Col md="3">
-                  <Label htmlFor="exampleInputName3" >Document Tags</Label>
-                </Col>
-                <Col xs="12" md="9">
-                  <Input type="text" id="exampleInputName3" maxLength="32" placeholder="Blockchain, Ethereum, Solidity" name="docTags" onChange={(event) => props.handleChange(event)} required />
-                  <FormText className="help-block">Please enter document tags (max length is 32 chars)</FormText>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Col md="3">
-                  <Label htmlFor="fileInput">File</Label>
-                </Col>
-                <Col xs="12" md="9">
-                  <Input type="file" id="document" name="fileName" onChange={(e)=>props.handleImageChange(e)} />
-                </Col>
-              </FormGroup>
-            </Form>
-          </CardBody>
-          <CardFooter>
-            <Button type="submit" size="sm" color="primary" onClick={props.handleSubmit}><i className="fa fa-dot-circle-o"></i> Upload</Button>&nbsp; &nbsp;
+        <CardBody>
+          <Form id="document-uplaod-form" action="" method="post" encType="multipart/form-data" className="form-horizontal">
+            <FormGroup row>
+              <Col md="3">
+                {/* <Label>Type</Label> */}
+              </Col>
+              <Col xs="12" md="9">
+                <p className="form-control-static"><strong>Enter the detail in below section.</strong></p>
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="exampleInputName2" > User Name</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input type="text" id="exampleInputName2" maxLength="32" placeholder="John Doe" name="name" onChange={(event) => props.handleChange(event)} required />
+                <FormText className="help-block">Please enter your name (max length is 32 chars)</FormText>
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="dateInput">Date Input</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input type="date" id="dateInput" name="timestamp" placeholder="date" onChange={(event) => props.handleChange(event)} />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="exampleInputName3" >Document Tags</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input type="text" id="exampleInputName3" maxLength="32" placeholder="Blockchain, Ethereum, Solidity" name="docTags" onChange={(event) => props.handleChange(event)} required />
+                <FormText className="help-block">Please enter document tags (max length is 32 chars)</FormText>
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="fileInput">File</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input type="file" id="document" name="fileName" onChange={(e) => props.handleImageChange(e)} />
+              </Col>
+            </FormGroup>
+          </Form>
+        </CardBody>
+        <CardFooter>
+          <Button type="submit" size="sm" color="primary" onClick={props.handleSubmit}><i className="fa fa-dot-circle-o"></i> Upload</Button>&nbsp; &nbsp;
             <Button type="reset" size="sm" color="danger" onClick={props.handleReset}><i className="fa fa-ban"></i> Reset</Button>
-          </CardFooter>
-        </Card>
-      </div>
-    );
-  }
+        </CardFooter>
+      </Card>
+    </div>
+  );
+}
 
 export default UploadForm;

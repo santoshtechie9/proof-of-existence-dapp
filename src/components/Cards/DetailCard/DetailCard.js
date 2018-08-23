@@ -4,7 +4,7 @@ import {Card,CardHeader,CardBody,Row,Col,Label} from 'reactstrap';
 const detailCard = (props) => {
 
     return (
-        <div className="animated fadeIn flex-row align-items-center">
+        <div id="DetailsCard" className="animated fadeIn flex-row align-items-center">
             <div className="animated fadeIn">
                 <Card>
                     <CardHeader>
