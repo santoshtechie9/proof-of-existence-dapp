@@ -1,20 +1,19 @@
-var SimpleStorage = artifacts.require("./SimpleStorage.sol");
-var ProofOfOwnership = artifacts.require("./ProofOfOwnership.sol");
-var ProofOfExistance = artifacts.require("./ProofOfExistance.sol");
 var Mortal = artifacts.require("./Mortal.sol");
 var ProofDB = artifacts.require("./ProofDB.sol");
 var Proof = artifacts.require("./Proof.sol");
 var Relay = artifacts.require("./Relay.sol");
+var ProofOfOwnership = artifacts.require("./ProofOfOwnership.sol");
+var ProofOfExistance = artifacts.require("./ProofOfExistance.sol");
 
-module.exports = function(deployer) {
-  deployer.deploy(SimpleStorage);
-  deployer.deploy(Mortal);
+module.exports = function (deployer) {
   deployer.deploy(ProofOfOwnership);
-  deployer.deploy(ProofOfExistance).then(()=>{
+  deployer.deploy(ProofOfExistance);
+
+  deployer.deploy(Mortal).then(() => {
     return deployer.deploy(ProofDB)
-  }).then(()=>{
+  }).then(() => {
     return deployer.deploy(Proof, ProofDB.address);
-  }).then(()=>{
+  }).then(() => {
     return deployer.deploy(Relay, Proof.address);
   })
 

@@ -5,7 +5,7 @@ contract('Relay contract test suit', function (accounts) {
 
     // Test cases ensures that the owner is iniliazed while deploying the contract. 
     // Validates the consturctor argument.
-    it('Testcase constructor argument', function () {
+    it('Test constructor argument', function () {
         return Relay.deployed().then((instance) => {
             return instance.owner.call({ from: accounts[0] });
         }).then((owner) => {

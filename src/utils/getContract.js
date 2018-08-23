@@ -9,7 +9,7 @@ const getContract = (contractJSON) => {
         const web3 = results.web3;
         return web3;
     }).then((web3) => {
-        console.log("web3 = ", web3, contractInstance);
+        //console.log("web3 = ", web3, contractInstance);
         contractInstance.setProvider(web3.currentProvider);
     }).catch((error) => {
         console.log("error", error);

@@ -159,7 +159,7 @@ class Verify extends Component {
                 console.log("proofLogic download result: ", result);
                 if (result[0] !==  "0x0000000000000000000000000000000000000000000000000000000000000000") {
                     console.log("result state set")
-                    return this.setState({ contractResponse: { hash: result[0], name: result[1], timestamp: result[2].valueOf(), ipfsHash: result[3],email:"abc@abc.com", isPresent: true }, warning: true });
+                    return this.setState({ contractResponse: { hash: result[0], name: this.state.web3.toAscii(result[1]), timestamp: result[2].valueOf(), ipfsHash: result[3],docTags:this.state.web3.toAscii(result[4]), isPresent: true }, warning: false });
                 } else {
                     console.log("result2 = empty")
                     return this.setState({ contractResponse: { hash: result[0], name: result[1], timestamp: result[2], ipfsHash: result[3],email:"", isPresent: false }, warning: true })
@@ -218,7 +218,7 @@ class Verify extends Component {
                     <DetailCard
                         fileInput={this.state.contractResponse.fileInput}
                         name={this.state.contractResponse.name}
-                        email={this.state.contractResponse.email}
+                        docTags={this.state.contractResponse.docTags}
                         timestamp={this.state.contractResponse.timestamp}
                         docHash={this.state.contractResponse.hash}
                         ipfsHash={this.state.contractResponse.ipfsHash} />

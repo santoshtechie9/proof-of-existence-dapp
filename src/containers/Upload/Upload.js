@@ -11,20 +11,21 @@ import Relay from '../../../build/contracts/Relay.json';
 import getWeb3 from '../../utils/getWeb3';
 import getContract from '../../utils/getContract';
 import ipfs from '../../utils/ipfs';
+import Spinner from '../../components/Spinner/Spinner';
 
 class Upload extends Component {
 
     state = {
-        storageValue: 0,
         web3: null,
         name: '',
-        email: '',
-        dateInput: '',
-        textAreaInput: '',
+        timestamp: '',
+        docTags: '',
         fileInput: '',
         fileBuffer: '',
         digest: '',
-        isUploaded: false
+        isUploaded: false,
+        loading: false,
+        prefill: {}
     }
 
     componentWillMount() {
@@ -38,16 +39,16 @@ class Upload extends Component {
             //add comments here
             const publicAddress = results.web3.eth.coinbase.toLowerCase();
             const proofOfExistenceInstance = getContract(ProofOfExistenceContract);
-            const proofLogicInstance = getContract(Proof);
+            const proofInstance = getContract(Proof);
             const relayInstance = getContract(Relay);
             console.log(" Upload componentWillMount  this: ", this);
 
             this.setState({
                 web3: results.web3,
-                loading: true,
+                loading: false,
                 publicAddress: publicAddress,
                 proofOfExistenceInstance: proofOfExistenceInstance,
-                proofLogicInstance: proofLogicInstance,
+                proofInstance: proofInstance,
                 relayInstance: relayInstance
             })
 
@@ -65,7 +66,7 @@ class Upload extends Component {
     handleReset = () => {
         console.log("Inside handleReset ")
         document.getElementById("document-uplaod-form").reset();
-        this.setState({ name: '', email: '', dateInput: '', fileInput: '', imagePreviewUrl: '', digest: '', blockchainDigest: '', fileBuffer:'' });
+        this.setState({ name: '', docTags: '', timestamp: '', fileInput: '', imagePreviewUrl: '', digest: '', blockchainDigest: '', fileBuffer: '' });
         console.log(this.state)
     }
 
@@ -74,23 +75,28 @@ class Upload extends Component {
         // const powInstance = this.powInstance;
         console.log("Clicked on Submit button ");
         console.log(this.state);
-        this.setState({ uploadedInIpfs: false })
-        // ipfs.files.add(this.state.fileBuffer, (error, result) => {
+        this.setState({ loading: true, uploadedInIpfs: false });
+        ipfs.files.add(this.state.fileBuffer, (error, result) => {
 
-        //     if (error) {
-        //         console.error(error);
-        //         window.alert(error)
-        //         return;
-        //     }
+            if (error) {
+                this.setState({
+                    loading: false
+                })
+                console.error(error);
+                window.alert(error)
+                return;
+            }
 
-           // console.log("file has been uploaded to ipfs =", result)
-        // this.setState({ ipfsHash: result[0].hash, uploadedInIpfs: false })
-             this.setState({ ipfsHash: this.state.digest, uploadedInIpfs: false })
+            console.log("file has been uploaded to ipfs =", result)
+            //this.setState({ ipfsHash: result[0].hash, uploadedInIpfs: false })
+            this.setState({
+                loading: false, ipfsHash: this.state.digest, uploadedInIpfs: true
+            })
             console.log('digest :', this.state.digest);
             console.log('name :', this.state.name);
             console.log('account :', this.state.account);
             console.log('ipfsHash :', this.state.ipfsHash);
-            console.log("submit button this :", this);
+            console.log("submit button this :", this.state);
 
             this.state.web3.eth.getAccounts((error, accounts) => {
 
@@ -99,7 +105,7 @@ class Upload extends Component {
                     window.alert(error)
                     return;
                 }
-                
+
                 // this.state.proofOfExistenceInstance.deployed().then((instance) => {
                 //     //return instance.uploadDocument(this.state.digest, this.state.name, result[0].hash, { from: this.state.publicAddress });
                 //     return instance.uploadDocument(this.state.digest, this.state.name, this.state.digest, { from: this.state.publicAddress });
@@ -110,8 +116,6 @@ class Upload extends Component {
                 //     console.error(error);
                 //     window.alert(error)
                 // }))
-
-
                 //const proofOfLogicInst;
 
                 this.state.relayInstance.deployed().then((instance) => {
@@ -120,26 +124,29 @@ class Upload extends Component {
                     console.log("relayInstance  current address : ", currentContractAddress)
                     return currentContractAddress;
                 }).then((proofLogicAddress) => {
-                    this.proofOfLogicInst = this.state.proofLogicInstance.at(proofLogicAddress);
+                    this.proofOfLogicInst = this.state.proofInstance.at(proofLogicAddress);
                     return this.proofOfLogicInst;
-                }).then((proofLogicInstance) => {
+                }).then((proofInstance) => {
                     console.log("Inside proofLogic1")
-                    //return proofLogicInstance.upDocument(this.state.digest, this.state.name, result[0].hash,{ from: this.state.publicAddress });
-                    return proofLogicInstance.uploadDocument(this.state.digest, this.state.name, this.state.digest,{ from: this.state.publicAddress });
+                    //return proofInstance.upDocument(this.state.digest, this.state.name, result[0].hash,{ from: this.state.publicAddress });
+                    console.log("user name = ", this.state.name);
+                    return proofInstance.uploadDocument(this.state.digest, this.state.web3.fromAscii(this.state.name), this.state.digest, this.state.web3.fromAscii(this.state.docTags), { from: this.state.publicAddress });
                 }).then((result) => {
-                    console.log("proofLogic upload result: ", result);
-                    return this.proofOfLogicInst.fetchDocument.call(this.state.digest,{from:this.state.publicAddress});
-                }).then((downloadDocumentResult)=>{
+                    console.log("proof upload result: ", result);
+                    return this.proofOfLogicInst.fetchDocument.call(this.state.digest, { from: this.state.publicAddress });
+                }).then((downloadDocumentResult) => {
                     console.log("proofLogic download result: ", downloadDocumentResult);
+                    this.setState({ loading: false })
                 }).catch((error) => {
                     console.log("----------------error---------------")
                     console.log(error)
-                    window.alert("Unable to fetch greet. Deploy Smart Contracts and Activate Metmask")
+                    window.alert(error)
                 })
 
 
             });
-        //});
+
+        }); // ipfs add closing tag
 
     }
 
@@ -148,7 +155,12 @@ class Upload extends Component {
         let name = event.target.name;
         let value = event.target.value;
         if (name !== "fileInput" && value.length !== 0) {
+            // convet the text fields in to hex string so that they can be handled as byte arrays in solidity contracts
             this.setState({ [name]: value });
+            // let hexString = this.state.web3.fromAscii(value);
+            // let stringHex = this.state.web3.toAscii(hexString);
+            //  console.log(" ascii to hex: ", hexString);
+            //  console.log(" hex to ascii: ", stringHex);
         } else {
             console.log("empty data nothing to set")
         }
@@ -196,13 +208,7 @@ class Upload extends Component {
 
     render() {
 
-        const prefill = {
-            imageFileName: "ProfileImage.jpg",
-            name: "John Doe",
-            email: "name@example.com",
-            dateFormat: "dd/yy/mm",
-            textArea: "Enter text here"
-        }
+        const prefill = this.state.prefill;
 
         let { fileBuffer } = this.state;
         let $imagePreview = null;
@@ -222,10 +228,10 @@ class Upload extends Component {
                     {/* <PreviewCard fileBuffer={ipfsUrl} /> */}
                     <PreviewCard fileBuffer={this.state.imagePreviewData} />
                     <DetailCard
-                        fileInput={this.state.fileInput}
+                        fileInput={this.state.fileName}
                         name={this.state.name}
-                        email={this.state.email}
-                        timestamp={this.state.dateInput}
+                        docTags={this.state.docTags}
+                        timestamp={this.state.timestamp}
                         docHash={this.state.digest}
                         ipfsHash={this.state.ipfsHash} />
                 </div>
@@ -244,26 +250,37 @@ class Upload extends Component {
             );
         }
 
-        return (
-            <div>
-                <Container fluid>
-                    <Row>
-                        <Col xs="12" md="6" xl="6">
-                            <UploadForm
-                                name={prefill.name}
-                                handleSubmit={this.handleSubmit}
-                                handleReset={this.handleReset}
-                                handleChange={this.handleChange}
-                                handleImageChange={this.handleImageChange} />
-                        </Col >
-                        <Col xs="12" md="6" xl="6">
-                            {$imagePreview}
-                            {$modal}
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-        )
+        if (this.state.loading === false) {
+            return (
+                <div>
+                    <Container fluid>
+                        <Row>
+                            <Col xs="12" md="6" xl="6">
+                                <UploadForm
+                                    name={prefill.name}
+                                    handleSubmit={this.handleSubmit}
+                                    handleReset={this.handleReset}
+                                    handleChange={this.handleChange}
+                                    handleImageChange={this.handleImageChange} />
+                            </Col >
+                            <Col xs="12" md="6" xl="6">
+                                {$imagePreview}
+                                {$modal}
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
+            )
+        } else {
+
+            return (
+                    <Container>
+                            <Spinner className="align-middle align-center" />
+                    </Container>
+            )
+
+        }
+
     }
 }
 

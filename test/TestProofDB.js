@@ -1,6 +1,10 @@
 var Proof = artifacts.require('ProofDB.sol');
+var Web3 = require('web3');
 
 contract('ProofDB contract test suit', function (accounts) {
+
+    var web3 = new Web3();
+    let docTags = web3.fromAscii("Blockchain, Ethereum, Solidity")
 
     // ProofDB contract has a data structure to hold allowed contracts and accounts.
     // this test ensures that owner is able to add a contract to allowed owners.
@@ -22,7 +26,7 @@ contract('ProofDB contract test suit', function (accounts) {
 
     // ProofDB contract has a data structure to hold allowed contracts and accounts.
     // this test ensures that owner is able to add a account/address to allowed owners.
-    it('Test  add allowed owner', function () {
+    it('Test add allowed owner', function () {
         const owner = accounts[0];
         let contractInstance = null;
         return Proof.deployed().then((instance) => {
@@ -38,7 +42,7 @@ contract('ProofDB contract test suit', function (accounts) {
     });
 
     // this test ensures that unauthorized users  are not able to add owners.
-    it('Test add allowed owner', function () {
+    it('Test add allowed contract by unauthorized owner', function () {
         const contractAddr = "0xaca0000620f00001e7200003b3a00004e141234d";
         const owner = accounts[0];
         return Proof.deployed().then((instance) => {
@@ -59,7 +63,7 @@ contract('ProofDB contract test suit', function (accounts) {
         const ipfsHash = "ipfshashsdocument1";
         const owner = accounts[0];
         return Proof.deployed().then((instance) => {
-            instance.addDocument(caller, docHash, userName, ipfsHash, { from: owner });
+            instance.addDocument(caller, docHash, userName, ipfsHash,docTags, { from: owner });
             return instance.getDocument.call(caller, docHash, { from: owner })
         }).then((document) => {
             const expected = docHash;
@@ -82,11 +86,11 @@ contract('ProofDB contract test suit', function (accounts) {
             const ipfsHash = "ipfshashsdocument1";
             const owner = accounts[0];
             return Proof.deployed().then((instance) => {
-                instance.addDocument(caller, docHash1, userName, ipfsHash, { from: owner });
-                instance.addDocument(caller, docHash2, userName, ipfsHash, { from: owner });
+                instance.addDocument(caller, docHash1, userName, ipfsHash,docTags, { from: owner });
+                instance.addDocument(caller, docHash2, userName, ipfsHash,docTags, { from: owner });
                 return instance.fetchAllDocuments.call(caller, { from: owner });
             }).then((documents) => {
-                const expected = 3;
+                const expected = 2;
                 const actual = documents.length;
                 assert.equal(expected, actual, "total number of document should be 2");
             })

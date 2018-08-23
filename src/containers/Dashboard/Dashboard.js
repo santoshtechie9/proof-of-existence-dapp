@@ -107,9 +107,13 @@ class Dashboard extends Component {
                 results.map((x, index) => {
                     this.proofLogicInst.fetchDocument.call(x, { from: accounts[0] })
                         .then((result) => {
+  
+                            console.log("user Name raw = " + result[1] )
+                            
                             let item = {
                                 docHash: result[0],
-                                userName: result[1],
+  
+                                userName: this.state.web3.toAscii(result[1]),
                                 docTimestamp: result[2],
                                 ipfsHash: result[3],
                             }

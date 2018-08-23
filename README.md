@@ -1,8 +1,25 @@
 # Proof-Of-Existance Dapp
 
-Ethereum proof of existance dapp. Users can privide a proof of a document by storing its has in the blockchain. Application frontend is developed in React framework, Smart Contracts are developed in Solidity. 
+## Overview
+Ethereum proof of existance dapp. Application frontend is developed in ReactJS, Smart Contracts are developed in Solidity. 
 
-Note: All the document you upload using this app are stored in IPFS. So pay close attention to what you are uploding.
+This application allows users to prove existence of some information by showing a time stamped picture/video.
+
+Data could be stored in a database, but to make it truly decentralized consider storing pictures using something like IPFS. The hash of the data and any additional information is stored in a smart contract that can be referenced at a later date to verify the authenticity.
+
+### User Stories:
+A user logs into the web app. 
+
+The app reads the user’s address and shows all of the data that they have previously uploaded.
+
+The user can upload some data (pictures/video) to the app, as well as add a list of tags indicating the contents of the data.
+
+Users can retrieve necessary reference data about their uploaded items to allow other people to verify the data authenticity.
+
+Users can privide a proof of a document by storing its has in the blockchain. 
+
+### Important Note
+All the document uploaded using this app are stored in IPFS. So do not upload any personal information attention. Check the content carefully before  uploading.
 
 ## Getting Started
 
@@ -13,29 +30,73 @@ These instructions will get you a copy of the project up and running on your loc
 What things you need to install the software and how to install them
 
 ```
-nodejs
-npm
-metamask
+nodejs v8.11.3 or higher
+npm v6.1.0 or higher
+MetaMask browser extension
+Truffle v4.1.13 or higher
 ganache-cli
+Solidity v0.4.24 or higher
+git
 ```
 
-### Installing
+### Installation
 
 A step by step series of examples that tell you how to get a development env running
 
-Say what the step will be
+Clone the project repository.
 
 ```
-Give the example
+git clone https://github.com/santoshtechie9/proof-of-existence-dapp.git
 ```
 
-And repeat
+Go to the project directory
 
 ```
-until finished
+cd proof-of-existence-dapp
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+Install node modules
+
+```
+npm install
+```
+
+Compile Smart Contracts
+
+```
+truffle compile
+```
+
+Start a development blockchain network
+
+```
+ganache-cli
+```
+
+Mirgate smart contracts
+
+```
+truffle migrate [--reset]
+```
+
+
+Login to metamask with Ganache-cli seed phrases
+
+```
+copy ganache-cli seed phrase and login to metamask and select localhost
+```
+
+Start Dapp
+
+```
+npm run start
+```
+
+Start using Dapp
+
+```
+http://localhost:3000/
+```
 
 ## Running the tests
 
@@ -43,10 +104,16 @@ Explain how to run the automated tests for this system
 
 ### Break down into end to end tests
 
-Explain what these tests test and why
+Go to project root directory
 
 ```
-Give an example
+cd proof-of-existence-dapp
+```
+
+Run tests
+
+```
+truffle test
 ```
 
 ### And coding style tests
@@ -65,14 +132,14 @@ Add additional notes about how to deploy this on a live system
 
 * [Solidity](https://reactjs.org/docs/getting-started.html) - Smart Contract Language
 * [ReactJs](https://reactjs.org/docs/getting-started.html) - Forntend web framework 
-* [IPFS](https://reactjs.org/docs/getting-started.html) - Decentralised storage
-* [Metamask](https://reactjs.org/docs/getting-started.html) - wallet service
+* [Metamask](https://reactjs.org/docs/getting-started.html) - Browser Extension
+* [IPFS](https://reactjs.org/docs/getting-started.html) - Decentralised Storage
 * [npm](https://www.npmjs.com/) - Package Management
-* [coreui](https://coreui.io/v1/docs/getting-started/introduction/#reactjs) - Used to create components
+* [coreui](https://coreui.io/v1/docs/getting-started/introduction/#reactjs) - Frontend Components
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/santoshtechie9) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](https://github.com/santoshtechie9) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
@@ -82,7 +149,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 * **Santosh K** - *Initial work* - [santoshtechie9](https://github.com/santoshtechie9)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/santoshtechie9/proof-of-existence-dapp/graphs/contributors) who participated in this project.
 
 ## License
 
@@ -91,5 +158,3 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * core ui reactjs modules
-* Inspiration
-* etc

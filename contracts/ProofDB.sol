@@ -7,14 +7,15 @@ contract ProofDB  is Mortal {
     //Document idenfiers alongwith ipfs has of the document
     struct Document {
         bytes32 docHash;
+        bytes32 userName;
         uint docTimestamp;
-        string ipfsHash;
+        bytes32 ipfsHash;
+        bytes32 docTags;
     }
 
     //To keep track of all the documents owned by a user
     struct User {
         address addr;
-        string userName;
         bytes32[] documentList;
         mapping(bytes32 => Document) documentDetails;
     }
@@ -29,7 +30,7 @@ contract ProofDB  is Mortal {
     mapping(address => bool) allowedContracts;
     mapping( address => User )  users;
     mapping( address => bool )  admins;
-    mapping( string => Document )  documents;
+    mapping( bytes32 => Document )  documents;
     
     modifier onlyAllowedContractOrOwner {
         require (allowedContracts[msg.sender] != true && msg.sender != owner,"Should be a owner");
@@ -55,14 +56,13 @@ contract ProofDB  is Mortal {
         return allowedContracts[_addr];
     }
     
-    function addDocument(address caller, bytes32 _docHash, string _userName, string _ipfsHash) 
+    function addDocument(address caller, bytes32 _docHash, bytes32 _userName, bytes32 _ipfsHash,bytes32 _docTags) 
     public
     returns(bool) {
         if(users[caller].documentDetails[_docHash].docHash == 0x0 ){
             users[caller].addr = msg.sender;
-            users[caller].userName = _userName;
             users[caller].documentList.push(_docHash);
-            users[caller].documentDetails[_docHash] = Document(_docHash, block.timestamp,_ipfsHash);
+            users[caller].documentDetails[_docHash] = Document(_docHash, _userName,block.timestamp,_ipfsHash,_docTags);
             return true;
         }
         return false;
@@ -71,10 +71,10 @@ contract ProofDB  is Mortal {
     function getDocument(address caller,bytes32 _docHash) 
     public 
     view 
-    returns(bytes32, string, uint, string){
+    returns(bytes32, bytes32, uint, bytes32,bytes32){
         require(_docHash != 0x0, "Document Hash is mandatory");
         Document storage document = users[caller].documentDetails[_docHash];
-        return(document.docHash,users[caller].userName,document.docTimestamp,document.ipfsHash);
+        return(document.docHash,document.userName,document.docTimestamp,document.ipfsHash,document.docTags);
     }
     
     function fetchAllDocuments(address caller) 
