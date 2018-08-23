@@ -22,7 +22,7 @@ class Upload extends Component {
         docTags: '',
         fileInput: '',
         fileBuffer: '',
-        digest: '',
+        docHash: '',
         isUploaded: false,
         loading: false,
         prefill: {}
@@ -31,10 +31,6 @@ class Upload extends Component {
     componentWillMount() {
         // Get network provider and web3 instance.
         // See utils/getWeb3 for more info.
-        console.log("componentWillMount Upload");
-
-
-
         getWeb3.then(results => {
             //add comments here
             const publicAddress = results.web3.eth.coinbase.toLowerCase();
@@ -66,7 +62,7 @@ class Upload extends Component {
     handleReset = () => {
         console.log("Inside handleReset ")
         document.getElementById("document-uplaod-form").reset();
-        this.setState({ name: '', docTags: '', timestamp: '', fileInput: '', imagePreviewUrl: '', digest: '', blockchainDigest: '', fileBuffer: '' });
+        this.setState({ name: '', docTags: '', timestamp: '', fileInput: '', imagePreviewUrl: '', docHash: '', blockchainDigest: '', fileBuffer: '' });
         console.log(this.state)
     }
 
@@ -87,15 +83,11 @@ class Upload extends Component {
                 return;
             }
 
-            console.log("file has been uploaded to ipfs =", result)
             this.setState({
                 loading: false, ipfsHash: result[0].hash, uploadedInIpfs: true
             })
-            console.log('digest :', this.state.digest);
-            console.log('name :', this.state.name);
-            console.log('ipfsHash :', this.state.ipfsHash);
-            console.log('docHash :', this.state.docTags);
             console.log("submit button this :", this.state);
+            console.log("ipfs API result =", result)
 
             this.state.web3.eth.getAccounts((error, accounts) => {
                 if (error) {
@@ -103,18 +95,6 @@ class Upload extends Component {
                     window.alert(error)
                     return;
                 }
-
-                // this.state.proofOfExistenceInstance.deployed().then((instance) => {
-                //     //return instance.uploadDocument(this.state.digest, this.state.name, result[0].hash, { from: this.state.publicAddress });
-                //     return instance.uploadDocument(this.state.digest, this.state.name, this.state.digest, { from: this.state.publicAddress });
-                // }).then((uploadResult)=>{
-                //     console.log("uploadResult =",uploadResult);
-                //     window.alert("document has been uploaded");
-                // }).catch((error => {
-                //     console.error(error);
-                //     window.alert(error)
-                // }))
-                //const proofOfLogicInst;
 
                 this.state.relayInstance.deployed().then((instance) => {
                     return instance.getCurrentVersion.call({ from: this.state.publicAddress });
@@ -129,19 +109,18 @@ class Upload extends Component {
                     console.log("user name = ", this.state.name);
                     console.log("DocTags string = ", this.state.docTags);
                     const docTagsTemp = this.state.docTags;
-                    const docTagsHex = this.state.web3.fromAscii(docTagsTemp);
 
                     return proofInstance.uploadDocument(
-                        this.state.digest, 
-                        this.state.web3.fromAscii(this.state.name), 
-                        this.state.web3.fromAscii(this.state.ipfsHash), 
+                        this.state.docHash,
+                        this.state.web3.fromAscii(this.state.name),
+                        this.state.web3.fromAscii(this.state.ipfsHash),
                         docTagsTemp,
                         { from: this.state.publicAddress });
 
                 }).then((result) => {
                     console.log("proof upload result: ", result);
                     console.log("state = ", this.state);
-                    return this.proofOfLogicInst.fetchDocument.call(this.state.digest, { from: this.state.publicAddress });
+                    return this.proofOfLogicInst.fetchDocument.call(this.state.docHash, { from: this.state.publicAddress });
                 }).then((downloadDocumentResult) => {
                     console.log("proofLogic download result: ", downloadDocumentResult);
                     this.setState({ loading: false })
@@ -150,27 +129,16 @@ class Upload extends Component {
                     console.log(error)
                     window.alert(error)
                 })
-
-
             });
-
         }); // ipfs add closing tag
 
     }
 
-
     handleChange = (event) => {
         let name = event.target.name;
         let value = event.target.value;
-        console.log("name",name);
-        console.log("value",value);
         if (name !== "fileInput" && value.length !== 0) {
-            // convet the text fields in to hex string so that they can be handled as byte arrays in solidity contracts
             this.setState({ [name]: value });
-            // let hexString = this.state.web3.fromAscii(value);
-            // let stringHex = this.state.web3.toAscii(hexString);
-            //  console.log(" ascii to hex: ", hexString);
-            //  console.log(" hex to ascii: ", stringHex);
         } else {
             console.log("empty data nothing to set")
         }
@@ -183,10 +151,7 @@ class Upload extends Component {
         let file = e.target.files[0];
         let reader = new window.FileReader();
         let readerPreview = new window.FileReader();
-
         console.log("Upload: handle image change: file", file);
-        console.log("name=" + e.target.name);
-        console.log("value=" + e.target.value);
 
         if (file) {
             // Create file buffer array to upload in IPFS
@@ -194,11 +159,12 @@ class Upload extends Component {
             reader.onloadend = () => {
                 var md = forge.md.sha256.create();
                 md.update(Buffer(reader.result));
-                let digest = '0x' + md.digest().toHex();
-                console.log("digest: ", digest);
-                this.setState({ fileInput: file.name, fileBuffer: Buffer(reader.result), digest: digest });
+                //var hash = this.state.web3.sha3(Buffer(reader.result).tostring());
+                let docHash = '0x' + md.digest().toHex();
+                console.log("docHash: ", docHash);
+                this.setState({ fileInput: file.name, fileBuffer: Buffer(reader.result), docHash: docHash });
                 console.log('buffer:', this.state.fileBuffer);
-                var docHash = digest;
+                //var docHash = docHash;
                 console.log("docHash: ", docHash);
             }
             // Create file data stream to display in the preview component
@@ -211,15 +177,11 @@ class Upload extends Component {
             console.log('There is no image file selected')
             this.setState({ fileInput: '', fileBuffer: '' });
         }
-
-        console.log(this.state.fileBuffer);
-
     }
 
     render() {
 
         const prefill = this.state.prefill;
-
         let { fileBuffer } = this.state;
         let $imagePreview = null;
         let $modal = null;
@@ -228,11 +190,7 @@ class Upload extends Component {
             ipfsUrl = 'https://ipfs.infura.io/ipfs/' + this.state.ipfsHash;
         }
 
-        console.log('ipfsUrl: ' + ipfsUrl);
-
         if (fileBuffer) {
-            console.log("Document has been selected")
-            console.log(this.state.fileInput)
             $imagePreview = (
                 <div>
                     {/* <PreviewCard fileBuffer={ipfsUrl} /> */}
@@ -242,13 +200,14 @@ class Upload extends Component {
                         name={this.state.name}
                         docTags={this.state.docTags}
                         timestamp={this.state.timestamp}
-                        docHash={this.state.digest}
+                        docHash={this.state.docHash}
                         ipfsHash={this.state.ipfsHash} />
                 </div>
             );
         }
 
         if (this.state.isUploaded) {
+            console.log('ipfsUrl: ' + ipfsUrl);
             $modal = (
                 <div>
                     <WarningModal
@@ -282,15 +241,12 @@ class Upload extends Component {
                 </div>
             )
         } else {
-
             return (
-                    <Container>
-                            <Spinner className="align-middle align-center" />
-                    </Container>
+                <div className="col align-self-center">
+                    <Spinner />
+                </div>
             )
-
         }
-
     }
 }
 

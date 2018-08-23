@@ -17,13 +17,14 @@ class Dashboard extends Component {
         // See utils/getWeb3 for more info.
 
         getWeb3.then(results => {
-            let publicAddress = results.web3.eth.coinbase.toLowerCase();
-            console.log("Dashboard: publicAddress: ", publicAddress);
             console.log("Initializing the contract");
+            //Get the current active account
+            let publicAddress = results.web3.eth.coinbase.toLowerCase();
+            // Initiating contracts during component mount
             const ProofOfExistanceInstance = getContract(ProofOfExistanceContract);
             const proofLogicInstance = getContract(Proof);
             const relayInstance = getContract(Relay);
-
+            //set the instance in state object to access then across contract
             this.setState({
                 web3: results.web3,
                 publicAddress: publicAddress,
@@ -31,97 +32,49 @@ class Dashboard extends Component {
                 proofLogicInstance: proofLogicInstance,
                 relayInstance: relayInstance,
             })
-
         }).then(() => {
-            this.instantiateContract();
+            this.fetchUserProfileDataFromBlockchain();
         }).catch(() => {
             console.log('Error finding web3.')
         })
     }
 
-    instantiateContract = () => {
+    fetchUserProfileDataFromBlockchain = () => {
         // Declaring this for later so we can chain functions on powInstance.
-        //var powInstance
-        const publicAddress = this.state.web3.eth.coinbase.toLowerCase();
-        console.log("--------public publicAddress----------")
-        console.log("publicAddress", publicAddress);
         console.log('Dashboard : state: ', this.state)
 
         // Get accounts.
         this.state.web3.eth.getAccounts((error, accounts) => {
-
-            // this.state.ProofOfExistanceInstance.deployed().then((instance) => {
-            //     console.log("inside deployed method");
-            //     this.powInstance = instance;
-            //     console.log("instance", instance);
-            //     this.setState({ account: accounts[0] });
-            //     return instance.fetchAllDocuments.call(accounts[0], { from: accounts[0] })
-            // }).then((results) => {
-            //     // Update state with the result.
-            //     console.log("-------------final result--------------");
-            //     console.log(results);
-            //     this.setState({ docHashList: results })
-            //     results.map((x, index) => {
-            //         this.powInstance.fetchDocument.call(x, { from: accounts[0] })
-            //             .then((result) => {
-            //                 let item = {
-            //                     docHash: result[0],
-            //                     docTimestamp: result[1],
-            //                     ipfsHash: result[2],
-            //                     userName: "userName"
-            //                 }
-            //                 let itemsList = this.state.items;
-            //                 itemsList.push(item);
-            //                 this.setState({ items: itemsList })
-            //                 return '';
-            //             })
-            //         return '';
-            //     })
-            //     console.log("state = ", this.state)
-            // }).catch((error) => {
-            //     console.log("----------------error---------------")
-            //     console.log(error)
-            //     this.setState({ items: null })
-            //     window.alert("Unable to fetch documents. Deploy Smart Contracts and Activate Metmask")
-            // })
-
-            //const proofLogicInst;
-
             this.state.relayInstance.deployed().then((instance) => {
                 return instance.getCurrentVersion.call({ from: this.state.publicAddress });
             }).then((currentContractAddress) => {
-                console.log("relayInstance  current address : ", currentContractAddress)
+                console.log("relay contract Instance  current address : ", currentContractAddress)
                 return currentContractAddress;
             }).then((proofLogicAddress) => {
                 return this.state.proofLogicInstance.at(proofLogicAddress)
             }).then((instance) => {
-                console.log("Inside proofLogic1")
+                console.log("Inside proofLogic contract instance")
                 this.proofLogicInst = instance;
                 return this.proofLogicInst.fetchAllDocuments.call({ from: this.state.publicAddress });
             }).then((results) => {
-                console.log("proofLogic result: ", results);
+                console.log("proofLogic fetch all documents result: ", results);
                 // Update state with the result.
-                console.log("-------------final result--------------");
-                console.log(results);
                 this.setState({ docHashList: results })
+                // iterate throught he list and fetch individual document details
                 results.map((x, index) => {
                     this.proofLogicInst.fetchDocument.call(x, { from: accounts[0] })
                         .then((result) => {
-
-                            console.log("user Name raw = " + result[1])
-
+                            // Convert timestamp from UTC to local
                             var utcSeconds = result[2].valueOf();
                             var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
                             d.setUTCSeconds(utcSeconds);
-
                             let item = {
                                 docHash: result[0],
                                 userName: this.state.web3.toAscii(result[1]),
                                 docTimestamp: d.toLocaleString(),
-                                ipfsHash:this.state.web3.toAscii( result[3]),
+                                ipfsHash: this.state.web3.toAscii(result[3]),
                                 docTags: this.state.web3.toAscii(result[4])
                             }
-
                             let itemsList = this.state.items;
                             itemsList.push(item);
                             this.setState({ items: itemsList })
@@ -129,11 +82,8 @@ class Dashboard extends Component {
                         })
                     return '';
                 })
-                console.log("state = ", this.state)
-
             }).catch((error) => {
-                console.log("----------------error---------------")
-                console.log(error)
+                console.log("Error Message:",error)
                 window.alert("Unable to fetch documents. Deploy Smart Contracts and Activate Metmask")
             })
         })
@@ -204,9 +154,7 @@ class Dashboard extends Component {
                                             <h2 className="mb-4">Recent  Activity on Proof Of Existance Dapp</h2>
                                         </div>
                                         <div id="activity_stream" style={style}>
-                                            {/* <div className="mb-4 col offset-lg-1 col-lg-10"> */}
                                             {$displayCards}
-                                            {/* </div> */}
                                         </div>
                                     </div>
                                 </CardBody>

@@ -11,7 +11,7 @@ const previewCard = (props) => {
     };
 
     return (
-        <div className="animated fadeIn flex-row align-items-center">
+        <div id="PreviewCard" className="animated fadeIn flex-row align-items-center">
             <div className="animated fadeIn">
                 <Card>
                     <CardHeader>
