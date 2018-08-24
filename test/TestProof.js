@@ -116,7 +116,7 @@ contract('Proof contract test suit', function (accounts) {
             contractInstance = instance;
             return instance.sendTransaction({ from: account_one, value: web3.toWei(1, "ether") });
         }).then((result) => {
-            console.log("result", result);
+            //console.log("result", result);
             console.log("contract address:",contractInstance.address);
         })
 
