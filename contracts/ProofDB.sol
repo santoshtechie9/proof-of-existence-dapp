@@ -2,9 +2,12 @@ pragma solidity ^0.4.22;
 
 import './Mortal.sol';
 
+// ProofDB contract manages the data for this entire application.
+// Data is separated from the logic to implement upgradable design pattern
+// The only purpose of this contract is to store and retrieve data.
 contract ProofDB  is Mortal {
     
-    //Document idenfiers alongwith ipfs has of the document
+    //Document idenfiers is a structure which sotres the documented related information
     struct Document {
         bytes32 docHash;
         bytes32 userName;
@@ -26,17 +29,21 @@ contract ProofDB  is Mortal {
         uint count;
     }
     
+    // List of state variables
     address[] public allowedContractsKeys;
     mapping(address => bool) allowedContracts;
     mapping( address => User )  users;
     mapping( address => bool )  admins;
     mapping( bytes32 => Document )  documents;
     
+    // modified to restric access to allowed users and contracts
     modifier onlyAllowedContractOrOwner {
         require (allowedContracts[msg.sender] != true && msg.sender != owner,"Should be a owner");
         _;
     }
 
+    // function to add allowed contracts or owners to the list.
+    // these list of users have the previliges to execute methods that make changes to the state of this ProofDB.
     function addAllowedContractOrOwner(address _addr)
     public
     onlyOwner 
@@ -49,6 +56,7 @@ contract ProofDB  is Mortal {
         return false;
     }
 
+    // This function determines of an address is allowed to  make change to the state of ProofDB contract
     function isAllowedContractOrOwner(address _addr)
     public
     view 
@@ -56,6 +64,9 @@ contract ProofDB  is Mortal {
         return allowedContracts[_addr];
     }
     
+    // This function adds a document 
+    // documents are maintained for each user. An array inside user struct contains all the document the user uploaded so far.
+    // document struct contains the document details
     function addDocument(address caller, bytes32 _docHash, bytes32 _userName, bytes _ipfsHash,bytes _docTags) 
     public
     returns(bool) {
@@ -68,6 +79,9 @@ contract ProofDB  is Mortal {
         return false;
     }
     
+    // Returns details of a single document
+    // All the documents that belong to a user are stored under a user
+    // address and  docHash are used to  look up a particular document
     function getDocument(address caller,bytes32 _docHash) 
     public 
     view 
@@ -77,6 +91,7 @@ contract ProofDB  is Mortal {
         return(document.docHash,document.userName,document.docTimestamp,document.ipfsHash,document.docTags);
     }
     
+    // Returns all the documents of a address
     function fetchAllDocuments(address caller) 
     public 
     view 

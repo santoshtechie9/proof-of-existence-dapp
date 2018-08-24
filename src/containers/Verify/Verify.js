@@ -164,7 +164,7 @@ class Verify extends Component {
             }).catch((error) => {
                 console.log("----------------error---------------")
                 console.log(error)
-                window.alert("Unable to fetch greet. Deploy Smart Contracts and Activate Metmask")
+                window.alert("Unable to fetch document. Check the docHash, smart deployment status.")
             })
         })
     }

@@ -69,7 +69,7 @@ class Upload extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
         // const powInstance = this.powInstance;
-        console.log("Clicked on Submit button ");
+        console.log("Clicked Submit button: ");
         console.log(this.state);
         this.setState({ loading: true, uploadedInIpfs: false });
         ipfs.files.add(this.state.fileBuffer, (error, result) => {
@@ -88,6 +88,7 @@ class Upload extends Component {
             })
             console.log("submit button this :", this.state);
             console.log("ipfs API result =", result)
+            console.log("File Has been uploaded to IPFS", result[0]);
 
             this.state.web3.eth.getAccounts((error, accounts) => {
                 if (error) {
