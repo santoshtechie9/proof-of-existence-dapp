@@ -100,10 +100,15 @@ http://localhost:3000/
 
 ## Configuration
 Open `https://remix.ethereum.org/` in a seperate browser window.
+
 Go to run tab and select `Injected web3` under Environment dropdown.
+
 Copy paste the ProofDB.sol contract in to remix IDE.
+
 Select ProofDB.sol, paste the address of this contract and click on `At Address` button.
+
 This loads the ProofDB instance.
+
 You can allowed contracts or addressed from the remix window.
 
 ## Running the tests
@@ -126,11 +131,12 @@ truffle test
 
 Q. Is the application not working ?
 
-A. Press ctrl+shift+i to view the console logs in chrome.
+A. Press `ctrl+shift+i` to view the console logs in chrome.
 
 Q. Having trouble uploading the image to IPFS?
 
 A. Run there commands to check the connectivity and upload the image once again.
+
 ```
 curl -H "Origin: https://ipfs.infura.io" \
 -H "Access-Control-Request-Method: POST" \

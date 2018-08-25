@@ -84,7 +84,7 @@ class Dashboard extends Component {
                 })
             }).catch((error) => {
                 console.log("Error Message:",error)
-                window.alert("Unable to fetch documents. Deploy Smart Contracts and Activate Metmask")
+                window.alert(error)
             })
         })
 
