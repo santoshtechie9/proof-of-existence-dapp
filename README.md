@@ -107,6 +107,7 @@ Go the the main page
 
 Go to dashaboard "/dashboard".
 All the documents a that belong to a user are shown in the dashboard/
+![Alt text](/src/assets/dashboard.JPG?raw=true "Optional Title")
 
 ```
 ![Alt text](/src/assets/dashboard.JPG?raw=true "Optional Title")
@@ -115,6 +116,7 @@ All the documents a that belong to a user are shown in the dashboard/
 Go to upload document "/upload".
 You can add a new document by entering the details and selecting a file.
 
+![Alt text](/src/assets/upload.JPG?raw=true "Optional Title")
 ```
 ![Alt text](/src/assets/upload.JPG?raw=true "Optional Title")
 ```
