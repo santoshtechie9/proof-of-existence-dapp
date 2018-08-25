@@ -65,12 +65,12 @@ contract('Proof contract test suit', function (accounts) {
             instance.uploadDocument(docHash_2, docOwnerName, ipfsHash_2, docTags, { from: account_one });
             instance.uploadDocument(docHash_3, docOwnerName, ipfsHash_3, docTags, { from: account_one });
             instance.uploadDocument(docHash_4, docOwnerName, ipfsHash_4, docTags, { from: account_one });
-            return instance.fetchDocument.call(docHash_3, { from: account_one });
+            return instance.fetchAllDocuments({ from: account_one });
         }).then(function (result) {
             //console.log(result);
-            let expected = 0x0;
-            let actual = result[0];
-            assert.equal(actual, expected, 'User should be allowe to upload 2 document with in 2 seconds. Additional docs with in that time interval will be ignored.');
+            let expected = 3;
+            let actual = result.length;
+            assert.equal(actual, expected, 'User should be allowe to upload 3 document with in 3 seconds. Additional docs with in that time interval will be ignored.');
         })
     });
 
@@ -117,7 +117,7 @@ contract('Proof contract test suit', function (accounts) {
             return instance.sendTransaction({ from: account_one, value: web3.toWei(1, "ether") });
         }).then((result) => {
             //console.log("result", result);
-            console.log("contract address:",contractInstance.address);
+            //console.log("contract address:",contractInstance.address);
         })
 
     })
