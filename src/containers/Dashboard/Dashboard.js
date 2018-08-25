@@ -4,7 +4,7 @@ import getWeb3 from '../../utils/getWeb3';
 import getContract from '../../utils/getContract';
 import ProofOfExistanceContract from '../../../build/contracts/ProofOfExistance.json';
 import Proof from '../../../build/contracts/Proof.json';
-import Relay from '../../../build/contracts/Relay.json';
+import Register from '../../../build/contracts/Register.json';
 
 class Dashboard extends Component {
 
@@ -23,14 +23,14 @@ class Dashboard extends Component {
             // Initiating contracts during component mount
             const ProofOfExistanceInstance = getContract(ProofOfExistanceContract);
             const proofLogicInstance = getContract(Proof);
-            const relayInstance = getContract(Relay);
+            const registerInstance = getContract(Register);
             //set the instance in state object to access then across contract
             this.setState({
                 web3: results.web3,
                 publicAddress: publicAddress,
                 ProofOfExistanceInstance: ProofOfExistanceInstance,
                 proofLogicInstance: proofLogicInstance,
-                relayInstance: relayInstance,
+                registerInstance: registerInstance,
             })
         }).then(() => {
             this.fetchUserProfileDataFromBlockchain();
@@ -45,10 +45,10 @@ class Dashboard extends Component {
 
         // Get accounts.
         this.state.web3.eth.getAccounts((error, accounts) => {
-            this.state.relayInstance.deployed().then((instance) => {
+            this.state.registerInstance.deployed().then((instance) => {
                 return instance.getCurrentVersion.call({ from: this.state.publicAddress });
             }).then((currentContractAddress) => {
-                console.log("relay contract Instance  current address : ", currentContractAddress)
+                console.log("register contract Instance  current address : ", currentContractAddress)
                 return currentContractAddress;
             }).then((proofLogicAddress) => {
                 return this.state.proofLogicInstance.at(proofLogicAddress)

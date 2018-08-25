@@ -1,12 +1,12 @@
-var Relay = artifacts.require('Relay.sol');
+var Register = artifacts.require('Register.sol');
 var Proof = artifacts.require('Proof.sol');
 
-contract('Relay contract test suit', function (accounts) {
+contract('Register contract test suit', function (accounts) {
 
     // Test cases ensures that the owner is iniliazed while deploying the contract. 
     // Validates the consturctor argument.
     it('Test constructor argument', function () {
-        return Relay.deployed().then((instance) => {
+        return Register.deployed().then((instance) => {
             return instance.owner.call({ from: accounts[0] });
         }).then((owner) => {
             const expected = accounts[0];
@@ -17,7 +17,7 @@ contract('Relay contract test suit', function (accounts) {
 
     // This test validates the current version of the contract address is set to the value passed in the deployment script
     it('Test current version of the contract', function () {
-        return Relay.deployed().then((instance) => {
+        return Register.deployed().then((instance) => {
             return instance.getCurrentVersion.call({ from: accounts[0] });
         }).then((contractAddress) => {
             const expected = Proof.address;
@@ -30,7 +30,7 @@ contract('Relay contract test suit', function (accounts) {
     it('Test change current version of the contract by owner', function () {
         const newVersion = "0xaca0000620f00001e7200003b3a00004e140000d";
         const account_one = accounts[0];
-        return Relay.deployed().then((instance) => {
+        return Register.deployed().then((instance) => {
             instance.changeContractVersion(newVersion, { from: account_one });
             return instance.getCurrentVersion.call({ from: account_one });
         }).then((currentVersion) => {
@@ -45,7 +45,7 @@ contract('Relay contract test suit', function (accounts) {
     //function(){
     //     const newVersion = "0xaca0000620f00001e7200003b3a00004e140000d";
     //     const account_one = accounts[1];
-    //     return Relay.deployed().then((instance)=>{
+    //     return Register.deployed().then((instance)=>{
     //         instance.changeContractVersion(newVersion,{from:account_one});
     //         return instance.getCurrentVersion.call({from:account_one});
     //     }).then((currentVersion)=>{

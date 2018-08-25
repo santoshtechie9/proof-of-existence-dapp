@@ -25,7 +25,7 @@ All the document uploaded using this app are stored in IPFS. So do not upload an
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### Prerequisites
+### Requirements
 
 What things you need to install the software and how to install them
 
@@ -98,7 +98,55 @@ Start using Dapp
 http://localhost:3000/
 ```
 
-## How to use the proof-of-existence dapp
+## Configuration
+Open `https://remix.ethereum.org/` in a seperate browser window.
+Go to run tab and select `Injected web3` under Environment dropdown.
+Copy paste the ProofDB.sol contract in to remix IDE.
+Select ProofDB.sol, paste the address of this contract and click on `At Address` button.
+This loads the ProofDB instance.
+You can allowed contracts or addressed from the remix window.
+
+## Running the tests
+
+This section explain how to run the automated tests for this application.
+
+Go to project root directory
+
+```
+cd proof-of-existence-dapp
+```
+
+Run tests
+
+```
+truffle test
+```
+
+## FAQ
+
+Q. Is the application not working ?
+
+A. Press ctrl+shift+i to view the console logs in chrome.
+
+Q. Having trouble uploading the image to IPFS?
+
+A. Run there commands to check the connectivity and upload the image once again.
+```
+curl -H "Origin: https://ipfs.infura.io" \
+-H "Access-Control-Request-Method: POST" \
+-H "Access-Control-Request-Headers: X-Requested-With" \
+--verbose \
+https://ipfs.infura.io:5001/api/v0/swarm/peers; echo	
+
+curl \
+-H "Origin: http://infurarocks.com" \
+-H "Access-Control-Request-Method: GET" \
+-H "Access-Control-Request-Headers: X-Requested-With" \
+-H "Cache-Control: no-cache" \
+--verbose https://ipfs.infura.io/api/v0/cat?arg=QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG/readme
+```
+
+## Screenshots(How to use the proof-of-existence dapp)
 
 ### Go the the main page
 Main page of the application
@@ -115,37 +163,10 @@ You can add a new document by entering the details and selecting a file.
 
 ![Alt text](/src/assets/upload.JPG?raw=true "Optional Title")
 
-
 ### Go to verify document "/verify"
 You can verify the document here by entering the hash.
 
 ![Alt text](/src/assets/verify.JPG?raw=true "Optional Title")
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Go to project root directory
-
-```
-cd proof-of-existence-dapp
-```
-
-Run tests
-
-```
-truffle test
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
 
 ## Deployment
 

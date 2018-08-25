@@ -1,7 +1,7 @@
 var Mortal = artifacts.require("./Mortal.sol");
 var ProofDB = artifacts.require("./ProofDB.sol");
 var Proof = artifacts.require("./Proof.sol");
-var Relay = artifacts.require("./Relay.sol");
+var Register = artifacts.require("./Register.sol");
 var ProofOfOwnership = artifacts.require("./ProofOfOwnership.sol");
 var ProofOfExistance = artifacts.require("./ProofOfExistance.sol");
 
@@ -14,7 +14,7 @@ module.exports = function (deployer) {
   }).then(() => {
     return deployer.deploy(Proof, ProofDB.address);
   }).then(() => {
-    return deployer.deploy(Relay, Proof.address);
+    return deployer.deploy(Register, Proof.address);
   })
 
 };

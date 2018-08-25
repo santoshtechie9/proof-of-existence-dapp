@@ -7,7 +7,7 @@ import PreviewCard from '../../components/Cards/PreviewCard/PreviewCard';
 import WarningModal from '../../components/Modals/WarningModal';
 import ProofOfExistenceContract from '../../../build/contracts/ProofOfExistance.json';
 import Proof from '../../../build/contracts/Proof.json';
-import Relay from '../../../build/contracts/Relay.json';
+import Register from '../../../build/contracts/Register.json';
 import getWeb3 from '../../utils/getWeb3';
 import getContract from '../../utils/getContract';
 import ipfs from '../../utils/ipfs';
@@ -36,7 +36,7 @@ class Upload extends Component {
             const publicAddress = results.web3.eth.coinbase.toLowerCase();
             const proofOfExistenceInstance = getContract(ProofOfExistenceContract);
             const proofInstance = getContract(Proof);
-            const relayInstance = getContract(Relay);
+            const registerInstance = getContract(Register);
             console.log(" Upload componentWillMount  this: ", this);
 
             this.setState({
@@ -45,7 +45,7 @@ class Upload extends Component {
                 publicAddress: publicAddress,
                 proofOfExistenceInstance: proofOfExistenceInstance,
                 proofInstance: proofInstance,
-                relayInstance: relayInstance
+                registerInstance: registerInstance
             })
 
         }).catch(() => {
@@ -97,10 +97,10 @@ class Upload extends Component {
                     return;
                 }
 
-                this.state.relayInstance.deployed().then((instance) => {
+                this.state.registerInstance.deployed().then((instance) => {
                     return instance.getCurrentVersion.call({ from: this.state.publicAddress });
                 }).then((currentContractAddress) => {
-                    console.log("relayInstance  current address : ", currentContractAddress)
+                    console.log("registerInstance  current address : ", currentContractAddress)
                     return currentContractAddress;
                 }).then((proofLogicAddress) => {
                     this.proofOfLogicInst = this.state.proofInstance.at(proofLogicAddress);

@@ -4,9 +4,10 @@ import './Mortal.sol';
 
 // This contract maintains the current version of Proof contract.
 // Proof contract has the logic and code
-contract Relay is Mortal {
+contract Register is Mortal {
     
-    address public currentVersion;
+    address backendContract;
+    address[] public previousBackends;
     
     // event to log the current version of the contract
     event LogCurrentVersion(address _address);
@@ -20,24 +21,28 @@ contract Relay is Mortal {
     
     // Constructor accepts the intial versioin of the contract address 
     constructor(address initAddr) public {
-        currentVersion = initAddr;
+        backendContract = initAddr;
         owner = msg.sender;
     }
     
     // Function to chang the current version of the contract address
     // Only owner can access execute this function to the version of smart contract
-    function changeContractVersion(address newVersion) public
+    function changeContractVersion(address _newBackend) public
     onlyOwner()
     returns (bool)
     {
-        currentVersion = newVersion;
-        emit LogCurrentVersion(currentVersion);
-        return true;
+        if(_newBackend != backendContract) {
+            previousBackends.push(backendContract);
+            backendContract = _newBackend;
+            return true;
+        }
+        emit LogCurrentVersion(backendContract);
+        return false;
     }
     
     // This function returns the current version of the smart contrace
     function getCurrentVersion() public view returns(address){
-        return currentVersion;
+        return backendContract;
     }
     
 }

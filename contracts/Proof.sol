@@ -7,8 +7,8 @@ contract Proof is Mortal{
     
     address public storageDb;
     mapping(address => UserUsageCount) userUsage;
-    uint public documentUploadPeriod = 120 seconds;
-    uint public documentLimit = 2;
+    uint public documentUploadPeriod = 180 seconds;
+    uint public documentLimit = 3;
     bool private stopped = false;
 
     //Document upload actions. To be used for user throtling
@@ -62,6 +62,12 @@ contract Proof is Mortal{
     returns(bool) {
         //UserUsageCount storage userUploadStats = userUsage[msg.sender];
         //UploadChoices choice = verifyRateLimit(msg.sender);
+        
+        require(_docHash != 0x0,"Document hash is mandatory it can't be 0x0");
+        require(_userName.length <= 32,"userName should be <= 32 bytes");
+        require(_ipfsHash.length <= 64,"ipfsHash should be <= 64 bytes");
+        require(_docTags.length <= 32,"docTags should be <= 32 bytes");
+        
         bool status;
         ProofDB proofDB = ProofDB(storageDb);
         UploadChoices choice = verifyRateLimit(msg.sender);
@@ -71,14 +77,14 @@ contract Proof is Mortal{
             userUsage[msg.sender].uploadTime = now;
             userUsage[msg.sender].count = 1;
             //Log document upload event
-            emit LogUploadDocument(msg.sender, _userName,_docHash, block.timestamp,_ipfsHash,"Upload Success - Throtling count reset");
+            emit LogUploadDocument(msg.sender, _userName,_docHash, block.timestamp,_ipfsHash,"uploaded - throtling count reset");
         } else if (choice == UploadChoices.UPLOAD_CNT_INCR) {
             status = proofDB.addDocument(msg.sender,_docHash,_userName,_ipfsHash,_docTags);
             userUsage[msg.sender].count += 1;
             //Log document upload event
-            emit LogUploadDocument(msg.sender, _userName,_docHash,block.timestamp,_ipfsHash,"Upload Success");
+            emit LogUploadDocument(msg.sender, _userName,_docHash,block.timestamp,_ipfsHash,"upload");
         } else if (choice == UploadChoices.UPLOAD_NO){
-            emit LogUploadDocument(msg.sender, _userName,_docHash,block.timestamp,_ipfsHash,"Upload Not Success - Throtling limit exceeded");
+            emit LogUploadDocument(msg.sender, _userName,_docHash,block.timestamp,_ipfsHash,"upload failed - throtling limit exceeded");
         } else {
             return false;
         }
@@ -140,7 +146,7 @@ contract Proof is Mortal{
     }
 
     function greet() external pure returns(string){
-        return "Hello, greet message"; 
+        return "Hello, Test Greet Message"; 
     }
 
 }

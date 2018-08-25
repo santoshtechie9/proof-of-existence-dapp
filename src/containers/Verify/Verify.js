@@ -6,7 +6,7 @@ import VerificationForm from '../../components/Forms/VerificationForm/Verificati
 import WarningModal from '../../components/Modals/WarningModal';
 import getWeb3 from '../../utils/getWeb3';
 import Proof from '../../../build/contracts/Proof.json';
-import Relay from '../../../build/contracts/Relay.json';
+import Register from '../../../build/contracts/Register.json';
 import getContract from '../../utils/getContract';
 
 class Verify extends Component {
@@ -65,14 +65,14 @@ class Verify extends Component {
         getWeb3.then(results => {
             const publicAddress = results.web3.eth.coinbase.toLowerCase();
             const proofLogicInstance = getContract(Proof);
-            const relayInstance = getContract(Relay);
+            const registerInstance = getContract(Register);
             console.log(" Verify componentWillMount  this: ", this);
 
             this.setState({
                 web3: results.web3,
                 publicAddress: publicAddress,
                 proofLogicInstance: proofLogicInstance,
-                relayInstance: relayInstance
+                registerInstance: registerInstance
             })
         })
             .catch(() => {
@@ -119,10 +119,10 @@ class Verify extends Component {
                 return;
             }
 
-            this.state.relayInstance.deployed().then((instance) => {
+            this.state.registerInstance.deployed().then((instance) => {
                 return instance.getCurrentVersion.call({ from: this.state.publicAddress });
             }).then((currentContractAddress) => {
-                console.log("relayInstance  current address : ", currentContractAddress)
+                console.log("registerInstance  current address : ", currentContractAddress)
                 return currentContractAddress;
             }).then((proofLogicAddress) => {
                 this.proofOfLogicInst = this.state.proofLogicInstance.at(proofLogicAddress);
