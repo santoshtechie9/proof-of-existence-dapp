@@ -98,6 +98,34 @@ Start using Dapp
 http://localhost:3000/
 ```
 
+## How to use the proof-of-existence dapp
+
+Go the the main page
+```
+![Alt text](/src/assets/mainpage.JPG?raw=true "Optional Title")
+```
+
+Go to dashaboard "/dashboard".
+All the documents a that belong to a user are shown in the dashboard/
+
+```
+![Alt text](/src/assets/dashboard.JPG?raw=true "Optional Title")
+```
+
+Go to upload document "/upload".
+You can add a new document by entering the details and selecting a file.
+
+```
+![Alt text](/src/assets/upload.JPG?raw=true "Optional Title")
+```
+
+Go to vrify document "/verify"
+You can verify the document here by entering the hash.
+
+```
+![Alt text](/src/assets/verify.JPG?raw=true "Optional Title")
+```
+
 ## Running the tests
 
 Explain how to run the automated tests for this system
