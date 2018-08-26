@@ -7,7 +7,7 @@ import image3 from '../../assets/image-3.jpg';
 
 const items = [
   {
-    src: image3,
+    src: image1,
     altText: 'You are Logged in as :',
     caption: 'Welcome to Proof Of Existence Dapp',
     text: 'Visit Dashboard to view documents you uploaded',
@@ -19,7 +19,7 @@ const items = [
     text: 'Visit Dashboard to view documents you uploaded',
   },
   {
-    src: image1,
+    src: image3,
     altText: 'You are Logged in as :',
     caption: 'Welcome to Proof Of Existence Dapp',
     text: 'Visit Dashboard to view documents you uploaded',

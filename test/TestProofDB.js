@@ -1,4 +1,4 @@
-var Proof = artifacts.require('ProofDB.sol');
+var ProofDB = artifacts.require('ProofDB.sol');
 var Web3 = require('web3');
 
 contract('ProofDB contract test suit', function (accounts) {
@@ -12,7 +12,7 @@ contract('ProofDB contract test suit', function (accounts) {
         const contractAddr = "0xaca0000620f00001e7200003b3a00004e140000d";
         const owner = accounts[0];
         let contractInstance = null;
-        return Proof.deployed().then((instance) => {
+        return ProofDB.deployed().then((instance) => {
             contractInstance = instance;
             instance.addAllowedContractOrOwner(contractAddr, { from: owner });
         }).then(() => {
@@ -29,7 +29,7 @@ contract('ProofDB contract test suit', function (accounts) {
     it('Test add allowed owner', function () {
         const owner = accounts[0];
         let contractInstance = null;
-        return Proof.deployed().then((instance) => {
+        return ProofDB.deployed().then((instance) => {
             contractInstance = instance;
             instance.addAllowedContractOrOwner(owner, { from: owner });
         }).then(() => {
@@ -45,7 +45,7 @@ contract('ProofDB contract test suit', function (accounts) {
     it('Test add allowed contract by unauthorized owner', function () {
         const contractAddr = "0xaca0000620f00001e7200003b3a00004e141234d";
         const owner = accounts[0];
-        return Proof.deployed().then((instance) => {
+        return ProofDB.deployed().then((instance) => {
             return instance.isAllowedContractOrOwner.call(contractAddr, { from: owner });
         }).then((status) => {
             const expected = false;
@@ -62,8 +62,8 @@ contract('ProofDB contract test suit', function (accounts) {
         const userName = "Santu";
         const ipfsHash = "ipfshashsdocument1";
         const owner = accounts[0];
-        return Proof.deployed().then((instance) => {
-            instance.addDocument(caller, docHash, userName, ipfsHash,docTags, { from: owner });
+        return ProofDB.deployed().then((instance) => {
+            instance.addDocument(caller, docHash, userName, ipfsHash, docTags, { from: owner });
             return instance.getDocument.call(caller, docHash, { from: owner })
         }).then((document) => {
             const expected = docHash;
@@ -85,9 +85,9 @@ contract('ProofDB contract test suit', function (accounts) {
             const userName = "Santu";
             const ipfsHash = "ipfshashsdocument1";
             const owner = accounts[0];
-            return Proof.deployed().then((instance) => {
-                instance.addDocument(caller, docHash1, userName, ipfsHash,docTags, { from: owner });
-                instance.addDocument(caller, docHash2, userName, ipfsHash,docTags, { from: owner });
+            return ProofDB.deployed().then((instance) => {
+                instance.addDocument(caller, docHash1, userName, ipfsHash, docTags, { from: owner });
+                instance.addDocument(caller, docHash2, userName, ipfsHash, docTags, { from: owner });
                 return instance.fetchAllDocuments.call(caller, { from: owner });
             }).then((documents) => {
                 const expected = 2;
@@ -96,5 +96,7 @@ contract('ProofDB contract test suit', function (accounts) {
             })
         });
     })
+
+
 
 })

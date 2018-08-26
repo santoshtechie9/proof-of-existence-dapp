@@ -137,7 +137,11 @@ Q. Having trouble uploading the image to IPFS?
 
 A. Run there commands to check the connectivity and upload the image once again.
 
+
 ```
+
+https://github.com/INFURA/tutorials/wiki/IPFS-and-CORS
+
 curl -H "Origin: https://ipfs.infura.io" \
 -H "Access-Control-Request-Method: POST" \
 -H "Access-Control-Request-Headers: X-Requested-With" \
@@ -176,7 +180,38 @@ You can verify the document here by entering the hash.
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+Follow the steps mentioned below to do testnet deployment.
+
+1. Go to project directory and open truffle.js file
+`cd proof-of-existence-dapp/truffle.js`
+
+2. Open metamask and assign the seed phrase to seedWords variable
+`seedWords = "seed phrase"`
+
+3. Go to command prompt and run the truffle migrate command
+`truffle migrate --network rinkeby` 
+
+4. Deployed contract addresses.
+```
+Running migration: 1_initial_migration.js
+  Deploying Migrations...  ... 0xd57c7d82f9cc460d24a416c855f6a5aa42a85c88204d61f53ab66b1bbec064c1
+  Migrations: 0xf6f4cb39636b2dabc2107d9d949b6eda1dfdf949Saving successful migration to network...  ... 0x6c39ce071854a3c533af67c31530dd9ebc4073ae365c3a5a44daef9ba1721a20Saving artifacts...Running migration: 2_deploy_contracts.js
+  Deploying Mortal...
+  ... 0xa9ef9ff4637060497ae33e5a08a4f0540f810a04b207596f910fcb3a673d13d0
+  Mortal: 0x46abc8a36321831db6dbbc9695f297d507d809ce
+  Deploying ProofDB...
+  ... 0x0b8e8d40483e847df4df0d043023cced4bce46bfe0fe768e501fbb3a6094778a
+  ProofDB: 0xb72d2feebb778fcec03f63ae64d30c13dc05884e
+  Deploying Proof...
+  ... 0xe5cdfbb803d4da4985f692b237eb07f3a7d49ca1945f663d348a62e1fe229271
+  Proof: 0xad3692f8e20b7ff17e713af0e74b3fca915d9b05
+  Deploying Register...
+  ... 0x5d21ed81ad7b98faeac20550e00be364dee4a6536839ad7b9c3483ee6464ecd5
+  Register: 0xc64307c448805b0f63508ebde80088b7e4d5d337
+Saving successful migration to network...
+  ... 0xfd8826028199d80ba0bfa89b849195ec0adf92d867478e0a189ff11d2a012a47
+Saving artifacts...
+```
 
 ## Built With
 

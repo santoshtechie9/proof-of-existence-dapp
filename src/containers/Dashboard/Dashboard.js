@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Container, Row, Col, Card, CardBody } from 'reactstrap';
 import getWeb3 from '../../utils/getWeb3';
 import getContract from '../../utils/getContract';
-import ProofOfExistanceContract from '../../../build/contracts/ProofOfExistance.json';
 import Proof from '../../../build/contracts/Proof.json';
 import Register from '../../../build/contracts/Register.json';
 
@@ -21,14 +20,12 @@ class Dashboard extends Component {
             //Get the current active account
             let publicAddress = results.web3.eth.coinbase.toLowerCase();
             // Initiating contracts during component mount
-            const ProofOfExistanceInstance = getContract(ProofOfExistanceContract);
             const proofLogicInstance = getContract(Proof);
             const registerInstance = getContract(Register);
             //set the instance in state object to access then across contract
             this.setState({
                 web3: results.web3,
                 publicAddress: publicAddress,
-                ProofOfExistanceInstance: ProofOfExistanceInstance,
                 proofLogicInstance: proofLogicInstance,
                 registerInstance: registerInstance,
             })
@@ -83,7 +80,7 @@ class Dashboard extends Component {
                     return '';
                 })
             }).catch((error) => {
-                console.log("Error Message:",error)
+                console.log("Error Message:", error)
                 window.alert(error)
             })
         })
@@ -125,21 +122,20 @@ class Dashboard extends Component {
             });
 
         } else {
-            $displayCards = () => {
-                return (
+            $displayCards =
+                (
                     <Row>
                         <Col xs="12" sm="12" lg="12">
                             <Card className="text-dark bg-light">
                                 <CardBody className="pb-0">
                                     <div className="tag">
-                                        {/* You have not uploaded any documents yet. */}
+                                        You have not uploaded any documents yet.
                                     </div>
                                 </CardBody>
                             </Card>
                         </Col>
                     </Row>
                 );
-            }
         }
         return (
             <div>

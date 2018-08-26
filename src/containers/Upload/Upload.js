@@ -5,7 +5,6 @@ import UploadForm from '../../components/Forms/UploadForm/UploadForm';
 import DetailCard from '../../components/Cards/DetailCard/DetailCard';
 import PreviewCard from '../../components/Cards/PreviewCard/PreviewCard';
 import WarningModal from '../../components/Modals/WarningModal';
-import ProofOfExistenceContract from '../../../build/contracts/ProofOfExistance.json';
 import Proof from '../../../build/contracts/Proof.json';
 import Register from '../../../build/contracts/Register.json';
 import getWeb3 from '../../utils/getWeb3';
@@ -34,7 +33,6 @@ class Upload extends Component {
         getWeb3.then(results => {
             //add comments here
             const publicAddress = results.web3.eth.coinbase.toLowerCase();
-            const proofOfExistenceInstance = getContract(ProofOfExistenceContract);
             const proofInstance = getContract(Proof);
             const registerInstance = getContract(Register);
             console.log(" Upload componentWillMount  this: ", this);
@@ -43,7 +41,6 @@ class Upload extends Component {
                 web3: results.web3,
                 loading: false,
                 publicAddress: publicAddress,
-                proofOfExistenceInstance: proofOfExistenceInstance,
                 proofInstance: proofInstance,
                 registerInstance: registerInstance
             })

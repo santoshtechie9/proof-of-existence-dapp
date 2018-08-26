@@ -35,6 +35,20 @@ contract ProofDB  is Mortal {
     mapping( address => User )  users;
     mapping( address => bool )  admins;
     mapping( bytes32 => Document )  documents;
+    bool public stopped = false;
+    
+    //Events for logging
+    event LogFallback(address _senderaddr,uint _value);
+
+    //Modifiers
+    modifier stopInEmergency {if (!stopped) _;}
+    modifier onlyInEmergency {if (stopped) _;}
+
+     //Circuit Breaker to pause the contract in case of Emergency
+    function toggleContractActive() public 
+    onlyOwner {
+        stopped = !stopped;
+    }
     
     // modified to restric access to allowed users and contracts
     modifier onlyAllowedContractOrOwner {
@@ -69,6 +83,7 @@ contract ProofDB  is Mortal {
     // document struct contains the document details
     function addDocument(address caller, bytes32 _docHash, bytes32 _userName, bytes _ipfsHash,bytes _docTags) 
     public
+    stopInEmergency
     returns(bool) {
         if(users[caller].documentDetails[_docHash].docHash == 0x0 ){
             users[caller].addr = msg.sender;
@@ -97,6 +112,29 @@ contract ProofDB  is Mortal {
     view 
     returns(bytes32[]){
         return users[caller].documentList;
+    }
+    
+        // function to check the balance in the contract
+    function checkBalance() public view returns(uint){
+        return address(this).balance;
+    }
+    
+    // this method will allow the owner to withdraw funds sent to the contract account.
+    // pull over push for external calls
+    function withdrawFunds() public 
+    onlyOwner 
+    onlyInEmergency
+    returns(bool){
+        uint balance = address(this).balance;
+        msg.sender.transfer(balance);
+        return true;
+    }
+
+    // Fallback method to prevet calls to with data and unknown functions to the contract.
+    // This function is invoked when a call is made to the contrat with no matching function signature. 
+    function () public payable {
+        require(msg.data.length == 0,"Message Length is not zero");
+        emit LogFallback(msg.sender,msg.value);
     }
 
 }   

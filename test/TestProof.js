@@ -3,7 +3,7 @@ var Web3 = require('web3');
 
 contract('Proof contract test suit', function (accounts) {
 
-    var web3 = new Web3();
+    let web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
     let docTags = web3.fromAscii("Blockchain, Ethereum, Solidity")
 
     // Test fetch document method on an empty data store. When none of the users have uploaded any document in the  contract.

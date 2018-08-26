@@ -9,7 +9,7 @@ contract Proof is Mortal{
     mapping(address => UserUsageCount) userUsage;
     uint public documentUploadPeriod = 180 seconds;
     uint public documentLimit = 3;
-    bool private stopped = false;
+    bool public stopped = false;
 
     //Document upload actions. To be used for user throtling
     enum UploadChoices { UPLOAD_CNT_INCR, UPLOAD_CNT_RESET, UPLOAD_NO }
@@ -73,14 +73,14 @@ contract Proof is Mortal{
         UploadChoices choice = verifyRateLimit(msg.sender);
 
         if (choice == UploadChoices.UPLOAD_CNT_RESET) {
-            status = proofDB.addDocument(msg.sender,_docHash,_userName,_ipfsHash,_docTags);
             userUsage[msg.sender].uploadTime = now;
             userUsage[msg.sender].count = 1;
+            status = proofDB.addDocument(msg.sender,_docHash,_userName,_ipfsHash,_docTags);
             //Log document upload event
             emit LogUploadDocument(msg.sender, _userName,_docHash, block.timestamp,_ipfsHash,"uploaded - throtling count reset");
         } else if (choice == UploadChoices.UPLOAD_CNT_INCR) {
-            status = proofDB.addDocument(msg.sender,_docHash,_userName,_ipfsHash,_docTags);
             userUsage[msg.sender].count += 1;
+            status = proofDB.addDocument(msg.sender,_docHash,_userName,_ipfsHash,_docTags);
             //Log document upload event
             emit LogUploadDocument(msg.sender, _userName,_docHash,block.timestamp,_ipfsHash,"upload");
         } else if (choice == UploadChoices.UPLOAD_NO){
@@ -111,7 +111,6 @@ contract Proof is Mortal{
         return defaultUploadChoice;
     }
 
-
     // function to retrieve the document details.
     function fetchDocument(bytes32 _docHash) 
     public 
@@ -129,6 +128,7 @@ contract Proof is Mortal{
         return(docHash,userName,docTimestamp,ipfsHash,docTags);
     }
 
+    // function to retrieve all the document of the user
     function fetchAllDocuments() 
     public 
     view 
@@ -136,6 +136,22 @@ contract Proof is Mortal{
         ProofDB proofDB = ProofDB(storageDb);
         bytes32[] memory docHashList = proofDB.fetchAllDocuments(msg.sender);
         return docHashList;
+    }
+
+    // function to check the balance in the contract
+    function checkBalance() public view returns(uint){
+        return address(this).balance;
+    }
+
+    // this method will allow the owner to withdraw funds sent to the contract account.
+    // pull over push for external calls
+    function withdrawFunds() public 
+    onlyOwner 
+    onlyInEmergency
+    returns(bool){
+        uint balance = address(this).balance;
+        msg.sender.transfer(balance);
+        return true;
     }
 
     // Fallback method to prevet calls to with data and unknown functions to the contract.
