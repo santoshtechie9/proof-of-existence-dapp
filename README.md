@@ -191,7 +191,7 @@ Follow the steps mentioned below to do testnet deployment.
 3. Go to command prompt and run the truffle migrate command
 `truffle migrate --network rinkeby` 
 
-4. Deployed contract addresses.
+4. Deployed the dapp in rinkeby test net. Below given are the contract address.
 ```
 Running migration: 1_initial_migration.js
   Deploying Migrations...  ... 0xd57c7d82f9cc460d24a416c855f6a5aa42a85c88204d61f53ab66b1bbec064c1
