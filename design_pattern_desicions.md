@@ -40,8 +40,25 @@ Mortal design pattern allows the owner to kill the contract and transfer any eth
 ```
 
 ## Restricting Access
+
+Restricts the access to certain methods. only the owner of the contract will be able to perform these operations.
+
 ```
-Restricting Access Code Sample
+    // Owned contract to assign a owner at the time of deployment
+    contract Owned {
+    
+        address public owner;
+
+        // Modifier to check if the sender is owner    
+        modifier onlyOwner(){
+        require(msg.sender == owner, "msg sender is not owner");
+        _;
+    }
+   
+    constructor() public {
+        owner = msg.sender;
+    }
+
 ```
 
 ## Circuit Breaker
@@ -125,5 +142,22 @@ Upgradable design pattern allows the owner to upgrade the contracts. It is imple
             return backendContract;
         }
         
+    }
+```
+
+## pull over push
+
+Proof.sol and ProofDB.sol databases have a withdrawFunds method. When invoked by the contract owner it will transfer the balance ether to the owner account. 
+
+```
+    // this method will allow the owner to withdraw funds sent to the contract account.
+    // pull over push for external calls
+    function withdrawFunds() public 
+    onlyOwner 
+    onlyInEmergency
+    returns(bool){
+        uint balance = address(this).balance;
+        msg.sender.transfer(balance);
+        return true;
     }
 ```
