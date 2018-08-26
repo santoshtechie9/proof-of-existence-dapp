@@ -29,7 +29,6 @@ These instructions will get you a copy of the project up and running on your loc
 
 What things you need to install the software and how to install them
 
-```
 | Avoiding Known Attacks | Contract Name |
 | ------------------------------ | ------------------- |
 | `nodejs` | v8.11.3 or higher |
@@ -40,7 +39,6 @@ What things you need to install the software and how to install them
 | `Solidity` | v0.4.24 or higher  |
 | `git` |   |
 
-```
 #### Reference links
 
 * [nodejs](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04) - nodejs
