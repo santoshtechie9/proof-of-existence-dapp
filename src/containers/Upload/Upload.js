@@ -116,12 +116,14 @@ class Upload extends Component {
                         { from: this.state.publicAddress });
 
                 }).then((result) => {
+                    window.alert("Document upload request has been submitted to the blockchain");
                     console.log("proof upload result: ", result);
                     console.log("state = ", this.state);
                     return this.proofOfLogicInst.fetchDocument.call(this.state.docHash, { from: this.state.publicAddress });
                 }).then((downloadDocumentResult) => {
                     console.log("proofLogic download result: ", downloadDocumentResult);
                     this.setState({ loading: false })
+                    window.alert(this.state.docHash + " document has been uploaded and added to the blockchain")
                 }).catch((error) => {
                     console.log("----------------error---------------")
                     console.log(error)
