@@ -30,14 +30,23 @@ These instructions will get you a copy of the project up and running on your loc
 What things you need to install the software and how to install them
 
 ```
-nodejs v8.11.3 or higher
-npm v6.1.0 or higher
-MetaMask browser extension
-Truffle v4.1.13 or higher
-ganache-cli
-Solidity v0.4.24 or higher
-git
+| Avoiding Known Attacks | Contract Name |
+| ------------------------------ | ------------------- |
+| `nodejs` | v8.11.3 or higher |
+| `npm` | v6.1.0 or higher |
+| `MetaMask` |  browser extension |
+| `Truffle` |  v4.1.13 or higher |
+| `ganache-cli` |   |
+| `Solidity` | v0.4.24 or higher  |
+| `git` |   |
+
 ```
+#### Reference links
+
+* [nodejs](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04) - nodejs
+* [Truffle](https://truffleframework.com/docs/truffle/getting-started/installation) - git
+* [git](https://www.digitalocean.com/community/tutorials/how-to-install-git-on-ubuntu-14-04) - git
+* [ganache-cli](https://github.com/trufflesuite/ganache-cli) - ganache
 
 ### Installation
 
