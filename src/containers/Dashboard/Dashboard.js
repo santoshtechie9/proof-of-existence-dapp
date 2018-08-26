@@ -80,7 +80,7 @@ class Dashboard extends Component {
                     return '';
                 })
             }).catch((error) => {
-                console.log("Error Message:",error)
+                console.log("Error Message:", error)
                 window.alert(error)
             })
         })
@@ -122,21 +122,20 @@ class Dashboard extends Component {
             });
 
         } else {
-            $displayCards = () => {
-                return (
+            $displayCards =
+                (
                     <Row>
                         <Col xs="12" sm="12" lg="12">
                             <Card className="text-dark bg-light">
                                 <CardBody className="pb-0">
                                     <div className="tag">
-                                        {/* You have not uploaded any documents yet. */}
+                                        You have not uploaded any documents yet.
                                     </div>
                                 </CardBody>
                             </Card>
                         </Col>
                     </Row>
                 );
-            }
         }
         return (
             <div>
