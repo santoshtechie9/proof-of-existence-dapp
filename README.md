@@ -2,24 +2,19 @@
 
 ## Overview
 Ethereum proof of existance dapp. Application frontend is developed in ReactJS, Smart Contracts are developed in Solidity. 
-
 This application allows users to prove existence of some information by showing a time stamped picture/video.
 
 Data could be stored in a database, but to make it truly decentralized consider storing pictures using something like IPFS. The hash of the data and any additional information is stored in a smart contract that can be referenced at a later date to verify the authenticity.
 
 ### User Stories:
 A user logs into the web app. 
-
 The app reads the user’s address and shows all of the data that they have previously uploaded.
-
 The user can upload some data (pictures/video) to the app, as well as add a list of tags indicating the contents of the data.
-
 Users can retrieve necessary reference data about their uploaded items to allow other people to verify the data authenticity.
-
-Users can privide a proof of a document by storing its has in the blockchain. 
+Users can privide a proof of a document by storing its hash in the blockchain. 
 
 ### Important Note
-All the document uploaded using this app are stored in IPFS. So do not upload any personal information attention. Check the content carefully before  uploading.
+All the document uploaded using this app are stored in IPFS. So do not upload any personal information. Check the content carefully before  uploading.
 
 ## Getting Started
 
@@ -29,7 +24,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 What things you need to install the software and how to install them
 
-| Avoiding Known Attacks | Contract Name |
+| Software | Version |
 | ------------------------------ | ------------------- |
 | `nodejs` | v8.11.3 or higher |
 | `npm` | v6.1.0 or higher |
@@ -144,9 +139,7 @@ Q. Having trouble uploading the image to IPFS?
 
 A. Run there commands to check the connectivity and upload the image once again.
 
-
 ```
-
 https://github.com/INFURA/tutorials/wiki/IPFS-and-CORS
 
 curl -H "Origin: https://ipfs.infura.io" \
@@ -163,9 +156,22 @@ curl \
 --verbose https://ipfs.infura.io/api/v0/cat?arg=QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG/readme
 ```
 
-## Screenshots(How to use the proof-of-existence dapp)
+## How to use the proof-of-existence dapp(Screenshots)
 
 ### Go the the main page
+
+Step#1: Visit the home page of the application `http://localhost:3000/`
+
+Step#2: Go to the dashboard to view all the document the user uploaded `http://localhost:3000/dashboard`
+This page displays all the documents the user has uploaded so far. Visit dashboard page after uploading the document.
+
+Step#3: Click on upload document to upload a document `http://localhost:3000/upload`.
+In this page you can uplaod a document and also enter the details. Click upload button and Go to metamask and confirm the transaction. Once you click on the confirm button the document will be uploaded to IPFS and the details are stored in ethereum blockchain. Visit dashboard page after uploading the document.
+
+Step#4: Click on verify document page `http://localhost:3000/upload`.
+Copy the `docHash` from the dashboard page for a document and paste the `docHash` in the verify form and click submit. The application will connect to blochchain to retrieve the data and download the data from IPFS and show the file. This way you can ensure that the document existance at a particular point of time.(proof of existance)
+
+
 Main page of the application
 
 ![Alt text](/src/assets/mainpage.JPG?raw=true "Optional Title")
