@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Container, Row, Col, Card, CardBody } from 'reactstrap';
 import getWeb3 from '../../utils/getWeb3';
 import getContract from '../../utils/getContract';
-import ProofOfExistanceContract from '../../../build/contracts/ProofOfExistance.json';
 import Proof from '../../../build/contracts/Proof.json';
 import Register from '../../../build/contracts/Register.json';
 
@@ -21,14 +20,12 @@ class Dashboard extends Component {
             //Get the current active account
             let publicAddress = results.web3.eth.coinbase.toLowerCase();
             // Initiating contracts during component mount
-            const ProofOfExistanceInstance = getContract(ProofOfExistanceContract);
             const proofLogicInstance = getContract(Proof);
             const registerInstance = getContract(Register);
             //set the instance in state object to access then across contract
             this.setState({
                 web3: results.web3,
                 publicAddress: publicAddress,
-                ProofOfExistanceInstance: ProofOfExistanceInstance,
                 proofLogicInstance: proofLogicInstance,
                 registerInstance: registerInstance,
             })

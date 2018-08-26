@@ -43,6 +43,12 @@ contract ProofDB  is Mortal {
     //Modifiers
     modifier stopInEmergency {if (!stopped) _;}
     modifier onlyInEmergency {if (stopped) _;}
+
+     //Circuit Breaker to pause the contract in case of Emergency
+    function toggleContractActive() public 
+    onlyOwner {
+        stopped = !stopped;
+    }
     
     // modified to restric access to allowed users and contracts
     modifier onlyAllowedContractOrOwner {

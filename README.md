@@ -137,7 +137,11 @@ Q. Having trouble uploading the image to IPFS?
 
 A. Run there commands to check the connectivity and upload the image once again.
 
+
 ```
+
+https://github.com/INFURA/tutorials/wiki/IPFS-and-CORS
+
 curl -H "Origin: https://ipfs.infura.io" \
 -H "Access-Control-Request-Method: POST" \
 -H "Access-Control-Request-Headers: X-Requested-With" \
