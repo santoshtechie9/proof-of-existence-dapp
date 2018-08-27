@@ -3,6 +3,7 @@ pragma solidity ^0.4.22;
 import './Mortal.sol';
 import './ProofDB.sol';
 
+/** @title Proof. */
 contract Proof is Mortal{
     
     address public storageDb;
@@ -55,13 +56,17 @@ contract Proof is Mortal{
         stopped = !stopped;
     }
 
-    // function to upload the document. It stores the data in storage contract.
+    /** @dev uploadDocument. Function to upload the document. It stores the data in storage contract. 
+        * @param _docHash documentId.
+        * @param _userName name of the owner.
+        * @param _ipfsHash hash of the document returned by IPFS.
+        * @param _docTags additional tags.
+        * @return status true/false.
+        */
     function uploadDocument(bytes32 _docHash, bytes32 _userName, bytes _ipfsHash,bytes _docTags) 
     public
     stopInEmergency 
     returns(bool) {
-        //UserUsageCount storage userUploadStats = userUsage[msg.sender];
-        //UploadChoices choice = verifyRateLimit(msg.sender);
         
         require(_docHash != 0x0,"Document hash is mandatory it can't be 0x0");
         require(_userName.length <= 32,"userName should be <= 32 bytes");
@@ -91,8 +96,10 @@ contract Proof is Mortal{
         return status;
     }
     
-    //verify whether user exceeded rate limit assigned
-    //function verifyRateLimit(address _addr, UserUsageCount _userUploadStats)
+    /** @dev verifyRateLimit. Verify whether user exceeded rate limit assigned. 
+        * @param _addr address of the user.
+        * @return uploadChoices constant.
+        */
     function verifyRateLimit(address _addr)
     private
     view
@@ -111,7 +118,14 @@ contract Proof is Mortal{
         return defaultUploadChoice;
     }
 
-    // function to retrieve the document details.
+    /** @dev fetchDocument. function to retrieve the document details.
+        * @param _docHash unique documentId.
+        * @return docHash unique documentId.
+        * @return userName onwer name.
+        * @return docTimestamp document registered timestamp.
+        * @return ipfsHash hash of the document returned by IPFS.
+        * @return docTags additional tags describing the document uploaded.
+        */
     function fetchDocument(bytes32 _docHash) 
     public 
     view 
@@ -128,7 +142,9 @@ contract Proof is Mortal{
         return(docHash,userName,docTimestamp,ipfsHash,docTags);
     }
 
-    // function to retrieve all the document of the user
+    /** @dev fetchAllDocuments. Returns all the documents that belong to the sender. 
+        * @return docHashList list of document addresses.
+        */
     function fetchAllDocuments() 
     public 
     view 
@@ -138,13 +154,16 @@ contract Proof is Mortal{
         return docHashList;
     }
 
-    // function to check the balance in the contract
+    /** @dev checkBalance. Checks the ether balance of the contract account. 
+        * @return balance contract ether balance.
+        */
     function checkBalance() public view returns(uint){
         return address(this).balance;
     }
 
-    // this method will allow the owner to withdraw funds sent to the contract account.
-    // pull over push for external calls
+    /** @dev withdrawFunds. Allows the owner to withdraw ether balance the contract account. 
+        * @return status true/false.
+        */
     function withdrawFunds() public 
     onlyOwner 
     onlyInEmergency
@@ -159,10 +178,6 @@ contract Proof is Mortal{
     function () public payable {
         require(msg.data.length == 0,"Message Length is not zero");
         emit LogFallback(msg.sender,msg.value);
-    }
-
-    function greet() external pure returns(string){
-        return "Hello, Test Greet Message"; 
     }
 
 }
