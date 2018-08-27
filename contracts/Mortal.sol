@@ -1,12 +1,14 @@
 pragma solidity ^0.4.22;
 
 
-// Owned contract to assign a owner at the time of deployment
+/** @title Owned contract 
+    * it assign a owner at the time of deployment. 
+    */
 contract Owned {
     
     address public owner;
 
-    // Modifier to check if the sender is owner    
+    /** @dev Modifier to check if the sender is owner.*/
     modifier onlyOwner(){
         require(msg.sender == owner, "msg sender is not owner");
         _;
@@ -16,7 +18,7 @@ contract Owned {
         owner = msg.sender;
     }
 
-    // function to change the owner of the contract
+    /** @dev function to change the owner of the contract.*/
     function changeOwner(address _newOwner) public
     onlyOwner 
     {
@@ -27,11 +29,12 @@ contract Owned {
 }
 
 
-//Mortal contract
+/** @title Mortal contract extends Owner contract. */
 contract Mortal is Owned {
     
-    // Kill funtion to destroy the contract. 
-    // It transfers the balance in the smart contract to the owner account if any. 
+    /** @dev Kill funtion to destroy the contract.
+        * It transfers the balance in the smart contract to the owner account if any.
+        */
     function kill() public 
     onlyOwner{
         require(msg.sender == owner,"message sender is not owner");

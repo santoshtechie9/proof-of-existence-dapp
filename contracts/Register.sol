@@ -2,8 +2,9 @@ pragma solidity ^0.4.22;
 
 import './Mortal.sol';
 
-// This contract maintains the current version of Proof contract.
-// Proof contract has the logic and code
+/** @title Register. 
+    * This contract maintains the current version of Proof contract
+    */
 contract Register is Mortal {
     
     address backendContract;
@@ -19,14 +20,18 @@ contract Register is Mortal {
         _;
     }
     
-    // Constructor accepts the intial versioin of the contract address 
+    /** @dev Constructor. 
+    * Constructor accepts the intial versioin of the contract address 
+    */
     constructor(address initAddr) public {
         backendContract = initAddr;
         owner = msg.sender;
     }
     
-    // Function to chang the current version of the contract address
-    // Only owner can access execute this function to the version of smart contract
+    /** @dev changeContractVersion changes the current version of the contract address
+        * @param _newBackend new address of the contract.
+        * @return true/false.
+        */
     function changeContractVersion(address _newBackend) public
     onlyOwner()
     returns (bool)
@@ -40,7 +45,9 @@ contract Register is Mortal {
         return false;
     }
     
-    // This function returns the current version of the smart contrace
+    /** @dev getCurrentVersion returns the current version of the smart contract
+    * @return current version of the contract.
+    */
     function getCurrentVersion() public view returns(address){
         return backendContract;
     }

@@ -2,9 +2,9 @@ pragma solidity ^0.4.22;
 
 import './Mortal.sol';
 
-// ProofDB contract manages the data for this entire application.
 // Data is separated from the logic to implement upgradable design pattern
 // The only purpose of this contract is to store and retrieve data.
+/** @title ProofDB contract manages the data for this entire application. */
 contract ProofDB  is Mortal {
     
     //Document idenfiers is a structure which sotres the documented related information
@@ -56,8 +56,11 @@ contract ProofDB  is Mortal {
         _;
     }
 
-    // function to add allowed contracts or owners to the list.
-    // these list of users have the previliges to execute methods that make changes to the state of this ProofDB.
+    /** @dev addAllowedContractOrOwner. function to add allowed contracts or owners to the list.
+        * The list of users have the previliges to execute methods that make changes to the state of this ProofDB.
+        * @param _addr address of contract or user.
+        * @return status true/false.
+        */
     function addAllowedContractOrOwner(address _addr)
     public
     onlyOwner 
@@ -70,7 +73,11 @@ contract ProofDB  is Mortal {
         return false;
     }
 
-    // This function determines of an address is allowed to  make change to the state of ProofDB contract
+    /** @dev isAllowedContractOrOwner. This function determines of an address is allowed to  make change to the state of ProofDB contract.
+        * The list of users have the previliges to execute methods that make changes to the state of this ProofDB.
+        * @param _addr address of contract or user.
+        * @return status true/false.
+        */
     function isAllowedContractOrOwner(address _addr)
     public
     view 
@@ -78,9 +85,16 @@ contract ProofDB  is Mortal {
         return allowedContracts[_addr];
     }
     
-    // This function adds a document 
-    // documents are maintained for each user. An array inside user struct contains all the document the user uploaded so far.
-    // document struct contains the document details
+    /** @dev addDocument. This function adds a document to the data store. 
+        * documents are maintained for each user. An array inside user struct contains all the document the user uploaded so far.
+        * document struct contains the document details
+        * @param caller documentId.
+        * @param _docHash documentId.
+        * @param _userName name of the owner.
+        * @param _ipfsHash hash of the document returned by IPFS.
+        * @param _docTags additional tags.
+        * @return status true/false.
+        */
     function addDocument(address caller, bytes32 _docHash, bytes32 _userName, bytes _ipfsHash,bytes _docTags) 
     public
     stopInEmergency
@@ -94,9 +108,15 @@ contract ProofDB  is Mortal {
         return false;
     }
     
-    // Returns details of a single document
-    // All the documents that belong to a user are stored under a user
-    // address and  docHash are used to  look up a particular document
+    /** @dev getDocument. Returns details of a single document. address and  docHash are used to  look up a particular document.
+        * @param caller user address.
+        * @param _docHash unique documentId.
+        * @return docHash unique documentId.
+        * @return userName onwer name.
+        * @return docTimestamp document registered timestamp.
+        * @return ipfsHash hash of the document returned by IPFS.
+        * @return docTags additional tags describing the document uploaded.
+        */
     function getDocument(address caller,bytes32 _docHash) 
     public 
     view 
@@ -106,7 +126,9 @@ contract ProofDB  is Mortal {
         return(document.docHash,document.userName,document.docTimestamp,document.ipfsHash,document.docTags);
     }
     
-    // Returns all the documents of a address
+    /** @dev fetchAllDocuments. Returns all the documents that belong to the sender. 
+        * @return documentList list of document addresses.
+        */
     function fetchAllDocuments(address caller) 
     public 
     view 
@@ -114,13 +136,17 @@ contract ProofDB  is Mortal {
         return users[caller].documentList;
     }
     
-        // function to check the balance in the contract
+    /** @dev checkBalance. Checks the ether balance of the contract account. 
+        * @return balance contract ether balance.
+        */
     function checkBalance() public view returns(uint){
         return address(this).balance;
     }
     
-    // this method will allow the owner to withdraw funds sent to the contract account.
-    // pull over push for external calls
+    /** @dev withdrawFunds. Allows the owner to withdraw ether balance the contract account. 
+        * pull over push for external calls.
+        * @return status true/false.
+        */
     function withdrawFunds() public 
     onlyOwner 
     onlyInEmergency
