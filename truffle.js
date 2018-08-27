@@ -1,5 +1,5 @@
 var HDWalletProvider = require("truffle-hdwallet-provider");
-var seedWords = "<Enter your seed words here>";
+var seedWords = "<Enter the seed words here>";
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -27,13 +27,12 @@ module.exports = {
 
     rinkeby: {
       provider: function () {
-        return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/");
+        return new HDWalletProvider(seedWords, "https://rinkeby.infura.io/");
       },
       network_id: '4',
       gas: 4500000
     }
 
   }
-
 
 };
