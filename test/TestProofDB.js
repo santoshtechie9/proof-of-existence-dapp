@@ -72,8 +72,6 @@ contract('ProofDB contract test suit', function (accounts) {
         })
     });
 
-    it('Testcase 2');
-
     // seperate group to test total number of document uploaded(clean room to run below tests)
     // this test ensures that the all documents method returns all the documents available to the user.
     // for example if a user uploads 2 documents, fetchAllDocuments should return  2 document hashes.
