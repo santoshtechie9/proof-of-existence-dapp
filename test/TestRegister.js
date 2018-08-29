@@ -40,23 +40,4 @@ contract('Register contract test suit', function (accounts) {
         })
     });
 
-    // This test ensures that users other than owner are not able to change the contract version.
-    it('Test change current version of the contract by non owner');
-    //function(){
-    //     const newVersion = "0xaca0000620f00001e7200003b3a00004e140000d";
-    //     const account_one = accounts[1];
-    //     return Register.deployed().then((instance)=>{
-    //         instance.changeContractVersion(newVersion,{from:account_one});
-    //         return instance.getCurrentVersion.call({from:account_one});
-    //     }).then((currentVersion)=>{
-    //         console.log("newVersion",newVersion);
-    //         console.log("currentVersion", currentVersion);
-    //         const expected = newVersion;
-    //         const actual = currentVersion;
-    //         assert.throws(expected, actual, "Current version should be set to Proof contract address");
-    //     }).catch((error)=>{
-
-    //     })
-    // });
-
 })
